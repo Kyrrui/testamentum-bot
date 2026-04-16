@@ -1256,15 +1256,31 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     except discord.NotFound:
         return
 
-    # Only react to our own embeds
-    if message.author.id != client.user.id or not message.embeds:
+    # Only react to embeds from our bot or our webhook
+    is_bot = message.author.id == client.user.id
+    is_webhook = message.webhook_id is not None and message.embeds
+    if not (is_bot or is_webhook) or not message.embeds:
         return
 
     embed = message.embeds[0]
     if not embed.title:
         return
 
+    # Try to parse verse reference from embed title
     parsed = parse_embed_title(embed.title)
+
+    # If it's a VOTD embed, load the reference from votd.json
+    if not parsed and "Verse of the Day" in embed.title:
+        if os.path.exists(VOTD_PATH):
+            with open(VOTD_PATH, "r", encoding="utf-8") as f:
+                votd = json.load(f)
+            parsed = (
+                votd["book"],
+                int(votd["chapter"]),
+                int(votd["verse_start"]),
+                int(votd["verse_end"]),
+            )
+
     if not parsed:
         return
 

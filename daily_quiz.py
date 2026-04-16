@@ -18,6 +18,7 @@ import requests
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
 QUIZ_PATH = os.path.join(os.path.dirname(__file__), "data", "daily_quiz.json")
 QUIZ_HISTORY_PATH = os.path.join(os.path.dirname(__file__), "data", "quiz_history.json")
+ALLTIME_LB_PATH = os.path.join(os.path.dirname(__file__), "data", "quiz_leaderboard.json")
 EMBED_COLOR = 0x8B4513
 
 DISCORD_QUIZ_WEBHOOK_URL = os.environ.get("DISCORD_QUIZ_WEBHOOK_URL")
@@ -118,6 +119,24 @@ def post_quiz(quiz_data: dict):
         }
     ]
 
+    # Load all-time leaderboard for display
+    alltime_text = "*No scores yet*"
+    if os.path.exists(ALLTIME_LB_PATH):
+        with open(ALLTIME_LB_PATH, "r", encoding="utf-8") as f:
+            alltime_lb = json.load(f)
+        if alltime_lb:
+            entries = sorted(alltime_lb.values(), key=lambda e: (-e["total_score"], -e["perfect"]))
+            lines = []
+            medals = ["\U0001f947", "\U0001f948", "\U0001f949"]
+            for i, entry in enumerate(entries[:5]):
+                medal = medals[i] if i < 3 else f"**{i+1}.**"
+                avg = entry["total_score"] / entry["games_played"] if entry["games_played"] else 0
+                lines.append(
+                    f"{medal} {entry['name']} — **{entry['total_score']}** pts "
+                    f"({entry['games_played']} games, {entry['perfect']} perfect)"
+                )
+            alltime_text = "\n".join(lines)
+
     embed = {
         "title": "Daily Scripture Quiz",
         "description": (
@@ -127,7 +146,8 @@ def post_quiz(quiz_data: dict):
         ),
         "color": EMBED_COLOR,
         "fields": [
-            {"name": "Leaderboard", "value": "*No answers yet*", "inline": False}
+            {"name": "Today's Scores", "value": "*No answers yet*", "inline": False},
+            {"name": "All-Time Leaderboard", "value": alltime_text, "inline": False},
         ],
         "footer": {"text": "Round 1 of 3 — Pick the correct book!"},
     }

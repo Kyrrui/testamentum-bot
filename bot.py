@@ -19,6 +19,7 @@ load_dotenv()
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
 VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")
 QUIZ_PATH = os.path.join(os.path.dirname(__file__), "data", "daily_quiz.json")
+ALLTIME_LB_PATH = os.path.join(os.path.dirname(__file__), "data", "quiz_leaderboard.json")
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 
@@ -1255,6 +1256,21 @@ async def quiz_command(interaction: discord.Interaction, book: str | None = None
     view.message = await interaction.original_response()
 
 
+@tree.command(name="leaderboard", description="View the all-time daily quiz leaderboard")
+async def leaderboard_command(interaction: discord.Interaction):
+    lb_text = _build_alltime_leaderboard(15)
+    embed = discord.Embed(
+        title="All-Time Quiz Leaderboard",
+        description=lb_text,
+        color=EMBED_COLOR,
+    )
+    lb = _load_alltime_lb()
+    total_games = sum(e["games_played"] for e in lb.values()) if lb else 0
+    total_perfect = sum(e["perfect"] for e in lb.values()) if lb else 0
+    embed.set_footer(text=f"{len(lb)} players | {total_games} games played | {total_perfect} perfect scores")
+    await interaction.response.send_message(embed=embed)
+
+
 @tree.command(name="help", description="Show available commands and how to use them")
 async def help_command(interaction: discord.Interaction):
     total_books = len(DB["books"])
@@ -1344,6 +1360,11 @@ async def help_command(interaction: discord.Interaction):
         inline=False,
     )
     embed.add_field(
+        name="/leaderboard",
+        value="View the all-time daily quiz leaderboard",
+        inline=False,
+    )
+    embed.add_field(
         name="Reactions",
         value=(
             "\U0001f516 Bookmark — react on a verse to get it DM'd to you\n"
@@ -1389,28 +1410,73 @@ def _save_daily_quiz(quiz: dict):
         json.dump(quiz, f, indent=2, ensure_ascii=False)
 
 
-def _build_leaderboard(quiz: dict) -> str:
-    """Build the leaderboard string from quiz data."""
+def _load_alltime_lb() -> dict:
+    """Load all-time leaderboard. {user_id: {name, total_score, games_played, perfect}}"""
+    if not os.path.exists(ALLTIME_LB_PATH):
+        return {}
+    with open(ALLTIME_LB_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _save_alltime_lb(lb: dict):
+    with open(ALLTIME_LB_PATH, "w", encoding="utf-8") as f:
+        json.dump(lb, f, indent=2, ensure_ascii=False)
+
+
+def _update_alltime_score(user_id: str, user_name: str, score: int):
+    """Add a completed quiz score to the all-time leaderboard."""
+    lb = _load_alltime_lb()
+    if user_id not in lb:
+        lb[user_id] = {"name": user_name, "total_score": 0, "games_played": 0, "perfect": 0}
+    lb[user_id]["name"] = user_name  # keep name current
+    lb[user_id]["total_score"] += score
+    lb[user_id]["games_played"] += 1
+    if score == 3:
+        lb[user_id]["perfect"] += 1
+    _save_alltime_lb(lb)
+
+
+def _build_today_leaderboard(quiz: dict) -> str:
+    """Build today's leaderboard string."""
     lb = quiz.get("leaderboard", {})
     if not lb:
         return "*No answers yet*"
 
-    # Sort by score descending, then by name
     entries = sorted(lb.values(), key=lambda e: -e["score"])
     lines = []
     for i, entry in enumerate(entries[:15]):
-        medal = ["🥇", "🥈", "🥉"][i] if i < 3 else f"**{i+1}.**"
+        medal = ["\U0001f947", "\U0001f948", "\U0001f949"][i] if i < 3 else f"**{i+1}.**"
         stage_label = f"{entry['score']}/3"
         if entry.get("done"):
-            lines.append(f"{medal} {entry['name']} — {stage_label} ✅")
+            lines.append(f"{medal} {entry['name']} — {stage_label}")
         else:
             lines.append(f"{medal} {entry['name']} — {stage_label} *(in progress)*")
 
     return "\n".join(lines)
 
 
+def _build_alltime_leaderboard(max_entries: int = 10) -> str:
+    """Build all-time leaderboard string."""
+    lb = _load_alltime_lb()
+    if not lb:
+        return "*No scores yet*"
+
+    entries = sorted(lb.values(), key=lambda e: (-e["total_score"], -e["perfect"]))
+    lines = []
+    for i, entry in enumerate(entries[:max_entries]):
+        medal = ["\U0001f947", "\U0001f948", "\U0001f949"][i] if i < 3 else f"**{i+1}.**"
+        avg = entry["total_score"] / entry["games_played"] if entry["games_played"] else 0
+        lines.append(
+            f"{medal} {entry['name']} — **{entry['total_score']}** pts "
+            f"({entry['games_played']} games, {entry['perfect']} perfect, "
+            f"avg {avg:.1f})"
+        )
+
+    return "\n".join(lines)
+
+
 async def _update_quiz_embed(quiz: dict):
-    """Update the quiz embed in Discord with the current leaderboard."""
+    """Update the quiz embed in Discord with both leaderboards."""
     channel = client.get_channel(int(quiz["channel_id"]))
     if not channel:
         return
@@ -1420,11 +1486,17 @@ async def _update_quiz_embed(quiz: dict):
         return
 
     embed = message.embeds[0]
-    # Update leaderboard field
-    for i, field in enumerate(embed.fields):
-        if field.name == "Leaderboard":
-            embed.set_field_at(i, name="Leaderboard", value=_build_leaderboard(quiz), inline=False)
-            break
+
+    # Build new fields list
+    new_fields = []
+    today_lb = _build_today_leaderboard(quiz)
+    alltime_lb = _build_alltime_leaderboard(5)
+    new_fields.append({"name": "Today's Scores", "value": today_lb, "inline": False})
+    new_fields.append({"name": "All-Time Leaderboard", "value": alltime_lb, "inline": False})
+
+    embed.clear_fields()
+    for field in new_fields:
+        embed.add_field(name=field["name"], value=field["value"], inline=field["inline"])
 
     await message.edit(embed=embed)
 
@@ -1492,6 +1564,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             )
         else:
             user_entry["done"] = True
+            _update_alltime_score(user_id, user_name, user_entry["score"])
             _save_daily_quiz(quiz)
             await _update_quiz_embed(quiz)
             await interaction.response.send_message(
@@ -1520,6 +1593,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             )
         else:
             user_entry["done"] = True
+            _update_alltime_score(user_id, user_name, user_entry["score"])
             _save_daily_quiz(quiz)
             await _update_quiz_embed(quiz)
             await interaction.response.send_message(
@@ -1533,6 +1607,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
         user_entry["done"] = True
         if correct:
             user_entry["score"] += 1
+        _update_alltime_score(user_id, user_name, user_entry["score"])
         _save_daily_quiz(quiz)
         await _update_quiz_embed(quiz)
         if correct:

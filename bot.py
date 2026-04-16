@@ -1333,6 +1333,13 @@ async def postquiz_command(interaction: discord.Interaction):
     await interaction.followup.send("Daily quiz posted!", ephemeral=True)
 
 
+@tree.command(name="clearleaderboard", description="Reset the all-time quiz leaderboard (admin only)")
+@app_commands.default_permissions(administrator=True)
+async def clearleaderboard_command(interaction: discord.Interaction):
+    _save_alltime_lb({})
+    await interaction.response.send_message("All-time leaderboard has been reset.", ephemeral=True)
+
+
 @tree.command(name="leaderboard", description="View the all-time daily quiz leaderboard")
 async def leaderboard_command(interaction: discord.Interaction):
     lb_text = _build_alltime_leaderboard(15)

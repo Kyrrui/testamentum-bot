@@ -212,10 +212,80 @@ INLINE_REF_RE = re.compile(
 )
 
 
+# --- Related verses (keyword-based) ---
+
+# Common words to skip when finding related verses
+STOP_WORDS = {
+    "the", "and", "of", "to", "in", "a", "is", "that", "it", "for", "was",
+    "on", "are", "as", "with", "his", "they", "be", "at", "one", "have",
+    "this", "from", "or", "had", "by", "not", "but", "what", "all", "were",
+    "we", "when", "your", "can", "said", "there", "an", "which", "their",
+    "if", "will", "do", "shall", "he", "she", "him", "her", "them", "who",
+    "has", "been", "my", "i", "me", "no", "so", "up", "out", "about", "into",
+    "than", "its", "you", "then", "did", "also", "am", "ye", "unto", "upon",
+    "thou", "thee", "thy", "hath", "doth", "would", "may", "let", "us",
+    "those", "these", "even", "own", "how", "nor", "neither", "yet", "now",
+}
+
+
+def extract_keywords(text: str, max_words: int = 6) -> set[str]:
+    """Extract meaningful keywords from verse text."""
+    words = re.findall(r"[a-z]+", text.lower())
+    keywords = [w for w in words if w not in STOP_WORDS and len(w) > 2]
+    return set(keywords[:max_words])
+
+
+def find_related(book: str, chapter: int, verse: int, max_results: int = 5) -> list[tuple[str, str, str, str]]:
+    """Find verses related by keyword overlap. Returns (book, ch, v, text)."""
+    # Get the source verse text
+    source_text = DB["books"].get(book, {}).get("chapters", {}).get(
+        str(chapter), {}
+    ).get("verses", {}).get(str(verse), "")
+    if not source_text:
+        return []
+
+    keywords = extract_keywords(source_text)
+    if not keywords:
+        return []
+
+    scored = []
+    for bname, bdata in DB["books"].items():
+        for ch_num, ch_data in bdata["chapters"].items():
+            for v_num, v_text in ch_data["verses"].items():
+                # Skip the source verse itself
+                if bname == book and ch_num == str(chapter) and v_num == str(verse):
+                    continue
+                v_keywords = extract_keywords(v_text)
+                overlap = len(keywords & v_keywords)
+                if overlap >= 2:
+                    scored.append((overlap, bname, ch_num, v_num, v_text))
+
+    scored.sort(key=lambda x: -x[0])
+    return [(b, c, v, t) for _, b, c, v, t in scored[:max_results]]
+
+
+# --- Embed title parsing ---
+
+# Parse embed titles like "Evangelicon 1:1", "Romans 3:21-25", "Evangelicon 1:1 (in context)"
+EMBED_TITLE_RE = re.compile(r"^(.+?)\s+(\d+):(\d+)(?:\s*-\s*(\d+))?")
+
+
+def parse_embed_title(title: str) -> tuple[str, int, int, int | None] | None:
+    """Parse a verse reference from an embed title."""
+    m = EMBED_TITLE_RE.match(title)
+    if not m:
+        return None
+    book, ch, v_start, v_end = m.groups()
+    if book not in DB["books"]:
+        return None
+    return book, int(ch), int(v_start), int(v_end) if v_end else None
+
+
 # --- Bot setup ---
 
 intents = discord.Intents.default()
 intents.message_content = True  # needed for inline verse expansion
+intents.reactions = True  # needed for reaction features
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
@@ -410,6 +480,37 @@ class ChapterPaginator(ui.View):
         await interaction.response.edit_message(embed=self.make_embed(), view=self)
 
 
+class RelatedView(ui.View):
+    """Button to show related passages for a verse."""
+
+    def __init__(self, book: str, chapter: int, verse: int):
+        super().__init__(timeout=300)
+        self.book = book
+        self.chapter = chapter
+        self.verse = verse
+
+    @ui.button(label="Related Passages", style=discord.ButtonStyle.primary, emoji="\U0001f517")
+    async def related_btn(self, interaction: discord.Interaction, button: ui.Button):
+        related = find_related(self.book, self.chapter, self.verse)
+        if not related:
+            await interaction.response.send_message(
+                "No related passages found.", ephemeral=True
+            )
+            return
+
+        desc_lines = []
+        for bname, ch, v, txt in related:
+            display = txt if len(txt) <= 150 else txt[:147] + "..."
+            desc_lines.append(f"**{bname} {ch}:{v}**\n{display}\n")
+
+        embed = discord.Embed(
+            title=f"Related to {self.book} {self.chapter}:{self.verse}",
+            description="\n".join(desc_lines),
+            color=EMBED_COLOR,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
 # --- Commands ---
 
 
@@ -456,7 +557,8 @@ async def verse_command(interaction: discord.Interaction, reference: str):
         desc_lines.append(f"**{vnum}** {text}")
 
     embed.description = "\n".join(desc_lines)
-    await interaction.response.send_message(embed=embed)
+    view = RelatedView(book, chapter, v_start)
+    await interaction.response.send_message(embed=embed, view=view)
 
 
 @tree.command(name="search", description="Search verses by text (supports fuzzy matching)")
@@ -520,7 +622,8 @@ async def random_command(interaction: discord.Interaction, book: str | None = No
     )
     if section:
         embed.set_footer(text=section)
-    await interaction.response.send_message(embed=embed)
+    view = RelatedView(bname, int(ch), int(v))
+    await interaction.response.send_message(embed=embed, view=view)
 
 
 @tree.command(name="chapter", description="Read a full chapter")
@@ -791,6 +894,109 @@ async def bookinfo_command(interaction: discord.Interaction, book: str):
     await interaction.response.send_message(embed=embed)
 
 
+class QuizView(ui.View):
+    """Scripture quiz — guess the book."""
+
+    def __init__(self, book: str, chapter: str, verse: str, text: str):
+        super().__init__(timeout=120)
+        self.book = book
+        self.chapter = chapter
+        self.verse = verse
+        self.text = text
+        self.revealed = False
+
+        # Pick 4 choices: the correct one + 3 random wrong ones
+        all_books = list(DB["books"].keys())
+        wrong = [b for b in all_books if b != book]
+        random.shuffle(wrong)
+        self.choices = wrong[:3] + [book]
+        random.shuffle(self.choices)
+
+        for choice in self.choices:
+            btn = ui.Button(
+                label=choice,
+                style=discord.ButtonStyle.secondary,
+                custom_id=f"quiz_{choice}",
+            )
+            btn.callback = self._make_callback(choice)
+            self.add_item(btn)
+
+    def _make_callback(self, choice: str):
+        async def callback(interaction: discord.Interaction):
+            if self.revealed:
+                await interaction.response.send_message(
+                    "This quiz has already been answered!", ephemeral=True
+                )
+                return
+            self.revealed = True
+
+            correct = choice == self.book
+            ref = f"{self.book} {self.chapter}:{self.verse}"
+
+            # Update buttons to show correct/wrong
+            for item in self.children:
+                if isinstance(item, ui.Button):
+                    if item.custom_id == f"quiz_{self.book}":
+                        item.style = discord.ButtonStyle.success
+                    elif item.custom_id == f"quiz_{choice}" and not correct:
+                        item.style = discord.ButtonStyle.danger
+                    item.disabled = True
+
+            embed = interaction.message.embeds[0]
+            if correct:
+                embed.color = 0x00FF00
+                embed.set_footer(text=f"Correct! This is {ref} — answered by {interaction.user.display_name}")
+            else:
+                embed.color = 0xFF0000
+                embed.set_footer(text=f"Wrong! This is {ref} — answered by {interaction.user.display_name}")
+
+            await interaction.response.edit_message(embed=embed, view=self)
+
+        return callback
+
+
+@tree.command(name="quiz", description="Scripture quiz — guess which book a verse is from")
+@app_commands.describe(book="Limit to a specific book (optional)")
+@app_commands.autocomplete(book=book_autocomplete)
+async def quiz_command(interaction: discord.Interaction, book: str | None = None):
+    if book:
+        resolved = resolve_book(book)
+        if not resolved:
+            embed = discord.Embed(
+                title="Unknown Book",
+                description=f"Unknown book: `{book}`",
+                color=0xFF0000,
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+        pool = {resolved: DB["books"][resolved]}
+    else:
+        pool = DB["books"]
+
+    # Pick a random verse
+    all_verses = []
+    for bname, bdata in pool.items():
+        for ch_num, ch_data in bdata["chapters"].items():
+            for v_num, v_text in ch_data["verses"].items():
+                all_verses.append((bname, ch_num, v_num, v_text))
+
+    if not all_verses:
+        await interaction.response.send_message("No verses found.", ephemeral=True)
+        return
+
+    bname, ch, v, txt = random.choice(all_verses)
+
+    embed = discord.Embed(
+        title="Scripture Quiz",
+        description=f"*Which book is this verse from?*\n\n>>> {txt}",
+        color=EMBED_COLOR,
+    )
+    embed.set_footer(text="Pick the correct book!")
+
+    view = QuizView(bname, ch, v, txt)
+    await interaction.response.send_message(embed=embed, view=view)
+
+
 @tree.command(name="help", description="Show available commands and how to use them")
 async def help_command(interaction: discord.Interaction):
     total_books = len(DB["books"])
@@ -864,6 +1070,23 @@ async def help_command(interaction: discord.Interaction):
         inline=False,
     )
     embed.add_field(
+        name="/quiz [book]",
+        value=(
+            "Scripture quiz — guess which book a verse is from\n"
+            "`/quiz` `/quiz Evangelicon`"
+        ),
+        inline=False,
+    )
+    embed.add_field(
+        name="Reactions",
+        value=(
+            "\U0001f516 Bookmark — react on a verse to get it DM'd to you\n"
+            "\u27a1\ufe0f Expand — react to see the next few verses\n"
+            "\U0001f4ac Thread — react to create a discussion thread"
+        ),
+        inline=False,
+    )
+    embed.add_field(
         name="Inline Expansion",
         value="Type a verse reference in any message (e.g. \"check out Evang 1:1\") and the bot will auto-reply with the verse.",
         inline=False,
@@ -933,6 +1156,127 @@ async def on_message(message: discord.Message):
 
     if embeds:
         await message.reply(embeds=embeds, mention_author=False)
+
+
+@client.event
+async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
+    # Ignore bot reactions
+    if payload.user_id == client.user.id:
+        return
+
+    emoji = str(payload.emoji)
+    if emoji not in ("\U0001f516", "\u27a1\ufe0f", "\U0001f4ac"):
+        return
+
+    channel = client.get_channel(payload.channel_id)
+    if not channel:
+        return
+
+    try:
+        message = await channel.fetch_message(payload.message_id)
+    except discord.NotFound:
+        return
+
+    # Only react to our own embeds
+    if message.author.id != client.user.id or not message.embeds:
+        return
+
+    embed = message.embeds[0]
+    if not embed.title:
+        return
+
+    parsed = parse_embed_title(embed.title)
+    if not parsed:
+        return
+
+    book, chapter, v_start, v_end = parsed
+    user = client.get_user(payload.user_id)
+    if not user:
+        try:
+            user = await client.fetch_user(payload.user_id)
+        except discord.NotFound:
+            return
+
+    # 🔖 Bookmark — DM the verse
+    if emoji == "\U0001f516":
+        results = get_verses(book, chapter, v_start, v_end)
+        if not results:
+            return
+
+        ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+        desc_lines = []
+        for vnum, text, section in results:
+            desc_lines.append(f"**{vnum}** {text}")
+
+        dm_embed = discord.Embed(
+            title=f"\U0001f516 {ref_str}",
+            description="\n".join(desc_lines),
+            color=EMBED_COLOR,
+        )
+        dm_embed.set_footer(text="Bookmarked from Testamentum Bot")
+        try:
+            await user.send(embed=dm_embed)
+        except discord.Forbidden:
+            pass  # user has DMs disabled
+
+    # ➡️ Expand — show next verses
+    elif emoji == "\u27a1\ufe0f":
+        last_verse = v_end if v_end else v_start
+        next_start = last_verse + 1
+        next_end = last_verse + 5
+        results = get_verses(book, chapter, next_start, next_end)
+        if not results:
+            # Try next chapter
+            next_ch = chapter + 1
+            if str(next_ch) in DB["books"].get(book, {}).get("chapters", {}):
+                results = get_verses(book, next_ch, 1, 5)
+                if results:
+                    chapter = next_ch
+                    next_start = 1
+                    next_end = results[-1][0]
+
+        if not results:
+            return
+
+        ref_str = f"{book} {chapter}:{results[0][0]}-{results[-1][0]}"
+        desc_lines = []
+        last_section = None
+        for vnum, text, section in results:
+            if section and section != last_section:
+                desc_lines.append(f"\n__**{section}**__")
+                last_section = section
+            desc_lines.append(f"**{vnum}** {text}")
+
+        expand_embed = discord.Embed(
+            title=ref_str,
+            description="\n".join(desc_lines),
+            color=EMBED_COLOR,
+        )
+        expand_embed.set_footer(text="Continued reading")
+        view = RelatedView(book, chapter, results[0][0])
+        await channel.send(embed=expand_embed, view=view)
+
+    # 💬 Thread — create discussion thread
+    elif emoji == "\U0001f4ac":
+        ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+        # Check if message already has a thread
+        if message.flags.has_thread:
+            return
+        try:
+            thread = await message.create_thread(
+                name=f"Discussion: {ref_str}",
+                auto_archive_duration=1440,  # 24 hours
+            )
+            results = get_verses(book, chapter, v_start, v_end)
+            verse_text = ""
+            if results:
+                verse_text = "\n".join(f"**{vn}** {t}" for vn, t, _ in results)
+            await thread.send(
+                f"**{ref_str}**\n\n{verse_text}\n\n"
+                f"*Thread started by {user.display_name} — discuss this passage below!*"
+            )
+        except discord.Forbidden:
+            pass  # missing permissions
 
 
 def main():

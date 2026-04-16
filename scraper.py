@@ -202,6 +202,7 @@ def parse_book(book_name: str, url: str) -> dict:
 def scrape_all() -> dict:
     """Scrape all books and return the full database."""
     db = {"books": {}}
+    errors = []
 
     for book_name, url in BOOKS.items():
         try:
@@ -209,16 +210,66 @@ def scrape_all() -> dict:
             verse_count = sum(len(v) for v in book_data["chapters"].values())
             chapter_count = len(book_data["chapters"])
             print(f"    -> {chapter_count} chapters, {verse_count} verses")
+            if verse_count == 0:
+                errors.append(f"{book_name}: 0 verses parsed (HTML may have changed)")
             db["books"][book_name] = book_data
         except Exception as e:
+            errors.append(f"{book_name}: {e}")
             print(f"    ERROR scraping {book_name}: {e}")
 
-    return db
+    return db, errors
+
+
+def validate_scrape(db: dict, errors: list[str]) -> bool:
+    """Check that the scrape looks reasonable before overwriting the JSON."""
+    total_books = len(db["books"])
+    total_verses = sum(
+        len(v)
+        for book in db["books"].values()
+        for v in book["chapters"].values()
+    )
+
+    # Must have all books
+    if total_books < len(BOOKS):
+        missing = set(BOOKS.keys()) - set(db["books"].keys())
+        errors.append(f"Missing {len(missing)} books: {', '.join(missing)}")
+
+    # Sanity check: we know there are ~4300 verses; flag if count drops drastically
+    MIN_EXPECTED_VERSES = 3000
+    if total_verses < MIN_EXPECTED_VERSES:
+        errors.append(
+            f"Only {total_verses} verses scraped (expected >{MIN_EXPECTED_VERSES}). "
+            "Site HTML may have changed."
+        )
+
+    # Check a few key verses exist as a canary
+    canaries = [
+        ("Evangelicon", "1", "1"),
+        ("Romans", "1", "1"),
+        ("Psalmicon", "1", "1"),
+    ]
+    for book, ch, v in canaries:
+        if book not in db["books"]:
+            continue
+        text = db["books"][book]["chapters"].get(ch, {}).get(v, "")
+        if len(text) < 10:
+            errors.append(f"Canary verse {book} {ch}:{v} is missing or too short")
+
+    if errors:
+        print("\nValidation FAILED:")
+        for err in errors:
+            print(f"  - {err}")
+        return False
+
+    print(f"\nValidation passed: {total_books} books, {total_verses} verses")
+    return True
 
 
 def main():
+    import os
+
     print("Scraping Testamentum...")
-    db = scrape_all()
+    db, errors = scrape_all()
 
     total_books = len(db["books"])
     total_verses = sum(
@@ -226,12 +277,15 @@ def main():
         for book in db["books"].values()
         for v in book["chapters"].values()
     )
-    print(f"\nDone! {total_books} books, {total_verses} total verses.")
+    print(f"\nScraped {total_books} books, {total_verses} total verses.")
 
     output_path = "data/testamentum.json"
-    import os
-    os.makedirs("data", exist_ok=True)
 
+    if not validate_scrape(db, errors):
+        print("\nAborting: existing data/testamentum.json will NOT be overwritten.")
+        sys.exit(1)
+
+    os.makedirs("data", exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(db, f, indent=2, ensure_ascii=False)
 

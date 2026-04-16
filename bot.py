@@ -273,6 +273,35 @@ async def random_command(interaction: discord.Interaction, book: str | None = No
     )
 
 
+@tree.command(name="help", description="Show available commands and how to use them")
+async def help_command(interaction: discord.Interaction):
+    total_books = len(DB["books"])
+    total_verses = sum(
+        len(v)
+        for b in DB["books"].values()
+        for v in b["chapters"].values()
+    )
+    book_list = ", ".join(DB["books"].keys())
+
+    msg = (
+        "**Testamentum Bot**\n"
+        f"*{total_books} books, {total_verses} verses from the Marcionite Testamentum*\n\n"
+        "**Commands:**\n"
+        "`/verse <reference>` — Look up a verse or range\n"
+        "  Examples: `/verse Evang 1:1` `/verse Rom 7:11-13`\n\n"
+        "`/search <text> [book]` — Search verses by text (optional book filter)\n"
+        "  Examples: `/search grace` `/search spirit Romans`\n\n"
+        "`/random [book]` — Get a random verse (optional book filter)\n"
+        "  Examples: `/random` `/random Psalmicon`\n\n"
+        "**Book abbreviations:**\n"
+        "Evang, Gal, 1Cor, 2Cor, Rom, 1Thess, 2Thess, Laod, Col, "
+        "Phm, Phil, Tit, 1Tim, 2Tim, Alex, Psalm, Diog, Mag, Tral, "
+        "Smyrn, Metro\n\n"
+        f"**Available books:**\n{book_list}"
+    )
+    await interaction.response.send_message(msg, ephemeral=True)
+
+
 @client.event
 async def on_ready():
     await tree.sync()

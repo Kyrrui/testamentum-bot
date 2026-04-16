@@ -48,18 +48,26 @@ def _call_anthropic(system: list, messages: list, tools: list | None = None) -> 
     if tools:
         body["tools"] = tools
 
-    resp = requests.post(
-        "https://api.anthropic.com/v1/messages",
-        headers={
-            "x-api-key": ANTHROPIC_API_KEY,
-            "content-type": "application/json",
-            "anthropic-version": "2023-06-01",
-        },
-        json=body,
-        timeout=120,
-    )
-    resp.raise_for_status()
-    return resp.json()
+    import time
+    for attempt in range(5):
+        resp = requests.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": ANTHROPIC_API_KEY,
+                "content-type": "application/json",
+                "anthropic-version": "2023-06-01",
+            },
+            json=body,
+            timeout=120,
+        )
+        if resp.status_code == 429:
+            wait = min(2 ** attempt * 10, 60)
+            print(f"  Rate limited, waiting {wait}s (attempt {attempt + 1}/5)...")
+            time.sleep(wait)
+            continue
+        resp.raise_for_status()
+        return resp.json()
+    resp.raise_for_status()  # raise on final failure
 
 
 def _do_web_search(query: str) -> str:

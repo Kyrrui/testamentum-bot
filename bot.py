@@ -19,11 +19,17 @@ from verse_image import render_verse
 
 load_dotenv()
 
+# Static data (bundled with repo)
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
-VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")
-QUIZ_PATH = os.path.join(os.path.dirname(__file__), "data", "daily_quiz.json")
-ALLTIME_LB_PATH = os.path.join(os.path.dirname(__file__), "data", "quiz_leaderboard.json")
-SERVER_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "data", "server_config.json")
+
+# Runtime data (persistent volume on Railway, or local data/ for dev)
+RUNTIME_DIR = os.getenv("DATA_DIR", os.path.join(os.path.dirname(__file__), "data"))
+os.makedirs(RUNTIME_DIR, exist_ok=True)
+
+VOTD_PATH = os.path.join(RUNTIME_DIR, "votd.json")
+QUIZ_PATH = os.path.join(RUNTIME_DIR, "daily_quiz.json")
+ALLTIME_LB_PATH = os.path.join(RUNTIME_DIR, "quiz_leaderboard.json")
+SERVER_CONFIG_PATH = os.path.join(RUNTIME_DIR, "server_config.json")
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")  # legacy fallback
@@ -1300,7 +1306,7 @@ async def quiz_command(interaction: discord.Interaction, book: str | None = None
 def _generate_quiz_data() -> dict:
     """Generate a new daily quiz (pick verse, generate choices)."""
     # Load quiz history
-    history_path = os.path.join(os.path.dirname(__file__), "data", "quiz_history.json")
+    history_path = os.path.join(RUNTIME_DIR, "quiz_history.json")
     history = []
     if os.path.exists(history_path):
         with open(history_path, "r", encoding="utf-8") as f:

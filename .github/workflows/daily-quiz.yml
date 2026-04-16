@@ -23,7 +23,8 @@ jobs:
 
       - name: Pick and post daily quiz
         env:
-          DISCORD_QUIZ_WEBHOOK_URL: ${{ secrets.DISCORD_QUIZ_WEBHOOK_URL }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          QUIZ_CHANNEL_ID: ${{ secrets.QUIZ_CHANNEL_ID }}
         run: python daily_quiz.py
 
       - name: Commit quiz data and history

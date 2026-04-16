@@ -21,7 +21,8 @@ QUIZ_HISTORY_PATH = os.path.join(os.path.dirname(__file__), "data", "quiz_histor
 ALLTIME_LB_PATH = os.path.join(os.path.dirname(__file__), "data", "quiz_leaderboard.json")
 EMBED_COLOR = 0x8B4513
 
-DISCORD_QUIZ_WEBHOOK_URL = os.environ.get("DISCORD_QUIZ_WEBHOOK_URL")
+DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
+QUIZ_CHANNEL_ID = os.environ.get("QUIZ_CHANNEL_ID")
 
 
 def load_db() -> dict:
@@ -158,8 +159,11 @@ def post_quiz(quiz_data: dict):
     }
 
     resp = requests.post(
-        DISCORD_QUIZ_WEBHOOK_URL,
-        params={"wait": "true"},  # returns the message object
+        f"https://discord.com/api/v10/channels/{QUIZ_CHANNEL_ID}/messages",
+        headers={
+            "Authorization": f"Bot {DISCORD_TOKEN}",
+            "Content-Type": "application/json",
+        },
         json=payload,
         timeout=30,
     )
@@ -169,8 +173,11 @@ def post_quiz(quiz_data: dict):
 
 
 def main():
-    if not DISCORD_QUIZ_WEBHOOK_URL:
-        print("ERROR: DISCORD_QUIZ_WEBHOOK_URL not set.")
+    if not DISCORD_TOKEN:
+        print("ERROR: DISCORD_TOKEN not set.")
+        sys.exit(1)
+    if not QUIZ_CHANNEL_ID:
+        print("ERROR: QUIZ_CHANNEL_ID not set.")
         sys.exit(1)
 
     print("Loading data...")

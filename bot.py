@@ -85,6 +85,12 @@ BOOK_ALIASES.update({
     "2thess": "2 Thessalonians",
     "1tim": "1 Timothy",
     "2tim": "2 Timothy",
+    "1 cor": "1 Corinthians",
+    "2 cor": "2 Corinthians",
+    "1 thess": "1 Thessalonians",
+    "2 thess": "2 Thessalonians",
+    "1 tim": "1 Timothy",
+    "2 tim": "2 Timothy",
 })
 
 
@@ -194,9 +200,22 @@ def fuzzy_search(query: str, book_filter: str | None = None, max_results: int = 
     return results[:max_results]
 
 
+# --- Inline reference detection ---
+
+# Matches references in natural text: "Evang 1:1", "1 Cor 3:5-7", "Rom 7:11"
+# Uses word boundary and known book names/aliases to avoid false positives
+INLINE_REF_RE = re.compile(
+    r"(?<!\w)("
+    + "|".join(re.escape(a) for a in sorted(BOOK_ALIASES.keys(), key=len, reverse=True))
+    + r")\s+(\d+):(\d+)(?:\s*-\s*(\d+))?(?!\w)",
+    re.IGNORECASE,
+)
+
+
 # --- Bot setup ---
 
 intents = discord.Intents.default()
+intents.message_content = True  # needed for inline verse expansion
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
@@ -572,6 +591,206 @@ async def votd_command(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed)
 
 
+@tree.command(name="sections", description="List section headings in a book or chapter")
+@app_commands.describe(
+    book="Book name",
+    chapter="Chapter number (optional — omit to see all chapters)",
+)
+@app_commands.autocomplete(book=book_autocomplete)
+async def sections_command(interaction: discord.Interaction, book: str, chapter: int | None = None):
+    resolved = resolve_book(book)
+    if not resolved:
+        embed = discord.Embed(
+            title="Unknown Book",
+            description=f"Unknown book: `{book}`",
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    book_data = DB["books"][resolved]
+
+    if chapter is not None:
+        ch_data = book_data["chapters"].get(str(chapter))
+        if not ch_data:
+            ch_count = len(book_data["chapters"])
+            embed = discord.Embed(
+                title="Invalid Chapter",
+                description=f"**{resolved}** has {ch_count} chapters (1-{ch_count}).",
+                color=0xFF0000,
+            )
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+            return
+
+        # List sections in this chapter
+        sections = ch_data.get("sections", {})
+        seen = []
+        for v_num in sorted(sections.keys(), key=int):
+            name = sections[v_num]
+            if not seen or seen[-1][0] != name:
+                seen.append((name, v_num))
+
+        if not seen:
+            embed = discord.Embed(
+                title=f"{resolved} — Chapter {chapter}",
+                description="No section headings in this chapter.",
+                color=EMBED_COLOR,
+            )
+        else:
+            desc_lines = []
+            for name, start_v in seen:
+                desc_lines.append(f"**v{start_v}** — {name}")
+            embed = discord.Embed(
+                title=f"{resolved} — Chapter {chapter} Sections",
+                description="\n".join(desc_lines),
+                color=EMBED_COLOR,
+            )
+        await interaction.response.send_message(embed=embed)
+        return
+
+    # All chapters — list sections across the whole book
+    desc_lines = []
+    for ch_num in sorted(book_data["chapters"].keys(), key=int):
+        ch_data = book_data["chapters"][ch_num]
+        sections = ch_data.get("sections", {})
+        seen = []
+        for v_num in sorted(sections.keys(), key=int):
+            name = sections[v_num]
+            if not seen or seen[-1] != name:
+                seen.append(name)
+        if seen:
+            sec_list = ", ".join(seen)
+            desc_lines.append(f"**Chapter {ch_num}:** {sec_list}")
+        else:
+            desc_lines.append(f"**Chapter {ch_num}**")
+
+    embed = discord.Embed(
+        title=f"{resolved} — All Sections",
+        description="\n".join(desc_lines),
+        color=EMBED_COLOR,
+    )
+    # Truncate if too long for embed
+    if len(embed.description) > 4096:
+        embed.description = embed.description[:4093] + "..."
+    await interaction.response.send_message(embed=embed)
+
+
+@tree.command(name="context", description="Show a verse with surrounding context")
+@app_commands.describe(
+    reference="Verse reference, e.g. 'Evang 1:5' or 'Rom 3:23'",
+    radius="Number of verses before and after to show (default 3)",
+)
+@app_commands.autocomplete(reference=verse_autocomplete)
+async def context_command(interaction: discord.Interaction, reference: str, radius: int = 3):
+    parsed = parse_reference(reference)
+    if not parsed:
+        embed = discord.Embed(
+            title="Invalid Reference",
+            description=(
+                f"Could not parse: `{reference}`\n\n"
+                "**Format:** `Book Chapter:Verse`\n"
+                "**Examples:** `Evang 1:5`, `Rom 3:23`"
+            ),
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    book, chapter, v_target, _ = parsed
+    radius = max(1, min(radius, 10))  # clamp 1-10
+
+    ch_data = DB["books"].get(book, {}).get("chapters", {}).get(str(chapter))
+    if not ch_data:
+        embed = discord.Embed(
+            title="Not Found",
+            description=f"Chapter {chapter} not found in **{book}**",
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    v_start = max(1, v_target - radius)
+    verse_nums = sorted(int(v) for v in ch_data["verses"].keys())
+    v_end = min(verse_nums[-1] if verse_nums else v_target, v_target + radius)
+
+    desc_lines = []
+    last_section = None
+    for v in range(v_start, v_end + 1):
+        text = ch_data["verses"].get(str(v))
+        if not text:
+            continue
+        section = ch_data["sections"].get(str(v))
+        if section and section != last_section:
+            desc_lines.append(f"\n__**{section}**__")
+            last_section = section
+        if v == v_target:
+            desc_lines.append(f">>> **{v}** {text}")
+        else:
+            desc_lines.append(f"**{v}** {text}")
+
+    embed = discord.Embed(
+        title=f"{book} {chapter}:{v_target} (in context)",
+        description="\n".join(desc_lines),
+        color=EMBED_COLOR,
+    )
+    embed.set_footer(text=f"Showing verses {v_start}-{v_end}")
+    await interaction.response.send_message(embed=embed)
+
+
+@tree.command(name="bookinfo", description="Show information about a book")
+@app_commands.describe(book="Book name")
+@app_commands.autocomplete(book=book_autocomplete)
+async def bookinfo_command(interaction: discord.Interaction, book: str):
+    resolved = resolve_book(book)
+    if not resolved:
+        embed = discord.Embed(
+            title="Unknown Book",
+            description=f"Unknown book: `{book}`",
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    book_data = DB["books"][resolved]
+    chapters = book_data["chapters"]
+    ch_count = len(chapters)
+    total_verses = sum(len(ch["verses"]) for ch in chapters.values())
+
+    # Find all unique sections
+    all_sections = []
+    for ch_num in sorted(chapters.keys(), key=int):
+        sections = chapters[ch_num].get("sections", {})
+        for v_num in sorted(sections.keys(), key=int):
+            name = sections[v_num]
+            if not all_sections or all_sections[-1] != name:
+                all_sections.append(name)
+
+    # Chapter breakdown
+    ch_lines = []
+    for ch_num in sorted(chapters.keys(), key=int):
+        v_count = len(chapters[ch_num]["verses"])
+        ch_lines.append(f"Ch {ch_num}: {v_count} verses")
+
+    embed = discord.Embed(
+        title=resolved,
+        color=EMBED_COLOR,
+    )
+    embed.add_field(name="Chapters", value=str(ch_count), inline=True)
+    embed.add_field(name="Total Verses", value=str(total_verses), inline=True)
+    embed.add_field(
+        name="Chapter Breakdown",
+        value="\n".join(ch_lines) if len("\n".join(ch_lines)) <= 1024 else ", ".join(ch_lines),
+        inline=False,
+    )
+    if all_sections:
+        sec_text = "\n".join(f"- {s}" for s in all_sections[:30])
+        if len(all_sections) > 30:
+            sec_text += f"\n*...and {len(all_sections) - 30} more*"
+        embed.add_field(name=f"Sections ({len(all_sections)})", value=sec_text, inline=False)
+    embed.add_field(name="Source", value=book_data.get("url", "N/A"), inline=False)
+    await interaction.response.send_message(embed=embed)
+
+
 @tree.command(name="help", description="Show available commands and how to use them")
 async def help_command(interaction: discord.Interaction):
     total_books = len(DB["books"])
@@ -592,10 +811,34 @@ async def help_command(interaction: discord.Interaction):
         inline=False,
     )
     embed.add_field(
+        name="/context <reference> [radius]",
+        value=(
+            "Show a verse with surrounding context\n"
+            "`/context Evang 1:5` `/context Rom 3:23 5`"
+        ),
+        inline=False,
+    )
+    embed.add_field(
         name="/chapter <book> <chapter>",
         value=(
             "Read a full chapter with section headings\n"
             "`/chapter Evangelicon 1` `/chapter Romans 7`"
+        ),
+        inline=False,
+    )
+    embed.add_field(
+        name="/sections <book> [chapter]",
+        value=(
+            "List section headings in a book or chapter\n"
+            "`/sections Evangelicon` `/sections Evangelicon 2`"
+        ),
+        inline=False,
+    )
+    embed.add_field(
+        name="/bookinfo <book>",
+        value=(
+            "Show info about a book (chapters, verses, sections)\n"
+            "`/bookinfo Evangelicon` `/bookinfo Romans`"
         ),
         inline=False,
     )
@@ -621,6 +864,11 @@ async def help_command(interaction: discord.Interaction):
         inline=False,
     )
     embed.add_field(
+        name="Inline Expansion",
+        value="Type a verse reference in any message (e.g. \"check out Evang 1:1\") and the bot will auto-reply with the verse.",
+        inline=False,
+    )
+    embed.add_field(
         name="Book Abbreviations",
         value=(
             "Evang, Gal, 1Cor, 2Cor, Rom, 1Thess, 2Thess, Laod, Col, "
@@ -642,6 +890,49 @@ async def on_ready():
     await tree.sync()
     print(f"Bot is ready! Logged in as {client.user}")
     print(f"Loaded {len(DB['books'])} books, {verse_count()} verses")
+
+
+@client.event
+async def on_message(message: discord.Message):
+    # Ignore bot messages
+    if message.author.bot:
+        return
+
+    # Find all verse references in the message
+    matches = list(INLINE_REF_RE.finditer(message.content))
+    if not matches:
+        return
+
+    # Limit to 3 expansions per message to avoid spam
+    embeds = []
+    for match in matches[:3]:
+        book_input, ch, v_start, v_end = match.groups()
+        book = resolve_book(book_input)
+        if not book:
+            continue
+
+        v_end_int = int(v_end) if v_end else None
+        results = get_verses(book, int(ch), int(v_start), v_end_int)
+        if not results:
+            continue
+
+        ref_str = f"{book} {ch}:{v_start}"
+        if v_end:
+            ref_str += f"-{v_end}"
+
+        desc_lines = []
+        for vnum, text, section in results:
+            desc_lines.append(f"**{vnum}** {text}")
+
+        embed = discord.Embed(
+            title=ref_str,
+            description="\n".join(desc_lines),
+            color=EMBED_COLOR,
+        )
+        embeds.append(embed)
+
+    if embeds:
+        await message.reply(embeds=embeds, mention_author=False)
 
 
 def main():

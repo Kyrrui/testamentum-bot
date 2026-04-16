@@ -3,6 +3,7 @@ Testamentum Discord Bot
 Serves verses from the Marcionite Testamentum via slash commands.
 """
 
+import datetime
 import json
 import os
 import random
@@ -11,6 +12,7 @@ from difflib import SequenceMatcher
 
 import discord
 from discord import app_commands, ui
+from discord.ext import tasks
 from dotenv import load_dotenv
 from verse_image import render_verse
 
@@ -22,6 +24,7 @@ QUIZ_PATH = os.path.join(os.path.dirname(__file__), "data", "daily_quiz.json")
 ALLTIME_LB_PATH = os.path.join(os.path.dirname(__file__), "data", "quiz_leaderboard.json")
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
+QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")
 
 # --- Load Data ---
 
@@ -1256,6 +1259,109 @@ async def quiz_command(interaction: discord.Interaction, book: str | None = None
     view.message = await interaction.original_response()
 
 
+def _generate_quiz_data() -> dict:
+    """Generate a new daily quiz (pick verse, generate choices)."""
+    # Load quiz history
+    history_path = os.path.join(os.path.dirname(__file__), "data", "quiz_history.json")
+    history = []
+    if os.path.exists(history_path):
+        with open(history_path, "r", encoding="utf-8") as f:
+            history = json.load(f)
+
+    # Pick a verse not in history
+    all_verses = []
+    for bname, bdata in DB["books"].items():
+        for ch_num, ch_data in bdata["chapters"].items():
+            for v_num, v_text in ch_data["verses"].items():
+                ref = f"{bname} {ch_num}:{v_num}"
+                if ref not in history:
+                    all_verses.append((bname, ch_num, v_num, v_text))
+
+    if not all_verses:
+        history.clear()
+        for bname, bdata in DB["books"].items():
+            for ch_num, ch_data in bdata["chapters"].items():
+                for v_num, v_text in ch_data["verses"].items():
+                    all_verses.append((bname, ch_num, v_num, v_text))
+
+    book, chapter, verse, text = random.choice(all_verses)
+
+    # Generate 4 choices for each stage
+    all_books = list(DB["books"].keys())
+    wrong_books = [b for b in all_books if b != book]
+    random.shuffle(wrong_books)
+    book_choices = wrong_books[:3] + [book]
+    random.shuffle(book_choices)
+
+    all_chapters = list(range(1, len(DB["books"][book]["chapters"]) + 1))
+    correct_ch = int(chapter)
+    wrong_chapters = [c for c in all_chapters if c != correct_ch]
+    random.shuffle(wrong_chapters)
+    chapter_choices = wrong_chapters[:3] + [correct_ch]
+    random.shuffle(chapter_choices)
+
+    ch_data = DB["books"][book]["chapters"][chapter]
+    all_v = [int(v) for v in ch_data["verses"].keys()]
+    correct_v = int(verse)
+    wrong_v = [v for v in all_v if v != correct_v]
+    random.shuffle(wrong_v)
+    verse_choices = wrong_v[:3] + [correct_v]
+    random.shuffle(verse_choices)
+
+    # Update history
+    history.append(f"{book} {chapter}:{verse}")
+    with open(history_path, "w", encoding="utf-8") as f:
+        json.dump(history, f, indent=2, ensure_ascii=False)
+
+    return {
+        "book": book,
+        "chapter": chapter,
+        "verse": verse,
+        "text": text,
+        "book_choices": book_choices,
+        "chapter_choices": chapter_choices,
+        "verse_choices": verse_choices,
+        "leaderboard": {},
+    }
+
+
+@tree.command(name="postquiz", description="Post a daily quiz to this channel (admin only)")
+@app_commands.default_permissions(manage_guild=True)
+async def postquiz_command(interaction: discord.Interaction):
+    quiz_data = _generate_quiz_data()
+
+    # Build the embed
+    alltime_text = _build_alltime_leaderboard(5)
+
+    embed = discord.Embed(
+        title="Daily Scripture Quiz",
+        description=(
+            "*Which book is this verse from?*\n\n"
+            f">>> {quiz_data['text']}\n\n"
+            "Everyone can play! Your answers are private."
+        ),
+        color=EMBED_COLOR,
+    )
+    embed.add_field(name="Today's Scores", value="*No answers yet*", inline=False)
+    embed.add_field(name="All-Time Leaderboard", value=alltime_text, inline=False)
+    embed.set_footer(text="Round 1 of 3 — Pick the correct book!")
+
+    # Build buttons
+    view = DailyQuizPersistentView()
+    # Update button labels with actual book choices
+    for i, item in enumerate(view.children):
+        if isinstance(item, ui.Button) and i < len(quiz_data["book_choices"]):
+            item.label = quiz_data["book_choices"][i]
+
+    await interaction.response.send_message(embed=embed, view=view)
+    msg = await interaction.original_response()
+
+    # Save quiz data with message/channel info
+    quiz_data["message_id"] = str(msg.id)
+    quiz_data["channel_id"] = str(msg.channel.id)
+    _save_daily_quiz(quiz_data)
+
+
 @tree.command(name="leaderboard", description="View the all-time daily quiz leaderboard")
 async def leaderboard_command(interaction: discord.Interaction):
     lb_text = _build_alltime_leaderboard(15)
@@ -1650,9 +1756,55 @@ class DailyQuizPersistentView(ui.View):
         return True
 
 
+async def _auto_post_quiz():
+    """Auto-post a daily quiz to the configured channel."""
+    if not QUIZ_CHANNEL_ID:
+        return
+    channel = client.get_channel(int(QUIZ_CHANNEL_ID))
+    if not channel:
+        print(f"Quiz channel {QUIZ_CHANNEL_ID} not found.")
+        return
+
+    quiz_data = _generate_quiz_data()
+    alltime_text = _build_alltime_leaderboard(5)
+
+    embed = discord.Embed(
+        title="Daily Scripture Quiz",
+        description=(
+            "*Which book is this verse from?*\n\n"
+            f">>> {quiz_data['text']}\n\n"
+            "Everyone can play! Your answers are private."
+        ),
+        color=EMBED_COLOR,
+    )
+    embed.add_field(name="Today's Scores", value="*No answers yet*", inline=False)
+    embed.add_field(name="All-Time Leaderboard", value=alltime_text, inline=False)
+    embed.set_footer(text="Round 1 of 3 — Pick the correct book!")
+
+    view = DailyQuizPersistentView()
+    for i, item in enumerate(view.children):
+        if isinstance(item, ui.Button) and i < len(quiz_data["book_choices"]):
+            item.label = quiz_data["book_choices"][i]
+
+    msg = await channel.send(embed=embed, view=view)
+
+    quiz_data["message_id"] = str(msg.id)
+    quiz_data["channel_id"] = str(msg.channel.id)
+    _save_daily_quiz(quiz_data)
+    print(f"Auto-posted daily quiz: {quiz_data['book']} {quiz_data['chapter']}:{quiz_data['verse']}")
+
+
+@tasks.loop(time=datetime.time(hour=10, minute=5))  # 10:05 UTC = 6:05 AM EST
+async def daily_quiz_task():
+    await _auto_post_quiz()
+
+
 @client.event
 async def on_ready():
     client.add_view(DailyQuizPersistentView())
+    if QUIZ_CHANNEL_ID and not daily_quiz_task.is_running():
+        daily_quiz_task.start()
+        print(f"Daily quiz scheduled for quiz channel {QUIZ_CHANNEL_ID}")
     await tree.sync()
     print(f"Bot is ready! Logged in as {client.user}")
     print(f"Loaded {len(DB['books'])} books, {verse_count()} verses")

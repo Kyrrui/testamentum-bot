@@ -290,6 +290,14 @@ intents.reactions = True  # needed for reaction features
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
+# Allow commands to work in DMs, group chats, and servers (user-installable)
+ALLOWED_CONTEXTS = app_commands.AppCommandContext(
+    guild=True, dm_channel=True, private_channel=True
+)
+ALLOWED_INSTALLS = app_commands.AppInstallationType(guild=True, user=True)
+tree.allowed_contexts = ALLOWED_CONTEXTS
+tree.allowed_installs = ALLOWED_INSTALLS
+
 
 # --- Autocomplete ---
 

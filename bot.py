@@ -1023,8 +1023,10 @@ async def image_command(interaction: discord.Interaction, reference: str):
 
     await interaction.response.defer()
     buf = render_verse(ref_str, verse_tuples, section=section)
-    file = discord.File(buf, filename=f"verse.png")
-    await interaction.followup.send(file=file)
+    file = discord.File(buf, filename="verse.png")
+    embed = discord.Embed(title=ref_str, color=EMBED_COLOR)
+    embed.set_image(url="attachment://verse.png")
+    await interaction.followup.send(embed=embed, file=file)
 
 
 class QuizView(TimeoutView):
@@ -2467,6 +2469,17 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
                 int(votd["chapter"]),
                 int(votd["verse_start"]),
                 int(votd["verse_end"]),
+            )
+
+    # If it's a quiz embed, load the reference from daily_quiz.json
+    if not parsed and "Quiz" in (embed.title or ""):
+        quiz = _load_daily_quiz()
+        if quiz:
+            parsed = (
+                quiz["book"],
+                int(quiz["chapter"]),
+                int(quiz["verse"]),
+                None,
             )
 
     if not parsed:

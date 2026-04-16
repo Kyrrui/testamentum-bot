@@ -971,17 +971,25 @@ class QuizView(TimeoutView):
     STAGE_CHAPTER = 1
     STAGE_VERSE = 2
 
-    def __init__(self, book: str, chapter: str, verse: str, text: str):
+    def __init__(self, book: str, chapter: str, verse: str, text: str,
+                 start_stage: int = 0):
         super().__init__(timeout=900)
         self.book = book
         self.chapter = chapter
         self.verse = verse
         self.text = text
-        self.stage = self.STAGE_BOOK
+        self.start_stage = start_stage
+        self.stage = start_stage
         self.score = 0
+        self.total_stages = 3 - start_stage
         self.answered = False
 
-        self._setup_book_buttons()
+        if start_stage == self.STAGE_BOOK:
+            self._setup_book_buttons()
+        elif start_stage == self.STAGE_CHAPTER:
+            self._setup_chapter_buttons()
+        elif start_stage == self.STAGE_VERSE:
+            self._setup_verse_buttons()
 
     def _clear_buttons(self):
         self.clear_items()
@@ -1052,13 +1060,14 @@ class QuizView(TimeoutView):
                 self.score += 1
                 self.stage = self.STAGE_CHAPTER
                 self._setup_chapter_buttons()
+                status = self._build_status()
                 embed.description = (
-                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
-                    f"Book: **{self.book}** \u2705\n"
+                    f"*Guess the reference!*\n\n>>> {self.text}\n\n"
+                    f"{status}\n"
                     f"*Now guess the chapter!*"
                 )
                 embed.color = EMBED_COLOR
-                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                embed.set_footer(text=f"Score: {self.score}/{self.total_stages} — answered by {interaction.user.display_name}")
                 await interaction.response.edit_message(embed=embed, view=self)
             else:
                 self.answered = True
@@ -1068,10 +1077,28 @@ class QuizView(TimeoutView):
                     f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
                     f"Wrong! The answer is **{ref}**"
                 )
-                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                embed.set_footer(text=f"Score: {self.score}/{self.total_stages} — answered by {interaction.user.display_name}")
                 await interaction.response.edit_message(embed=embed, view=self)
 
         return callback
+
+    def _build_status(self) -> str:
+        """Build the status lines showing known/guessed info."""
+        lines = []
+        if self.start_stage <= self.STAGE_BOOK:
+            if self.stage > self.STAGE_BOOK:
+                lines.append(f"Book: **{self.book}** \u2705")
+            # else: still guessing book, don't show
+        else:
+            lines.append(f"Book: **{self.book}**")
+
+        if self.start_stage <= self.STAGE_CHAPTER:
+            if self.stage > self.STAGE_CHAPTER:
+                lines.append(f"Chapter: **{self.chapter}** \u2705")
+        else:
+            lines.append(f"Chapter: **{self.chapter}**")
+
+        return "\n".join(lines)
 
     def _make_chapter_callback(self, choice: int):
         async def callback(interaction: discord.Interaction):
@@ -1087,25 +1114,26 @@ class QuizView(TimeoutView):
                 self.score += 1
                 self.stage = self.STAGE_VERSE
                 self._setup_verse_buttons()
+                status = self._build_status()
                 embed.description = (
-                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
-                    f"Book: **{self.book}** \u2705\n"
-                    f"Chapter: **{self.chapter}** \u2705\n"
+                    f"*Guess the reference!*\n\n>>> {self.text}\n\n"
+                    f"{status}\n"
                     f"*Now guess the verse!*"
                 )
                 embed.color = EMBED_COLOR
-                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                embed.set_footer(text=f"Score: {self.score}/{self.total_stages} — answered by {interaction.user.display_name}")
                 await interaction.response.edit_message(embed=embed, view=self)
             else:
                 self.answered = True
                 self._clear_buttons()
+                status = self._build_status()
                 embed.color = 0xFF0000
                 embed.description = (
-                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
-                    f"Book: **{self.book}** \u2705\n"
+                    f"*Guess the reference!*\n\n>>> {self.text}\n\n"
+                    f"{status}\n"
                     f"Wrong chapter! The answer is **{ref}**"
                 )
-                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                embed.set_footer(text=f"Score: {self.score}/{self.total_stages} — answered by {interaction.user.display_name}")
                 await interaction.response.edit_message(embed=embed, view=self)
 
         return callback
@@ -1117,43 +1145,49 @@ class QuizView(TimeoutView):
                 return
 
             self.answered = True
+            self.stage = self.STAGE_VERSE + 1  # past final stage for _build_status
             correct = choice == int(self.verse)
             embed = interaction.message.embeds[0]
             ref = f"{self.book} {self.chapter}:{self.verse}"
+            status = self._build_status()
 
             if correct:
                 self.score += 1
                 self._clear_buttons()
                 embed.color = 0x00FF00
                 embed.description = (
-                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
-                    f"Book: **{self.book}** \u2705\n"
-                    f"Chapter: **{self.chapter}** \u2705\n"
+                    f"*Guess the reference!*\n\n>>> {self.text}\n\n"
+                    f"{status}\n"
                     f"Verse: **{self.verse}** \u2705\n\n"
                     f"**Perfect score!**"
                 )
-                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                embed.set_footer(text=f"Score: {self.score}/{self.total_stages} — answered by {interaction.user.display_name}")
             else:
                 self._clear_buttons()
                 embed.color = 0xFFAA00
                 embed.description = (
-                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
-                    f"Book: **{self.book}** \u2705\n"
-                    f"Chapter: **{self.chapter}** \u2705\n"
+                    f"*Guess the reference!*\n\n>>> {self.text}\n\n"
+                    f"{status}\n"
                     f"Verse: **{self.verse}** \u274c (you guessed {choice})\n\n"
                     f"**Close! The answer is {ref}**"
                 )
-                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                embed.set_footer(text=f"Score: {self.score}/{self.total_stages} — answered by {interaction.user.display_name}")
 
             await interaction.response.edit_message(embed=embed, view=self)
 
         return callback
 
 
-@tree.command(name="quiz", description="Scripture quiz — guess which book a verse is from")
-@app_commands.describe(book="Limit to a specific book (optional)")
+@tree.command(name="quiz", description="Scripture quiz — guess the reference of a verse")
+@app_commands.describe(
+    book="Provide to skip the book round (optional)",
+    chapter="Provide to skip the chapter round too (optional, requires book)",
+)
 @app_commands.autocomplete(book=book_autocomplete)
-async def quiz_command(interaction: discord.Interaction, book: str | None = None):
+async def quiz_command(interaction: discord.Interaction, book: str | None = None, chapter: int | None = None):
+    resolved = None
+    start_stage = QuizView.STAGE_BOOK
+
     if book:
         resolved = resolve_book(book)
         if not resolved:
@@ -1164,14 +1198,30 @@ async def quiz_command(interaction: discord.Interaction, book: str | None = None
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
             return
-        pool = {resolved: DB["books"][resolved]}
-    else:
-        pool = DB["books"]
+        start_stage = QuizView.STAGE_CHAPTER
 
-    # Pick a random verse
+        if chapter is not None:
+            if str(chapter) not in DB["books"][resolved]["chapters"]:
+                ch_count = len(DB["books"][resolved]["chapters"])
+                embed = discord.Embed(
+                    title="Invalid Chapter",
+                    description=f"**{resolved}** has {ch_count} chapters (1-{ch_count}).",
+                    color=0xFF0000,
+                )
+                await interaction.response.send_message(embed=embed, ephemeral=True)
+                return
+            start_stage = QuizView.STAGE_VERSE
+
+    # Build verse pool based on provided filters
+    pool = DB["books"]
+    if resolved:
+        pool = {resolved: DB["books"][resolved]}
+
     all_verses = []
     for bname, bdata in pool.items():
         for ch_num, ch_data in bdata["chapters"].items():
+            if chapter is not None and resolved and int(ch_num) != chapter:
+                continue
             for v_num, v_text in ch_data["verses"].items():
                 all_verses.append((bname, ch_num, v_num, v_text))
 
@@ -1181,14 +1231,25 @@ async def quiz_command(interaction: discord.Interaction, book: str | None = None
 
     bname, ch, v, txt = random.choice(all_verses)
 
+    # Build initial prompt based on starting stage
+    if start_stage == QuizView.STAGE_BOOK:
+        prompt = "*Which book is this verse from?*"
+        hint = "Pick the correct book!"
+    elif start_stage == QuizView.STAGE_CHAPTER:
+        prompt = f"*Which chapter of **{resolved}** is this from?*"
+        hint = "Pick the correct chapter!"
+    else:
+        prompt = f"*Which verse in **{resolved}** chapter **{chapter}** is this?*"
+        hint = "Pick the correct verse!"
+
     embed = discord.Embed(
         title="Scripture Quiz",
-        description=f"*Which book is this verse from?*\n\n>>> {txt}",
+        description=f"{prompt}\n\n>>> {txt}",
         color=EMBED_COLOR,
     )
-    embed.set_footer(text="Pick the correct book!")
+    embed.set_footer(text=hint)
 
-    view = QuizView(bname, ch, v, txt)
+    view = QuizView(bname, ch, v, txt, start_stage=start_stage)
     await interaction.response.send_message(embed=embed, view=view)
     view.message = await interaction.original_response()
 

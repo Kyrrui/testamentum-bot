@@ -30,10 +30,29 @@ VOTD_PATH = os.path.join(RUNTIME_DIR, "votd.json")
 QUIZ_PATH = os.path.join(RUNTIME_DIR, "daily_quiz.json")
 ALLTIME_LB_PATH = os.path.join(RUNTIME_DIR, "quiz_leaderboard.json")
 SERVER_CONFIG_PATH = os.path.join(RUNTIME_DIR, "server_config.json")
+USERDATA_DIR = os.path.join(RUNTIME_DIR, "users")
+os.makedirs(USERDATA_DIR, exist_ok=True)
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")  # legacy fallback
 VOTD_GITHUB_URL = "https://raw.githubusercontent.com/Kyrrui/testamentum-bot/main/data/votd.json"
+
+
+# --- User data (bookmarks, collections) ---
+
+
+def _load_user_data(user_id: str) -> dict:
+    path = os.path.join(USERDATA_DIR, f"{user_id}.json")
+    if not os.path.exists(path):
+        return {"bookmarks": [], "collections": {}}
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _save_user_data(user_id: str, data: dict):
+    path = os.path.join(USERDATA_DIR, f"{user_id}.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
 
 # --- Server config (multi-server support) ---
@@ -1480,6 +1499,334 @@ async def leaderboard_command(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed)
 
 
+@tree.command(name="bookmark", description="Save a verse to your bookmarks")
+@app_commands.describe(reference="Verse reference, e.g. 'Evang 1:1' or 'Rom 7:11-13'")
+@app_commands.autocomplete(reference=verse_autocomplete)
+async def bookmark_command(interaction: discord.Interaction, reference: str):
+    parsed = parse_reference(reference)
+    if not parsed:
+        embed = discord.Embed(
+            title="Invalid Reference",
+            description=f"Could not parse: `{reference}`",
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    book, chapter, v_start, v_end = parsed
+    ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+
+    # Verify the verse exists
+    results = get_verses(book, chapter, v_start, v_end)
+    if not results:
+        embed = discord.Embed(
+            title="Not Found",
+            description=f"No verses found for **{ref_str}**",
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    user_id = str(interaction.user.id)
+    data = _load_user_data(user_id)
+
+    # Check for duplicate
+    if ref_str in data["bookmarks"]:
+        await interaction.response.send_message(
+            f"**{ref_str}** is already in your bookmarks.", ephemeral=True
+        )
+        return
+
+    data["bookmarks"].append(ref_str)
+    _save_user_data(user_id, data)
+    await interaction.response.send_message(
+        f"\U0001f516 Bookmarked **{ref_str}** ({len(data['bookmarks'])} total)",
+        ephemeral=True,
+    )
+
+
+@tree.command(name="bookmarks", description="View your saved bookmarks")
+async def bookmarks_command(interaction: discord.Interaction):
+    user_id = str(interaction.user.id)
+    data = _load_user_data(user_id)
+    bookmarks = data.get("bookmarks", [])
+
+    if not bookmarks:
+        embed = discord.Embed(
+            title="Your Bookmarks",
+            description="No bookmarks yet. Use `/bookmark Evang 1:1` or react with \U0001f516 on any verse.",
+            color=EMBED_COLOR,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    # Show bookmarks with verse text previews
+    lines = []
+    for ref in bookmarks[-20:]:  # show last 20
+        parsed = parse_reference(ref)
+        if parsed:
+            book, ch, vs, ve = parsed
+            results = get_verses(book, ch, vs, ve)
+            if results:
+                preview = results[0][1]
+                if len(preview) > 80:
+                    preview = preview[:77] + "..."
+                lines.append(f"**{ref}** — {preview}")
+            else:
+                lines.append(f"**{ref}**")
+        else:
+            lines.append(f"**{ref}**")
+
+    embed = discord.Embed(
+        title=f"Your Bookmarks ({len(bookmarks)})",
+        description="\n".join(lines),
+        color=EMBED_COLOR,
+    )
+    if len(bookmarks) > 20:
+        embed.set_footer(text=f"Showing latest 20 of {len(bookmarks)}")
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
+@tree.command(name="unbookmark", description="Remove a verse from your bookmarks")
+@app_commands.describe(reference="Verse reference to remove")
+@app_commands.autocomplete(reference=verse_autocomplete)
+async def unbookmark_command(interaction: discord.Interaction, reference: str):
+    parsed = parse_reference(reference)
+    if not parsed:
+        await interaction.response.send_message(
+            f"Could not parse: `{reference}`", ephemeral=True
+        )
+        return
+
+    book, chapter, v_start, v_end = parsed
+    ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+
+    user_id = str(interaction.user.id)
+    data = _load_user_data(user_id)
+
+    if ref_str in data["bookmarks"]:
+        data["bookmarks"].remove(ref_str)
+        _save_user_data(user_id, data)
+        await interaction.response.send_message(
+            f"Removed **{ref_str}** from your bookmarks.", ephemeral=True
+        )
+    else:
+        await interaction.response.send_message(
+            f"**{ref_str}** is not in your bookmarks.", ephemeral=True
+        )
+
+
+# --- Collections ---
+
+collection_group = app_commands.Group(
+    name="collection",
+    description="Manage your personal verse collections",
+)
+tree.add_command(collection_group)
+
+
+@collection_group.command(name="create", description="Create a new collection")
+@app_commands.describe(name="Name for the collection")
+async def collection_create(interaction: discord.Interaction, name: str):
+    user_id = str(interaction.user.id)
+    data = _load_user_data(user_id)
+    collections = data.setdefault("collections", {})
+
+    if name in collections:
+        await interaction.response.send_message(
+            f"Collection **{name}** already exists.", ephemeral=True
+        )
+        return
+
+    if len(collections) >= 20:
+        await interaction.response.send_message(
+            "You can have up to 20 collections.", ephemeral=True
+        )
+        return
+
+    collections[name] = []
+    _save_user_data(user_id, data)
+    await interaction.response.send_message(
+        f"Created collection **{name}**.", ephemeral=True
+    )
+
+
+@collection_group.command(name="add", description="Add a verse to a collection")
+@app_commands.describe(
+    name="Collection name",
+    reference="Verse reference, e.g. 'Evang 1:1'",
+)
+@app_commands.autocomplete(reference=verse_autocomplete)
+async def collection_add(interaction: discord.Interaction, name: str, reference: str):
+    parsed = parse_reference(reference)
+    if not parsed:
+        await interaction.response.send_message(
+            f"Could not parse: `{reference}`", ephemeral=True
+        )
+        return
+
+    book, chapter, v_start, v_end = parsed
+    ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+
+    user_id = str(interaction.user.id)
+    data = _load_user_data(user_id)
+    collections = data.get("collections", {})
+
+    if name not in collections:
+        await interaction.response.send_message(
+            f"Collection **{name}** doesn't exist. Create it first with `/collection create {name}`.",
+            ephemeral=True,
+        )
+        return
+
+    if ref_str in collections[name]:
+        await interaction.response.send_message(
+            f"**{ref_str}** is already in **{name}**.", ephemeral=True
+        )
+        return
+
+    collections[name].append(ref_str)
+    _save_user_data(user_id, data)
+    await interaction.response.send_message(
+        f"Added **{ref_str}** to **{name}** ({len(collections[name])} verses)",
+        ephemeral=True,
+    )
+
+
+@collection_group.command(name="remove", description="Remove a verse from a collection")
+@app_commands.describe(
+    name="Collection name",
+    reference="Verse reference to remove",
+)
+@app_commands.autocomplete(reference=verse_autocomplete)
+async def collection_remove(interaction: discord.Interaction, name: str, reference: str):
+    parsed = parse_reference(reference)
+    if not parsed:
+        await interaction.response.send_message(
+            f"Could not parse: `{reference}`", ephemeral=True
+        )
+        return
+
+    book, chapter, v_start, v_end = parsed
+    ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+
+    user_id = str(interaction.user.id)
+    data = _load_user_data(user_id)
+    collections = data.get("collections", {})
+
+    if name not in collections:
+        await interaction.response.send_message(
+            f"Collection **{name}** doesn't exist.", ephemeral=True
+        )
+        return
+
+    if ref_str in collections[name]:
+        collections[name].remove(ref_str)
+        _save_user_data(user_id, data)
+        await interaction.response.send_message(
+            f"Removed **{ref_str}** from **{name}**.", ephemeral=True
+        )
+    else:
+        await interaction.response.send_message(
+            f"**{ref_str}** is not in **{name}**.", ephemeral=True
+        )
+
+
+@collection_group.command(name="view", description="View a collection's verses")
+@app_commands.describe(name="Collection name")
+async def collection_view(interaction: discord.Interaction, name: str):
+    user_id = str(interaction.user.id)
+    data = _load_user_data(user_id)
+    collections = data.get("collections", {})
+
+    if name not in collections:
+        await interaction.response.send_message(
+            f"Collection **{name}** doesn't exist.", ephemeral=True
+        )
+        return
+
+    verses = collections[name]
+    if not verses:
+        embed = discord.Embed(
+            title=f"Collection: {name}",
+            description="This collection is empty. Use `/collection add` to add verses.",
+            color=EMBED_COLOR,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    lines = []
+    for ref in verses:
+        parsed = parse_reference(ref)
+        if parsed:
+            book, ch, vs, ve = parsed
+            results = get_verses(book, ch, vs, ve)
+            if results:
+                preview = results[0][1]
+                if len(preview) > 80:
+                    preview = preview[:77] + "..."
+                lines.append(f"**{ref}** — {preview}")
+            else:
+                lines.append(f"**{ref}**")
+        else:
+            lines.append(f"**{ref}**")
+
+    embed = discord.Embed(
+        title=f"Collection: {name} ({len(verses)} verses)",
+        description="\n".join(lines),
+        color=EMBED_COLOR,
+    )
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
+@collection_group.command(name="list", description="List all your collections")
+async def collection_list(interaction: discord.Interaction):
+    user_id = str(interaction.user.id)
+    data = _load_user_data(user_id)
+    collections = data.get("collections", {})
+
+    if not collections:
+        embed = discord.Embed(
+            title="Your Collections",
+            description="No collections yet. Use `/collection create \"Favorites\"` to start.",
+            color=EMBED_COLOR,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    lines = []
+    for name, verses in collections.items():
+        lines.append(f"**{name}** — {len(verses)} verses")
+
+    embed = discord.Embed(
+        title=f"Your Collections ({len(collections)})",
+        description="\n".join(lines),
+        color=EMBED_COLOR,
+    )
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
+@collection_group.command(name="delete", description="Delete a collection")
+@app_commands.describe(name="Collection name to delete")
+async def collection_delete(interaction: discord.Interaction, name: str):
+    user_id = str(interaction.user.id)
+    data = _load_user_data(user_id)
+    collections = data.get("collections", {})
+
+    if name not in collections:
+        await interaction.response.send_message(
+            f"Collection **{name}** doesn't exist.", ephemeral=True
+        )
+        return
+
+    count = len(collections[name])
+    del collections[name]
+    _save_user_data(user_id, data)
+    await interaction.response.send_message(
+        f"Deleted collection **{name}** ({count} verses).", ephemeral=True
+    )
+
+
 @tree.command(name="help", description="Show available commands and how to use them")
 async def help_command(interaction: discord.Interaction):
     total_books = len(DB["books"])
@@ -1585,6 +1932,16 @@ async def help_command(interaction: discord.Interaction):
     embed.add_field(
         name="Inline Expansion",
         value="Type a verse reference in any message (e.g. \"check out Evang 1:1\") and the bot will auto-reply with the verse.",
+        inline=False,
+    )
+    embed.add_field(
+        name="Bookmarks & Collections",
+        value=(
+            "`/bookmark <reference>` — save a verse\n"
+            "`/bookmarks` — view your saved verses\n"
+            "`/unbookmark <reference>` — remove a bookmark\n"
+            "`/collection create/add/remove/view/list/delete`"
+        ),
         inline=False,
     )
     embed.add_field(
@@ -2123,13 +2480,21 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
         except discord.NotFound:
             return
 
-    # 🔖 Bookmark — DM the verse
+    # 🔖 Bookmark — save persistently and DM the verse
     if emoji == "\U0001f516":
         results = get_verses(book, chapter, v_start, v_end)
         if not results:
             return
 
         ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+
+        # Save to persistent bookmarks
+        uid = str(payload.user_id)
+        user_data = _load_user_data(uid)
+        if ref_str not in user_data["bookmarks"]:
+            user_data["bookmarks"].append(ref_str)
+            _save_user_data(uid, user_data)
+
         desc_lines = []
         for vnum, text, section in results:
             desc_lines.append(f"**{vnum}** {text}")
@@ -2139,7 +2504,7 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
             description="\n".join(desc_lines),
             color=EMBED_COLOR,
         )
-        dm_embed.set_footer(text="Bookmarked from Testamentum Bot")
+        dm_embed.set_footer(text=f"Bookmarked! You have {len(user_data['bookmarks'])} bookmarks. Use /bookmarks to view.")
         try:
             await user.send(embed=dm_embed)
         except discord.Forbidden:

@@ -1,27 +1,27 @@
 {
-  "book": "Ephesians (Ignatius)",
-  "chapter": "13",
-  "verse": "1",
-  "text": "I know who I am and to whom I write.",
-  "message_id": "1494338623586304050",
+  "book": "Evangelicon",
+  "chapter": "22",
+  "verse": "27",
+  "text": "Pilate therefore went forth again, and saith unto them, Behold, I bring him forth to you, that ye may know that I find no fault in him.",
+  "message_id": "1494340244819148841",
   "channel_id": "1494333853383528540",
   "leaderboard": {},
   "book_choices": [
-    "1 Corinthians",
+    "Evangelicon",
+    "Philadelphians",
     "Ephesians (Ignatius)",
-    "Psalmicon",
-    "Evangelicon"
+    "Romans (Ignatius)"
   ],
   "chapter_choices": [
-    5,
-    14,
-    13,
-    11
+    22,
+    23,
+    17,
+    6
   ],
   "verse_choices": [
-    1,
-    4,
-    7,
-    3
+    27,
+    32,
+    3,
+    15
   ]
 }

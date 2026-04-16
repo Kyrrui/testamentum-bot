@@ -11,6 +11,7 @@ import re
 from difflib import SequenceMatcher
 
 import discord
+import requests as http_requests
 from discord import app_commands, ui
 from discord.ext import tasks
 from dotenv import load_dotenv
@@ -26,6 +27,7 @@ SERVER_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "data", "server_con
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")  # legacy fallback
+VOTD_GITHUB_URL = "https://raw.githubusercontent.com/Kyrrui/testamentum-bot/main/data/votd.json"
 
 
 # --- Server config (multi-server support) ---
@@ -726,7 +728,8 @@ async def chapter_command(interaction: discord.Interaction, book: str, chapter: 
 
 @tree.command(name="verseoftheday", description="See today's Verse of the Day")
 async def votd_command(interaction: discord.Interaction):
-    if not os.path.exists(VOTD_PATH):
+    votd = _fetch_votd()
+    if not votd:
         embed = discord.Embed(
             title="Not Available Yet",
             description="The Verse of the Day hasn't been set yet. Check back later!",
@@ -734,9 +737,6 @@ async def votd_command(interaction: discord.Interaction):
         )
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
-
-    with open(VOTD_PATH, "r", encoding="utf-8") as f:
-        votd = json.load(f)
 
     ref = f"{votd['book']} {votd['chapter']}:{votd['verse_start']}"
     if votd["verse_start"] != votd["verse_end"]:
@@ -1606,6 +1606,25 @@ async def help_command(interaction: discord.Interaction):
 # --- Daily Quiz (persistent view) ---
 
 
+def _fetch_votd() -> dict | None:
+    """Fetch the latest VOTD from GitHub, falling back to local file."""
+    try:
+        resp = http_requests.get(VOTD_GITHUB_URL, timeout=10)
+        resp.raise_for_status()
+        votd = resp.json()
+        # Cache locally
+        with open(VOTD_PATH, "w", encoding="utf-8") as f:
+            json.dump(votd, f, indent=2, ensure_ascii=False)
+        return votd
+    except Exception as e:
+        print(f"Failed to fetch VOTD from GitHub: {e}")
+        # Fall back to local file
+        if os.path.exists(VOTD_PATH):
+            with open(VOTD_PATH, "r", encoding="utf-8") as f:
+                return json.load(f)
+        return None
+
+
 def _load_daily_quiz() -> dict | None:
     if not os.path.exists(QUIZ_PATH):
         return None
@@ -1938,11 +1957,11 @@ async def votd_repost_task():
     channels = _get_votd_channels()
     if not channels:
         return
-    if not os.path.exists(VOTD_PATH):
-        return
 
-    with open(VOTD_PATH, "r", encoding="utf-8") as f:
-        votd = json.load(f)
+    votd = _fetch_votd()
+    if not votd:
+        print("No VOTD available.")
+        return
 
     # Only post if it's today's VOTD
     today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
@@ -2068,9 +2087,8 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
     # If it's a VOTD embed, load the reference from votd.json
     if not parsed and "Verse of the Day" in embed.title:
-        if os.path.exists(VOTD_PATH):
-            with open(VOTD_PATH, "r", encoding="utf-8") as f:
-                votd = json.load(f)
+        votd = _fetch_votd()
+        if votd:
             parsed = (
                 votd["book"],
                 int(votd["chapter"]),

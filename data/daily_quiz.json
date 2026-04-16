@@ -1,0 +1,27 @@
+{
+  "book": "Ephesians (Ignatius)",
+  "chapter": "13",
+  "verse": "1",
+  "text": "I know who I am and to whom I write.",
+  "message_id": "1494338623586304050",
+  "channel_id": "1494333853383528540",
+  "leaderboard": {},
+  "book_choices": [
+    "1 Corinthians",
+    "Ephesians (Ignatius)",
+    "Psalmicon",
+    "Evangelicon"
+  ],
+  "chapter_choices": [
+    5,
+    14,
+    13,
+    11
+  ],
+  "verse_choices": [
+    1,
+    4,
+    7,
+    3
+  ]
+}

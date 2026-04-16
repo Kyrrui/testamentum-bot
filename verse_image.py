@@ -52,6 +52,7 @@ def render_verse(
     reference: str,
     verses: list[tuple[int, str]],
     section: str | None = None,
+    hide_reference: bool = False,
 ) -> io.BytesIO:
     """Render verse(s) as a styled PNG image.
 
@@ -74,7 +75,7 @@ def render_verse(
     verse_spacing = 16
     content_lines = []  # list of ("type", data)
 
-    if section:
+    if section and not hide_reference:
         content_lines.append(("section", section))
         content_lines.append(("gap", 12))
 
@@ -99,10 +100,11 @@ def render_verse(
         elif item_type == "gap":
             y += data
 
-    # Add space for reference, decorative elements, and watermark
-    y += 50  # gap before reference
-    ref_bbox = font_ref.getbbox(reference)
-    y += (ref_bbox[3] - ref_bbox[1])
+    # Add space for reference, decorative elements, and bottom padding
+    if not hide_reference:
+        y += 50  # gap before reference
+        ref_bbox = font_ref.getbbox(reference)
+        y += (ref_bbox[3] - ref_bbox[1])
     y += 70  # bottom padding + border
 
     height = max(400, y)
@@ -165,28 +167,29 @@ def render_verse(
         elif item_type == "gap":
             y += data
 
-    # Bottom decorative line
-    y += 20
-    draw.line(
-        [(center_x - dash_width, y), (center_x + dash_width, y)],
-        fill=ACCENT_COLOR,
-        width=1,
-    )
-    draw.polygon(
-        [
-            (center_x, y - diamond_size),
-            (center_x + diamond_size, y),
-            (center_x, y + diamond_size),
-            (center_x - diamond_size, y),
-        ],
-        fill=ACCENT_COLOR,
-    )
+    if not hide_reference:
+        # Bottom decorative line
+        y += 20
+        draw.line(
+            [(center_x - dash_width, y), (center_x + dash_width, y)],
+            fill=ACCENT_COLOR,
+            width=1,
+        )
+        draw.polygon(
+            [
+                (center_x, y - diamond_size),
+                (center_x + diamond_size, y),
+                (center_x, y + diamond_size),
+                (center_x - diamond_size, y),
+            ],
+            fill=ACCENT_COLOR,
+        )
 
-    # Reference text (centered)
-    y += 20
-    ref_bbox = font_ref.getbbox(reference)
-    ref_w = ref_bbox[2] - ref_bbox[0]
-    draw.text(((WIDTH - ref_w) // 2, y), reference, fill=REF_COLOR, font=font_ref)
+        # Reference text (centered)
+        y += 20
+        ref_bbox = font_ref.getbbox(reference)
+        ref_w = ref_bbox[2] - ref_bbox[0]
+        draw.text(((WIDTH - ref_w) // 2, y), reference, fill=REF_COLOR, font=font_ref)
 
 
     # Save to BytesIO

@@ -1280,15 +1280,20 @@ async def quiz_command(interaction: discord.Interaction, book: str | None = None
         prompt = f"*Which verse in **{resolved}** chapter **{chapter}** is this?*"
         hint = "Pick the correct verse!"
 
+    # Generate verse image without reference
+    quiz_img = render_verse("", [(1, txt)], hide_reference=True)
+    file = discord.File(quiz_img, filename="quiz.png")
+
     embed = discord.Embed(
         title="Scripture Quiz",
-        description=f"{prompt}\n\n>>> {txt}",
+        description=prompt,
         color=EMBED_COLOR,
     )
+    embed.set_image(url="attachment://quiz.png")
     embed.set_footer(text=hint)
 
     view = QuizView(bname, ch, v, txt, start_stage=start_stage)
-    await interaction.response.send_message(embed=embed, view=view)
+    await interaction.response.send_message(embed=embed, view=view, file=file)
     view.message = await interaction.original_response()
 
 
@@ -1911,15 +1916,19 @@ async def _auto_post_quiz():
         guild_id = str(channel.guild.id) if channel.guild else None
         alltime_text = _build_alltime_leaderboard(guild_id, 5)
 
+        # Generate verse image without reference
+        quiz_img = render_verse("", [(1, quiz_data["text"])], hide_reference=True)
+        file = discord.File(quiz_img, filename="quiz.png")
+
         embed = discord.Embed(
             title="Daily Scripture Quiz",
             description=(
                 "*Which book is this verse from?*\n\n"
-                f">>> {quiz_data['text']}\n\n"
                 "Everyone can play! Your answers are private."
             ),
             color=EMBED_COLOR,
         )
+        embed.set_image(url="attachment://quiz.png")
         embed.add_field(name="Today's Scores", value="*No answers yet*", inline=False)
         embed.add_field(name="All-Time Leaderboard", value=alltime_text, inline=False)
         embed.set_footer(text="Round 1 of 3 — Pick the correct book!")
@@ -1930,9 +1939,10 @@ async def _auto_post_quiz():
                 item.label = quiz_data["book_choices"][i]
 
         try:
-            msg = await channel.send(embed=embed, view=view)
+            msg = await channel.send(embed=embed, view=view, file=file)
             quiz_data["messages"][str(ch_id)] = str(msg.id)
             print(f"  Posted quiz to #{channel.name} ({ch_id})")
+            quiz_img.seek(0)  # reset for next channel
         except discord.Forbidden:
             print(f"  No permission to post in {ch_id}, skipping.")
 

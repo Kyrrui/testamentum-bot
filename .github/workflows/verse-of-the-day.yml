@@ -1,0 +1,26 @@
+name: Verse of the Day
+
+on:
+  schedule:
+    - cron: "0 12 * * *"  # Noon UTC daily
+  workflow_dispatch:       # allow manual runs
+
+jobs:
+  post-verse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Pick and post verse of the day
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python verse_of_the_day.py

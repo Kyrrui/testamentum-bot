@@ -61,8 +61,11 @@ def _call_anthropic(system: list, messages: list, tools: list | None = None) -> 
             timeout=120,
         )
         if resp.status_code == 429:
-            wait = min(2 ** attempt * 10, 60)
+            # Check retry-after header, otherwise use exponential backoff
+            retry_after = resp.headers.get("retry-after")
+            wait = int(retry_after) if retry_after else min(2 ** attempt * 30, 120)
             print(f"  Rate limited, waiting {wait}s (attempt {attempt + 1}/5)...")
+            print(f"  Response: {resp.text[:200]}")
             time.sleep(wait)
             continue
         resp.raise_for_status()
@@ -96,23 +99,48 @@ def _do_news_search(query: str) -> str:
         return f"News search failed: {e}"
 
 
-def pick_verse(verses_json: str) -> dict:
-    """Ask Claude to pick a verse range of the day.
+def _gather_context() -> str:
+    """Use Haiku to do web searches and gather today's context. Cheap and fast."""
+    today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
 
-    Claude has access to web search so it can look up today's news,
-    holidays, and events before choosing a passage.
+    print("  Gathering today's context...")
+
+    # Do the searches ourselves — no need for an agentic loop
+    web_results = _do_web_search(f"{today} major holidays observances")
+    print(f"  Web search done ({len(web_results)} chars)")
+
+    news_results = _do_news_search("today major world news headlines")
+    print(f"  News search done ({len(news_results)} chars)")
+
+    context = (
+        f"Today is {today}.\n\n"
+        f"=== Holidays and observances ===\n{web_results}\n\n"
+        f"=== Today's news headlines ===\n{news_results}"
+    )
+    return context
+
+
+def pick_verse(verses_json: str) -> dict:
+    """Pick a verse of the day in two phases:
+
+    1. Gather today's context via web/news search (no LLM needed)
+    2. Send context + full Testamentum to Claude Sonnet for verse selection
+
+    This avoids the agentic loop and keeps API calls to a single request.
 
     Returns {book, chapter, verse_start, verse_end, verses: [{verse, text}], blurb}.
     """
-    today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
+    # Phase 1: gather context
+    context = _gather_context()
 
+    # Phase 2: single Claude call with context + verses
     system = [
         {
             "type": "text",
             "text": (
                 "You are a thoughtful scholar of the Marcionite Testamentum. "
                 "Your role is to select a meaningful passage (verse range) for the Verse of the Day.\n\n"
-                "You have access to web_search and news_search tools. Use them to understand what's happening today.\n\n"
+                "You will be given today's date, holidays, and news headlines as context.\n\n"
                 "IMPORTANT — what counts as relevant context:\n"
                 "- MAJOR holidays only: Christmas, Easter, Thanksgiving, New Year's, etc. "
                 "Ignore made-up novelty days like 'National Pancake Day' or 'National Librarian Day' — nobody cares about those.\n"
@@ -127,7 +155,7 @@ def pick_verse(verses_json: str) -> dict:
                 "- Your blurb should feel like a thoughtful pastor wrote it — warm, genuine, specific. "
                 "If there's a real major event or holiday, connect to it. If not, just reflect on the passage itself "
                 "and why it matters. Don't shoehorn in irrelevant connections.\n"
-                "- Do NOT fabricate or assume any holidays, events, or news — only reference what you confirmed via search."
+                "- Do NOT fabricate or assume any holidays, events, or news — only reference what was provided in the context."
             ),
             "cache_control": {"type": "ephemeral"},
         },
@@ -138,46 +166,13 @@ def pick_verse(verses_json: str) -> dict:
         },
     ]
 
-    tools = [
-        {
-            "name": "web_search",
-            "description": "Search the web for general information — holidays, observances, historical events for today's date, etc.",
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "query": {
-                        "type": "string",
-                        "description": "The search query",
-                    }
-                },
-                "required": ["query"],
-            },
-        },
-        {
-            "name": "news_search",
-            "description": "Search recent news headlines and current events. Use this to find out what's happening in the world today.",
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "query": {
-                        "type": "string",
-                        "description": "The news search query",
-                    }
-                },
-                "required": ["query"],
-            },
-        },
-    ]
-
     messages = [
         {
             "role": "user",
             "content": (
-                f"Today is {today}. "
-                "First, search the web to find out what's happening today — holidays, observances, "
-                "major news headlines, current events. Do multiple searches.\n\n"
-                "Then, pick a Verse of the Day passage from the Testamentum that connects to what you found.\n\n"
-                "After your searches, respond with ONLY this JSON format:\n"
+                f"Here is today's context:\n\n{context}\n\n"
+                "Based on the above, pick a Verse of the Day passage from the Testamentum.\n\n"
+                "Respond with ONLY this JSON format:\n"
                 "{\n"
                 '  "book": "Book Name",\n'
                 '  "chapter": "1",\n'
@@ -188,68 +183,39 @@ def pick_verse(verses_json: str) -> dict:
                 '    {"verse": "2", "text": "full verse text"}\n'
                 "  ],\n"
                 '  "blurb": "A 2-4 sentence reflection connecting this passage to today. '
-                "Reference specific holidays, news, or events you found. "
-                'Be specific and grounded."\n'
+                "If there's a major holiday or significant news event, connect to it naturally. "
+                "Otherwise just reflect on the passage and why it matters. "
+                'Be warm, genuine, and specific — not generic."\n'
                 "}"
             ),
         },
     ]
 
-    # Agentic loop: let Claude search as much as it wants, then respond
-    max_turns = 10
-    for turn in range(max_turns):
-        data = _call_anthropic(system, messages, tools)
+    data = _call_anthropic(system, messages)
 
-        # Log usage
-        usage = data.get("usage", {})
-        cache_read = usage.get("cache_read_input_tokens", 0)
-        cache_create = usage.get("cache_creation_input_tokens", 0)
-        input_tokens = usage.get("input_tokens", 0)
-        print(f"  Turn {turn + 1} — input: {input_tokens}, cache_read: {cache_read}, cache_create: {cache_create}")
+    # Log usage
+    usage = data.get("usage", {})
+    cache_read = usage.get("cache_read_input_tokens", 0)
+    cache_create = usage.get("cache_creation_input_tokens", 0)
+    input_tokens = usage.get("input_tokens", 0)
+    print(f"  Tokens — input: {input_tokens}, cache_read: {cache_read}, cache_create: {cache_create}")
 
-        # Check if Claude wants to use tools
-        if data["stop_reason"] == "tool_use":
-            # Process all tool calls
-            tool_results = []
-            for block in data["content"]:
-                if block["type"] == "tool_use":
-                    query = block["input"]["query"]
-                    if block["name"] == "news_search":
-                        print(f"  News search: {query}")
-                        result = _do_news_search(query)
-                    else:
-                        print(f"  Web search: {query}")
-                        result = _do_web_search(query)
-                    tool_results.append({
-                        "type": "tool_result",
-                        "tool_use_id": block["id"],
-                        "content": result,
-                    })
+    # Extract the JSON response
+    text_content = ""
+    for block in data["content"]:
+        if block["type"] == "text":
+            text_content += block["text"]
 
-            # Add assistant message and tool results to conversation
-            messages.append({"role": "assistant", "content": data["content"]})
-            messages.append({"role": "user", "content": tool_results})
-            continue
+    content = text_content.strip()
+    if content.startswith("```"):
+        content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()
 
-        # Claude is done searching — extract the final JSON response
-        text_content = ""
-        for block in data["content"]:
-            if block["type"] == "text":
-                text_content += block["text"]
+    json_start = content.find("{")
+    json_end = content.rfind("}") + 1
+    if json_start >= 0 and json_end > json_start:
+        content = content[json_start:json_end]
 
-        content = text_content.strip()
-        if content.startswith("```"):
-            content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-
-        # Find JSON in the response (Claude might include preamble text)
-        json_start = content.find("{")
-        json_end = content.rfind("}") + 1
-        if json_start >= 0 and json_end > json_start:
-            content = content[json_start:json_end]
-
-        return json.loads(content)
-
-    raise RuntimeError("Claude did not produce a final answer within the turn limit.")
+    return json.loads(content)
 
 
 def post_to_discord(verse: dict):

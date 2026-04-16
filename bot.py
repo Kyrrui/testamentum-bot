@@ -233,7 +233,11 @@ async def search_command(interaction: discord.Interaction, text: str, book: str 
     for bname, ch, v, txt in results:
         # Truncate long verses
         display = txt if len(txt) <= 150 else txt[:147] + "..."
-        lines.append(f"**{bname} {ch}:{v}** — {display}")
+        # Bold the matched text (case-insensitive replace)
+        highlighted = re.sub(
+            re.escape(text), lambda m: f"**__{m.group()}__**", display, flags=re.IGNORECASE
+        )
+        lines.append(f"**{bname} {ch}:{v}** — {highlighted}")
 
     msg = "\n".join(lines)
     if len(msg) > 2000:

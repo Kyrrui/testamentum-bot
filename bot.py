@@ -12,6 +12,7 @@ from difflib import SequenceMatcher
 import discord
 from discord import app_commands, ui
 from dotenv import load_dotenv
+from verse_image import render_verse
 
 load_dotenv()
 
@@ -894,6 +895,51 @@ async def bookinfo_command(interaction: discord.Interaction, book: str):
     await interaction.response.send_message(embed=embed)
 
 
+@tree.command(name="image", description="Generate a shareable verse image")
+@app_commands.describe(reference="Verse reference, e.g. 'Evang 1:1' or 'Rom 7:11-13'")
+@app_commands.autocomplete(reference=verse_autocomplete)
+async def image_command(interaction: discord.Interaction, reference: str):
+    parsed = parse_reference(reference)
+    if not parsed:
+        embed = discord.Embed(
+            title="Invalid Reference",
+            description=(
+                f"Could not parse: `{reference}`\n\n"
+                "**Format:** `Book Chapter:Verse` or `Book Chapter:Start-End`\n"
+                "**Examples:** `Evang 1:1`, `Rom 7:11-13`"
+            ),
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    book, chapter, v_start, v_end = parsed
+    results = get_verses(book, chapter, v_start, v_end)
+
+    if not results:
+        ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+        embed = discord.Embed(
+            title="Not Found",
+            description=f"No verses found for **{ref_str}**",
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+
+    # Get section heading from first verse
+    section = results[0][2]
+
+    # Build verse list for image
+    verse_tuples = [(vnum, text) for vnum, text, _ in results]
+
+    await interaction.response.defer()
+    buf = render_verse(ref_str, verse_tuples, section=section)
+    file = discord.File(buf, filename=f"verse.png")
+    await interaction.followup.send(file=file)
+
+
 class QuizView(ui.View):
     """Scripture quiz — guess the book."""
 
@@ -1067,6 +1113,14 @@ async def help_command(interaction: discord.Interaction):
     embed.add_field(
         name="/verseoftheday",
         value="See today's curated Verse of the Day with reflection",
+        inline=False,
+    )
+    embed.add_field(
+        name="/image <reference>",
+        value=(
+            "Generate a shareable verse image\n"
+            "`/image Evang 1:1` `/image Rom 3:23-25`"
+        ),
         inline=False,
     )
     embed.add_field(

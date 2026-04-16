@@ -363,13 +363,29 @@ async def verse_autocomplete(
 # --- Pagination views ---
 
 
-class SearchPaginator(ui.View):
+class TimeoutView(ui.View):
+    """Base view that disables all buttons when it times out."""
+
+    message: discord.Message | None = None
+
+    async def on_timeout(self):
+        for item in self.children:
+            if isinstance(item, ui.Button):
+                item.disabled = True
+        if self.message:
+            try:
+                await self.message.edit(view=self)
+            except discord.NotFound:
+                pass
+
+
+class SearchPaginator(TimeoutView):
     """Paginated search results with Previous/Next buttons."""
 
     PER_PAGE = 5
 
     def __init__(self, results: list[tuple[str, str, str, str, float]], query: str, book_filter: str | None):
-        super().__init__(timeout=300)
+        super().__init__(timeout=900)
         self.results = results
         self.query = query
         self.book_filter = book_filter
@@ -428,13 +444,13 @@ class SearchPaginator(ui.View):
         await interaction.response.edit_message(embed=self.make_embed(), view=self)
 
 
-class ChapterPaginator(ui.View):
+class ChapterPaginator(TimeoutView):
     """Paginated chapter display."""
 
     VERSES_PER_PAGE = 15
 
     def __init__(self, book: str, chapter: int):
-        super().__init__(timeout=300)
+        super().__init__(timeout=900)
         self.book = book
         self.chapter = chapter
         ch_data = DB["books"][book]["chapters"][str(chapter)]
@@ -489,11 +505,11 @@ class ChapterPaginator(ui.View):
         await interaction.response.edit_message(embed=self.make_embed(), view=self)
 
 
-class RelatedView(ui.View):
+class RelatedView(TimeoutView):
     """Button to show related passages for a verse."""
 
     def __init__(self, book: str, chapter: int, verse: int):
-        super().__init__(timeout=300)
+        super().__init__(timeout=900)
         self.book = book
         self.chapter = chapter
         self.verse = verse
@@ -568,6 +584,7 @@ async def verse_command(interaction: discord.Interaction, reference: str):
     embed.description = "\n".join(desc_lines)
     view = RelatedView(book, chapter, v_start)
     await interaction.response.send_message(embed=embed, view=view)
+    view.message = await interaction.original_response()
 
 
 @tree.command(name="search", description="Search verses by text (supports fuzzy matching)")
@@ -592,6 +609,7 @@ async def search_command(interaction: discord.Interaction, text: str, book: str 
 
     view = SearchPaginator(results, text, book)
     await interaction.response.send_message(embed=view.make_embed(), view=view)
+    view.message = await interaction.original_response()
 
 
 @tree.command(name="random", description="Get a random verse")
@@ -633,6 +651,7 @@ async def random_command(interaction: discord.Interaction, book: str | None = No
         embed.set_footer(text=section)
     view = RelatedView(bname, int(ch), int(v))
     await interaction.response.send_message(embed=embed, view=view)
+    view.message = await interaction.original_response()
 
 
 @tree.command(name="chapter", description="Read a full chapter")
@@ -664,6 +683,7 @@ async def chapter_command(interaction: discord.Interaction, book: str, chapter: 
 
     view = ChapterPaginator(resolved, chapter)
     await interaction.response.send_message(embed=view.make_embed(), view=view)
+    view.message = await interaction.original_response()
 
 
 @tree.command(name="verseoftheday", description="See today's Verse of the Day")
@@ -944,11 +964,11 @@ async def image_command(interaction: discord.Interaction, reference: str):
     await interaction.followup.send(file=file)
 
 
-class QuizView(ui.View):
+class QuizView(TimeoutView):
     """Scripture quiz — guess the book."""
 
     def __init__(self, book: str, chapter: str, verse: str, text: str):
-        super().__init__(timeout=120)
+        super().__init__(timeout=900)
         self.book = book
         self.chapter = chapter
         self.verse = verse
@@ -1045,6 +1065,7 @@ async def quiz_command(interaction: discord.Interaction, book: str | None = None
 
     view = QuizView(bname, ch, v, txt)
     await interaction.response.send_message(embed=embed, view=view)
+    view.message = await interaction.original_response()
 
 
 @tree.command(name="help", description="Show available commands and how to use them")

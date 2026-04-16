@@ -22,9 +22,42 @@ DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
 VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")
 QUIZ_PATH = os.path.join(os.path.dirname(__file__), "data", "daily_quiz.json")
 ALLTIME_LB_PATH = os.path.join(os.path.dirname(__file__), "data", "quiz_leaderboard.json")
+SERVER_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "data", "server_config.json")
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
-QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")
+QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")  # legacy fallback
+
+
+# --- Server config (multi-server support) ---
+
+
+def _load_server_config() -> dict:
+    """Load per-server config. {guild_id: {quiz_channel, votd_channel}}"""
+    if not os.path.exists(SERVER_CONFIG_PATH):
+        return {}
+    with open(SERVER_CONFIG_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _save_server_config(config: dict):
+    with open(SERVER_CONFIG_PATH, "w", encoding="utf-8") as f:
+        json.dump(config, f, indent=2, ensure_ascii=False)
+
+
+def _get_quiz_channels() -> list[int]:
+    """Get all configured quiz channel IDs across all servers."""
+    config = _load_server_config()
+    channels = [int(c["quiz_channel"]) for c in config.values() if c.get("quiz_channel")]
+    # Legacy fallback
+    if QUIZ_CHANNEL_ID and int(QUIZ_CHANNEL_ID) not in channels:
+        channels.append(int(QUIZ_CHANNEL_ID))
+    return channels
+
+
+def _get_votd_channels() -> list[int]:
+    """Get all configured VOTD channel IDs across all servers."""
+    config = _load_server_config()
+    return [int(c["votd_channel"]) for c in config.values() if c.get("votd_channel")]
 
 # --- Load Data ---
 
@@ -1325,6 +1358,81 @@ def _generate_quiz_data() -> dict:
     }
 
 
+setup_group = app_commands.Group(
+    name="setup",
+    description="Configure Testamentum Bot for this server (admin only)",
+    default_permissions=discord.Permissions(administrator=True),
+)
+tree.add_command(setup_group)
+
+
+@setup_group.command(name="quiz", description="Set the daily quiz channel")
+@app_commands.describe(channel="Channel for the daily quiz")
+async def setup_quiz(interaction: discord.Interaction, channel: discord.TextChannel):
+    config = _load_server_config()
+    guild_id = str(interaction.guild_id)
+    config.setdefault(guild_id, {})
+    config[guild_id]["quiz_channel"] = str(channel.id)
+    _save_server_config(config)
+    await interaction.response.send_message(
+        f"Daily quiz will be posted to {channel.mention}.", ephemeral=True
+    )
+
+
+@setup_group.command(name="votd", description="Set the Verse of the Day channel")
+@app_commands.describe(channel="Channel for the Verse of the Day")
+async def setup_votd(interaction: discord.Interaction, channel: discord.TextChannel):
+    config = _load_server_config()
+    guild_id = str(interaction.guild_id)
+    config.setdefault(guild_id, {})
+    config[guild_id]["votd_channel"] = str(channel.id)
+    _save_server_config(config)
+    await interaction.response.send_message(
+        f"Verse of the Day will be posted to {channel.mention}.", ephemeral=True
+    )
+
+
+@setup_group.command(name="disable", description="Disable a daily feature")
+@app_commands.describe(feature="Feature to disable")
+@app_commands.choices(feature=[
+    app_commands.Choice(name="quiz", value="quiz_channel"),
+    app_commands.Choice(name="votd", value="votd_channel"),
+])
+async def setup_disable(interaction: discord.Interaction, feature: app_commands.Choice[str]):
+    config = _load_server_config()
+    guild_id = str(interaction.guild_id)
+    if guild_id in config and feature.value in config[guild_id]:
+        del config[guild_id][feature.value]
+        _save_server_config(config)
+        await interaction.response.send_message(
+            f"Disabled **{feature.name}** for this server.", ephemeral=True
+        )
+    else:
+        await interaction.response.send_message(
+            f"**{feature.name}** is not configured for this server.", ephemeral=True
+        )
+
+
+@setup_group.command(name="status", description="Show current configuration")
+async def setup_status(interaction: discord.Interaction):
+    config = _load_server_config()
+    guild_id = str(interaction.guild_id)
+    guild_config = config.get(guild_id, {})
+
+    lines = []
+    quiz_ch = guild_config.get("quiz_channel")
+    votd_ch = guild_config.get("votd_channel")
+    lines.append(f"**Daily Quiz:** {f'<#{quiz_ch}>' if quiz_ch else 'Not configured'}")
+    lines.append(f"**Verse of the Day:** {f'<#{votd_ch}>' if votd_ch else 'Not configured'}")
+
+    embed = discord.Embed(
+        title="Server Configuration",
+        description="\n".join(lines),
+        color=EMBED_COLOR,
+    )
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
 @tree.command(name="postquiz", description="Manually trigger the daily quiz (admin only)")
 @app_commands.default_permissions(administrator=True)
 async def postquiz_command(interaction: discord.Interaction):
@@ -1463,6 +1571,16 @@ async def help_command(interaction: discord.Interaction):
         inline=False,
     )
     embed.add_field(
+        name="Server Setup (admin)",
+        value=(
+            "`/setup quiz #channel` — set daily quiz channel\n"
+            "`/setup votd #channel` — set Verse of the Day channel\n"
+            "`/setup disable` — disable a feature\n"
+            "`/setup status` — show current config"
+        ),
+        inline=False,
+    )
+    embed.add_field(
         name="Book Abbreviations",
         value=(
             "Evang, Gal, 1Cor, 2Cor, Rom, 1Thess, 2Thess, Laod, Col, "
@@ -1560,29 +1678,34 @@ def _build_alltime_leaderboard(max_entries: int = 10) -> str:
 
 
 async def _update_quiz_embed(quiz: dict):
-    """Update the quiz embed in Discord with both leaderboards."""
-    channel = client.get_channel(int(quiz["channel_id"]))
-    if not channel:
-        return
-    try:
-        message = await channel.fetch_message(int(quiz["message_id"]))
-    except discord.NotFound:
-        return
-
-    embed = message.embeds[0]
-
-    # Build new fields list
-    new_fields = []
+    """Update quiz embeds in all servers with both leaderboards."""
     today_lb = _build_today_leaderboard(quiz)
     alltime_lb = _build_alltime_leaderboard(5)
-    new_fields.append({"name": "Today's Scores", "value": today_lb, "inline": False})
-    new_fields.append({"name": "All-Time Leaderboard", "value": alltime_lb, "inline": False})
 
-    embed.clear_fields()
-    for field in new_fields:
-        embed.add_field(name=field["name"], value=field["value"], inline=field["inline"])
+    # Get all message locations
+    messages = quiz.get("messages", {})
+    # Legacy fallback
+    if not messages and quiz.get("channel_id") and quiz.get("message_id"):
+        messages = {quiz["channel_id"]: quiz["message_id"]}
 
-    await message.edit(embed=embed)
+    for ch_id, msg_id in messages.items():
+        channel = client.get_channel(int(ch_id))
+        if not channel:
+            continue
+        try:
+            message = await channel.fetch_message(int(msg_id))
+        except discord.NotFound:
+            continue
+
+        embed = message.embeds[0]
+        embed.clear_fields()
+        embed.add_field(name="Today's Scores", value=today_lb, inline=False)
+        embed.add_field(name="All-Time Leaderboard", value=alltime_lb, inline=False)
+
+        try:
+            await message.edit(embed=embed)
+        except discord.Forbidden:
+            pass
 
 
 async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
@@ -1735,41 +1858,57 @@ class DailyQuizPersistentView(ui.View):
 
 
 async def _auto_post_quiz():
-    """Auto-post a daily quiz to the configured channel."""
-    if not QUIZ_CHANNEL_ID:
-        return
-    channel = client.get_channel(int(QUIZ_CHANNEL_ID))
-    if not channel:
-        print(f"Quiz channel {QUIZ_CHANNEL_ID} not found.")
+    """Auto-post a daily quiz to all configured quiz channels."""
+    channels = _get_quiz_channels()
+    if not channels:
+        print("No quiz channels configured.")
         return
 
     quiz_data = _generate_quiz_data()
     alltime_text = _build_alltime_leaderboard(5)
 
-    embed = discord.Embed(
-        title="Daily Scripture Quiz",
-        description=(
-            "*Which book is this verse from?*\n\n"
-            f">>> {quiz_data['text']}\n\n"
-            "Everyone can play! Your answers are private."
-        ),
-        color=EMBED_COLOR,
-    )
-    embed.add_field(name="Today's Scores", value="*No answers yet*", inline=False)
-    embed.add_field(name="All-Time Leaderboard", value=alltime_text, inline=False)
-    embed.set_footer(text="Round 1 of 3 — Pick the correct book!")
+    # Track message IDs per channel for leaderboard updates
+    quiz_data["messages"] = {}
 
-    view = DailyQuizPersistentView()
-    for i, item in enumerate(view.children):
-        if isinstance(item, ui.Button) and i < len(quiz_data["book_choices"]):
-            item.label = quiz_data["book_choices"][i]
+    for ch_id in channels:
+        channel = client.get_channel(ch_id)
+        if not channel:
+            print(f"  Quiz channel {ch_id} not found, skipping.")
+            continue
 
-    msg = await channel.send(embed=embed, view=view)
+        embed = discord.Embed(
+            title="Daily Scripture Quiz",
+            description=(
+                "*Which book is this verse from?*\n\n"
+                f">>> {quiz_data['text']}\n\n"
+                "Everyone can play! Your answers are private."
+            ),
+            color=EMBED_COLOR,
+        )
+        embed.add_field(name="Today's Scores", value="*No answers yet*", inline=False)
+        embed.add_field(name="All-Time Leaderboard", value=alltime_text, inline=False)
+        embed.set_footer(text="Round 1 of 3 — Pick the correct book!")
 
-    quiz_data["message_id"] = str(msg.id)
-    quiz_data["channel_id"] = str(msg.channel.id)
+        view = DailyQuizPersistentView()
+        for i, item in enumerate(view.children):
+            if isinstance(item, ui.Button) and i < len(quiz_data["book_choices"]):
+                item.label = quiz_data["book_choices"][i]
+
+        try:
+            msg = await channel.send(embed=embed, view=view)
+            quiz_data["messages"][str(ch_id)] = str(msg.id)
+            print(f"  Posted quiz to #{channel.name} ({ch_id})")
+        except discord.Forbidden:
+            print(f"  No permission to post in {ch_id}, skipping.")
+
+    # Legacy single-channel fields for backward compat
+    if quiz_data["messages"]:
+        first_ch = list(quiz_data["messages"].keys())[0]
+        quiz_data["channel_id"] = first_ch
+        quiz_data["message_id"] = quiz_data["messages"][first_ch]
+
     _save_daily_quiz(quiz_data)
-    print(f"Auto-posted daily quiz: {quiz_data['book']} {quiz_data['chapter']}:{quiz_data['verse']}")
+    print(f"Daily quiz posted: {quiz_data['book']} {quiz_data['chapter']}:{quiz_data['verse']}")
 
 
 @tasks.loop(time=datetime.time(hour=10, minute=5))  # 10:05 UTC = 6:05 AM EST
@@ -1777,12 +1916,60 @@ async def daily_quiz_task():
     await _auto_post_quiz()
 
 
+@tasks.loop(time=datetime.time(hour=10, minute=0))  # 10:00 UTC = 6:00 AM EST
+async def votd_repost_task():
+    """Post the VOTD to all configured VOTD channels."""
+    channels = _get_votd_channels()
+    if not channels:
+        return
+    if not os.path.exists(VOTD_PATH):
+        return
+
+    with open(VOTD_PATH, "r", encoding="utf-8") as f:
+        votd = json.load(f)
+
+    # Only post if it's today's VOTD
+    today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+    if votd.get("date") != today:
+        print(f"VOTD is from {votd.get('date')}, not today ({today}). Skipping repost.")
+        return
+
+    ref = f"{votd['book']} {votd['chapter']}:{votd['verse_start']}"
+    if votd["verse_start"] != votd["verse_end"]:
+        ref += f"-{votd['verse_end']}"
+
+    verse_tuples = [(int(v["verse"]), v["text"]) for v in votd["verses"]]
+    buf = render_verse(ref, verse_tuples)
+
+    for ch_id in channels:
+        channel = client.get_channel(ch_id)
+        if not channel:
+            continue
+        try:
+            file = discord.File(buf, filename="votd.png")
+            buf.seek(0)  # reset for next channel
+            embed = discord.Embed(
+                title=f"Verse of the Day — {votd.get('date', 'Today')}",
+                description=f"*{votd['blurb']}*",
+                color=EMBED_COLOR,
+            )
+            embed.set_image(url="attachment://votd.png")
+            embed.set_footer(text="Verse selection and summary generated by AI")
+            await channel.send(embed=embed, file=file)
+            print(f"  Posted VOTD to #{channel.name} ({ch_id})")
+        except discord.Forbidden:
+            print(f"  No permission to post VOTD in {ch_id}")
+
+
 @client.event
 async def on_ready():
     client.add_view(DailyQuizPersistentView())
-    if QUIZ_CHANNEL_ID and not daily_quiz_task.is_running():
+    if not daily_quiz_task.is_running():
         daily_quiz_task.start()
-        print(f"Daily quiz scheduled for quiz channel {QUIZ_CHANNEL_ID}")
+        print("Daily quiz task scheduled.")
+    if not votd_repost_task.is_running():
+        votd_repost_task.start()
+        print("VOTD repost task scheduled.")
     await tree.sync()
     print(f"Bot is ready! Logged in as {client.user}")
     print(f"Loaded {len(DB['books'])} books, {verse_count()} verses")

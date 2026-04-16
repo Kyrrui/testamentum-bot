@@ -1325,43 +1325,6 @@ def _generate_quiz_data() -> dict:
     }
 
 
-@tree.command(name="postquiz", description="Post a daily quiz to this channel (admin only)")
-@app_commands.default_permissions(manage_guild=True)
-async def postquiz_command(interaction: discord.Interaction):
-    quiz_data = _generate_quiz_data()
-
-    # Build the embed
-    alltime_text = _build_alltime_leaderboard(5)
-
-    embed = discord.Embed(
-        title="Daily Scripture Quiz",
-        description=(
-            "*Which book is this verse from?*\n\n"
-            f">>> {quiz_data['text']}\n\n"
-            "Everyone can play! Your answers are private."
-        ),
-        color=EMBED_COLOR,
-    )
-    embed.add_field(name="Today's Scores", value="*No answers yet*", inline=False)
-    embed.add_field(name="All-Time Leaderboard", value=alltime_text, inline=False)
-    embed.set_footer(text="Round 1 of 3 — Pick the correct book!")
-
-    # Build buttons
-    view = DailyQuizPersistentView()
-    # Update button labels with actual book choices
-    for i, item in enumerate(view.children):
-        if isinstance(item, ui.Button) and i < len(quiz_data["book_choices"]):
-            item.label = quiz_data["book_choices"][i]
-
-    await interaction.response.send_message(embed=embed, view=view)
-    msg = await interaction.original_response()
-
-    # Save quiz data with message/channel info
-    quiz_data["message_id"] = str(msg.id)
-    quiz_data["channel_id"] = str(msg.channel.id)
-    _save_daily_quiz(quiz_data)
-
-
 @tree.command(name="leaderboard", description="View the all-time daily quiz leaderboard")
 async def leaderboard_command(interaction: discord.Interaction):
     lb_text = _build_alltime_leaderboard(15)

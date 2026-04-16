@@ -35,7 +35,10 @@ def load_stripped_verses() -> str:
 
 
 def pick_verse(verses_json: str) -> dict:
-    """Ask Claude to pick a verse of the day. Returns {book, chapter, verse, text, reflection}."""
+    """Ask Claude to pick a verse range of the day.
+
+    Returns {book, chapter, verse_start, verse_end, verses: [{verse, text}], blurb}.
+    """
     today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
 
     resp = requests.post(
@@ -47,16 +50,22 @@ def pick_verse(verses_json: str) -> dict:
         },
         json={
             "model": "claude-sonnet-4-20250514",
-            "max_tokens": 1024,
+            "max_tokens": 2048,
             "system": [
                 {
                     "type": "text",
                     "text": (
                         "You are a thoughtful scholar of the Marcionite Testamentum. "
-                        "Your role is to select a meaningful Verse of the Day. "
-                        "Consider the day of the week, time of year, and the depth and beauty of the text. "
-                        "Vary your selections across all books — don't favor any single book. "
-                        "Pick verses that are thought-provoking, comforting, or spiritually rich."
+                        "Your role is to select a meaningful passage (verse range) for the Verse of the Day.\n\n"
+                        "Guidelines:\n"
+                        "- Pick a range of 2-6 consecutive verses that form a complete thought or passage.\n"
+                        "- Consider what day it is — holidays (Easter, Christmas, Thanksgiving, etc.), "
+                        "days of remembrance, seasonal themes, or what's happening in the world.\n"
+                        "- Vary your selections across all books — don't favor any single book.\n"
+                        "- Pick passages that are thought-provoking, comforting, challenging, or spiritually rich.\n"
+                        "- Your blurb should connect the passage to today — mention the date, any holidays, "
+                        "current events, seasonal themes, or why this particular passage speaks to the present moment. "
+                        "Be specific and grounded, not generic."
                     ),
                     "cache_control": {"type": "ephemeral"},
                 },
@@ -71,16 +80,26 @@ def pick_verse(verses_json: str) -> dict:
                     "role": "user",
                     "content": (
                         f"Today is {today}. "
-                        "Pick a Verse of the Day from the Testamentum. "
+                        "Pick a Verse of the Day passage from the Testamentum. "
                         "Respond in EXACTLY this JSON format, nothing else:\n"
-                        '{"book": "Book Name", "chapter": "1", "verse": "1", '
-                        '"text": "the full verse text", '
-                        '"reflection": "A 1-2 sentence reflection on why this verse is meaningful today."}'
+                        "{\n"
+                        '  "book": "Book Name",\n'
+                        '  "chapter": "1",\n'
+                        '  "verse_start": "1",\n'
+                        '  "verse_end": "4",\n'
+                        '  "verses": [\n'
+                        '    {"verse": "1", "text": "full verse text"},\n'
+                        '    {"verse": "2", "text": "full verse text"}\n'
+                        "  ],\n"
+                        '  "blurb": "A 2-4 sentence reflection connecting this passage to today. '
+                        "Mention the date, any holidays or observances, current events, or seasonal themes. "
+                        'Explain why this passage is meaningful right now."\n'
+                        "}"
                     ),
                 },
             ],
         },
-        timeout=60,
+        timeout=120,
     )
     resp.raise_for_status()
     data = resp.json()
@@ -106,12 +125,23 @@ def post_to_discord(verse: dict):
     """Post the verse of the day to Discord via webhook."""
     today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
 
+    ref = f"{verse['book']} {verse['chapter']}:{verse['verse_start']}"
+    if verse["verse_start"] != verse["verse_end"]:
+        ref += f"-{verse['verse_end']}"
+
+    # Format the verses
+    verse_lines = []
+    for v in verse["verses"]:
+        verse_lines.append(f"**{v['verse']}** {v['text']}")
+    verse_text = "\n".join(verse_lines)
+
     embed = {
         "title": f"Verse of the Day — {today}",
         "description": (
-            f"**{verse['book']} {verse['chapter']}:{verse['verse']}**\n\n"
-            f"{verse['text']}\n\n"
-            f"*{verse['reflection']}*"
+            f"**{ref}**\n\n"
+            f"{verse_text}\n\n"
+            f"---\n"
+            f"*{verse['blurb']}*"
         ),
         "color": EMBED_COLOR,
         "footer": {"text": "Testamentum Bot"},
@@ -138,10 +168,13 @@ def main():
     verses_json = load_stripped_verses()
     print(f"Loaded {len(verses_json):,} chars of verse data.")
 
-    print("Asking Claude to pick a verse...")
+    print("Asking Claude to pick a passage...")
     verse = pick_verse(verses_json)
-    print(f"Selected: {verse['book']} {verse['chapter']}:{verse['verse']}")
-    print(f"Reflection: {verse['reflection']}")
+    ref = f"{verse['book']} {verse['chapter']}:{verse['verse_start']}"
+    if verse["verse_start"] != verse["verse_end"]:
+        ref += f"-{verse['verse_end']}"
+    print(f"Selected: {ref}")
+    print(f"Blurb: {verse['blurb']}")
 
     print("Posting to Discord...")
     post_to_discord(verse)

@@ -18,6 +18,7 @@ load_dotenv()
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
 VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")
+QUIZ_PATH = os.path.join(os.path.dirname(__file__), "data", "daily_quiz.json")
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 
@@ -1373,8 +1374,210 @@ async def help_command(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
+# --- Daily Quiz (persistent view) ---
+
+
+def _load_daily_quiz() -> dict | None:
+    if not os.path.exists(QUIZ_PATH):
+        return None
+    with open(QUIZ_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _save_daily_quiz(quiz: dict):
+    with open(QUIZ_PATH, "w", encoding="utf-8") as f:
+        json.dump(quiz, f, indent=2, ensure_ascii=False)
+
+
+def _build_leaderboard(quiz: dict) -> str:
+    """Build the leaderboard string from quiz data."""
+    lb = quiz.get("leaderboard", {})
+    if not lb:
+        return "*No answers yet*"
+
+    # Sort by score descending, then by name
+    entries = sorted(lb.values(), key=lambda e: -e["score"])
+    lines = []
+    for i, entry in enumerate(entries[:15]):
+        medal = ["🥇", "🥈", "🥉"][i] if i < 3 else f"**{i+1}.**"
+        stage_label = f"{entry['score']}/3"
+        if entry.get("done"):
+            lines.append(f"{medal} {entry['name']} — {stage_label} ✅")
+        else:
+            lines.append(f"{medal} {entry['name']} — {stage_label} *(in progress)*")
+
+    return "\n".join(lines)
+
+
+async def _update_quiz_embed(quiz: dict):
+    """Update the quiz embed in Discord with the current leaderboard."""
+    channel = client.get_channel(int(quiz["channel_id"]))
+    if not channel:
+        return
+    try:
+        message = await channel.fetch_message(int(quiz["message_id"]))
+    except discord.NotFound:
+        return
+
+    embed = message.embeds[0]
+    # Update leaderboard field
+    for i, field in enumerate(embed.fields):
+        if field.name == "Leaderboard":
+            embed.set_field_at(i, name="Leaderboard", value=_build_leaderboard(quiz), inline=False)
+            break
+
+    await message.edit(embed=embed)
+
+
+async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
+    """Handle all daily quiz button interactions (book, chapter, verse)."""
+    quiz = _load_daily_quiz()
+    if not quiz:
+        await interaction.response.send_message(
+            "No daily quiz is active right now.", ephemeral=True
+        )
+        return
+
+    user_id = str(interaction.user.id)
+    user_name = interaction.user.display_name
+    lb = quiz.setdefault("leaderboard", {})
+
+    # Parse: dq_book_0, dq_chapter_2, dq_verse_1
+    parts = custom_id.split("_")
+    stage = parts[1]
+    choice_idx = int(parts[2])
+
+    if user_id not in lb:
+        lb[user_id] = {"name": user_name, "score": 0, "stage": "book", "done": False}
+
+    user_entry = lb[user_id]
+
+    if user_entry["done"]:
+        ref = f"{quiz['book']} {quiz['chapter']}:{quiz['verse']}"
+        await interaction.response.send_message(
+            f"You already completed today's quiz! (Score: {user_entry['score']}/3)\n"
+            f"The answer was **{ref}**",
+            ephemeral=True,
+        )
+        return
+
+    if user_entry["stage"] != stage:
+        await interaction.response.send_message(
+            f"You're on the **{user_entry['stage']}** round! "
+            f"Use the buttons from your current stage.",
+            ephemeral=True,
+        )
+        return
+
+    ref = f"{quiz['book']} {quiz['chapter']}:{quiz['verse']}"
+
+    if stage == "book":
+        choice = quiz["book_choices"][choice_idx]
+        correct = choice == quiz["book"]
+        if correct:
+            user_entry["score"] += 1
+            user_entry["stage"] = "chapter"
+            _save_daily_quiz(quiz)
+            await _update_quiz_embed(quiz)
+
+            ch_view = ui.View(timeout=None)
+            for j, ch in enumerate(quiz["chapter_choices"]):
+                btn = ui.Button(label=f"Chapter {ch}", style=discord.ButtonStyle.secondary)
+                btn.callback = _make_ephemeral_handler(f"dq_chapter_{j}")
+                ch_view.add_item(btn)
+
+            await interaction.response.send_message(
+                f"✅ Correct! The book is **{quiz['book']}**.\n\n*Now guess the chapter:*",
+                view=ch_view, ephemeral=True,
+            )
+        else:
+            user_entry["done"] = True
+            _save_daily_quiz(quiz)
+            await _update_quiz_embed(quiz)
+            await interaction.response.send_message(
+                f"❌ Wrong! The answer is **{ref}**.\nYour score: **{user_entry['score']}/3**",
+                ephemeral=True,
+            )
+
+    elif stage == "chapter":
+        choice = quiz["chapter_choices"][choice_idx]
+        correct = choice == int(quiz["chapter"])
+        if correct:
+            user_entry["score"] += 1
+            user_entry["stage"] = "verse"
+            _save_daily_quiz(quiz)
+            await _update_quiz_embed(quiz)
+
+            v_view = ui.View(timeout=None)
+            for j, v in enumerate(quiz["verse_choices"]):
+                btn = ui.Button(label=f"Verse {v}", style=discord.ButtonStyle.secondary)
+                btn.callback = _make_ephemeral_handler(f"dq_verse_{j}")
+                v_view.add_item(btn)
+
+            await interaction.response.send_message(
+                f"✅ Correct! It's **{quiz['book']} Chapter {quiz['chapter']}**.\n\n*Now guess the verse:*",
+                view=v_view, ephemeral=True,
+            )
+        else:
+            user_entry["done"] = True
+            _save_daily_quiz(quiz)
+            await _update_quiz_embed(quiz)
+            await interaction.response.send_message(
+                f"❌ Wrong chapter! The answer is **{ref}**.\nYour score: **{user_entry['score']}/3**",
+                ephemeral=True,
+            )
+
+    elif stage == "verse":
+        choice = quiz["verse_choices"][choice_idx]
+        correct = choice == int(quiz["verse"])
+        user_entry["done"] = True
+        if correct:
+            user_entry["score"] += 1
+        _save_daily_quiz(quiz)
+        await _update_quiz_embed(quiz)
+        if correct:
+            await interaction.response.send_message(
+                f"✅ **Perfect score!** The answer is **{ref}**.\nYour score: **{user_entry['score']}/3**",
+                ephemeral=True,
+            )
+        else:
+            await interaction.response.send_message(
+                f"❌ Close! The answer is **{ref}** (you guessed verse {choice}).\nYour score: **{user_entry['score']}/3**",
+                ephemeral=True,
+            )
+
+
+def _make_ephemeral_handler(custom_id: str):
+    """Create a callback for ephemeral chapter/verse buttons."""
+    async def callback(interaction: discord.Interaction):
+        await _handle_daily_quiz(interaction, custom_id)
+    return callback
+
+
+class DailyQuizPersistentView(ui.View):
+    """Persistent view registered at startup for the book-stage buttons."""
+
+    def __init__(self):
+        super().__init__(timeout=None)
+        for i in range(4):
+            btn = ui.Button(
+                label="\u200b",  # invisible placeholder
+                style=discord.ButtonStyle.secondary,
+                custom_id=f"dq_book_{i}",
+            )
+            self.add_item(btn)
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        custom_id = interaction.data.get("custom_id", "")
+        if custom_id.startswith("dq_"):
+            await _handle_daily_quiz(interaction, custom_id)
+            return False  # we handled it
+        return True
+
+
 @client.event
 async def on_ready():
+    client.add_view(DailyQuizPersistentView())
     await tree.sync()
     print(f"Bot is ready! Logged in as {client.user}")
     print(f"Loaded {len(DB['books'])} books, {verse_count()} verses")

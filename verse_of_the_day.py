@@ -17,6 +17,7 @@ import requests
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
+VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")
 EMBED_COLOR = 0x8B4513
 
 
@@ -170,11 +171,18 @@ def main():
 
     print("Asking Claude to pick a passage...")
     verse = pick_verse(verses_json)
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    verse["date"] = today
     ref = f"{verse['book']} {verse['chapter']}:{verse['verse_start']}"
     if verse["verse_start"] != verse["verse_end"]:
         ref += f"-{verse['verse_end']}"
     print(f"Selected: {ref}")
     print(f"Blurb: {verse['blurb']}")
+
+    # Save VOTD to file so the bot can serve /verseoftheday
+    print(f"Saving to {VOTD_PATH}...")
+    with open(VOTD_PATH, "w", encoding="utf-8") as f:
+        json.dump(verse, f, indent=2, ensure_ascii=False)
 
     print("Posting to Discord...")
     post_to_discord(verse)

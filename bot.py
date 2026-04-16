@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
+VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 
@@ -534,6 +535,43 @@ async def chapter_command(interaction: discord.Interaction, book: str, chapter: 
     await interaction.response.send_message(embed=view.make_embed(), view=view)
 
 
+@tree.command(name="verseoftheday", description="See today's Verse of the Day")
+async def votd_command(interaction: discord.Interaction):
+    if not os.path.exists(VOTD_PATH):
+        embed = discord.Embed(
+            title="Not Available Yet",
+            description="The Verse of the Day hasn't been set yet. Check back later!",
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    with open(VOTD_PATH, "r", encoding="utf-8") as f:
+        votd = json.load(f)
+
+    ref = f"{votd['book']} {votd['chapter']}:{votd['verse_start']}"
+    if votd["verse_start"] != votd["verse_end"]:
+        ref += f"-{votd['verse_end']}"
+
+    verse_lines = []
+    for v in votd["verses"]:
+        verse_lines.append(f"**{v['verse']}** {v['text']}")
+    verse_text = "\n".join(verse_lines)
+
+    embed = discord.Embed(
+        title=f"Verse of the Day — {votd.get('date', 'Today')}",
+        description=(
+            f"**{ref}**\n\n"
+            f"{verse_text}\n\n"
+            f"---\n"
+            f"*{votd['blurb']}*"
+        ),
+        color=EMBED_COLOR,
+    )
+    embed.set_footer(text="Testamentum Bot")
+    await interaction.response.send_message(embed=embed)
+
+
 @tree.command(name="help", description="Show available commands and how to use them")
 async def help_command(interaction: discord.Interaction):
     total_books = len(DB["books"])
@@ -575,6 +613,11 @@ async def help_command(interaction: discord.Interaction):
             "Get a random verse\n"
             "`/random` `/random Psalmicon`"
         ),
+        inline=False,
+    )
+    embed.add_field(
+        name="/verseoftheday",
+        value="See today's curated Verse of the Day with reflection",
         inline=False,
     )
     embed.add_field(

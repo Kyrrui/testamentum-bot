@@ -25,11 +25,11 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python verse_of_the_day.py
 
-      - name: Commit votd.json
+      - name: Commit votd.json and history
         run: |
-          git diff --quiet data/votd.json && echo "No changes" && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/votd.json
+          git add data/votd.json data/votd_history.json
+          git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update verse of the day"
           git push

@@ -20,7 +20,21 @@ ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
 VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")
+HISTORY_PATH = os.path.join(os.path.dirname(__file__), "data", "votd_history.json")
 EMBED_COLOR = 0x8B4513
+
+
+def load_history() -> list[dict]:
+    """Load VOTD history. Each entry has date, book, chapter, verse_start, verse_end."""
+    if not os.path.exists(HISTORY_PATH):
+        return []
+    with open(HISTORY_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_history(history: list[dict]):
+    with open(HISTORY_PATH, "w", encoding="utf-8") as f:
+        json.dump(history, f, indent=2, ensure_ascii=False)
 
 
 def load_stripped_verses() -> str:
@@ -120,18 +134,23 @@ def _gather_context() -> str:
     return context
 
 
-def pick_verse(verses_json: str) -> dict:
+def pick_verse(verses_json: str, history: list[dict]) -> dict:
     """Pick a verse of the day in two phases:
 
     1. Gather today's context via web/news search (no LLM needed)
-    2. Send context + full Testamentum to Claude Sonnet for verse selection
-
-    This avoids the agentic loop and keeps API calls to a single request.
+    2. Send context + full Testamentum + history to Claude Sonnet
 
     Returns {book, chapter, verse_start, verse_end, verses: [{verse, text}], blurb}.
     """
     # Phase 1: gather context
     context = _gather_context()
+
+    # Build history string so Claude knows what's been used
+    if history:
+        past_refs = [f"{h['book']} {h['chapter']}:{h['verse_start']}-{h['verse_end']}" for h in history]
+        history_str = "Previously used passages (DO NOT repeat any of these):\n" + "\n".join(past_refs)
+    else:
+        history_str = ""
 
     # Phase 2: single Claude call with context + verses
     system = [
@@ -151,6 +170,10 @@ def pick_verse(verses_json: str) -> dict:
                 "Guidelines for picking a passage:\n"
                 "- Pick a range of 2-6 consecutive verses that form a complete thought.\n"
                 "- Vary selections across all books — don't favor any single book.\n"
+                "- NEVER repeat a previously used passage (you'll be given the history).\n"
+                "- Do NOT default to famous or opening verses (e.g. Evangelicon 1:1). "
+                "Dig deep — find hidden gems, lesser-known passages, surprising verses. "
+                "The Testamentum has 4,300+ verses across 24 books. Explore all of it.\n"
                 "- Pick passages that are thought-provoking, comforting, challenging, or spiritually rich.\n"
                 "- Your blurb should feel like a thoughtful pastor wrote it — warm, genuine, specific. "
                 "If there's a real major event or holiday, connect to it. If not, just reflect on the passage itself "
@@ -171,7 +194,8 @@ def pick_verse(verses_json: str) -> dict:
             "role": "user",
             "content": (
                 f"Here is today's context:\n\n{context}\n\n"
-                "Based on the above, pick a Verse of the Day passage from the Testamentum.\n\n"
+                + (f"{history_str}\n\n" if history_str else "")
+                + "Based on the above, pick a Verse of the Day passage from the Testamentum.\n\n"
                 "Respond with ONLY this JSON format:\n"
                 "{\n"
                 '  "book": "Book Name",\n'
@@ -259,12 +283,13 @@ def main():
         print("ERROR: DISCORD_WEBHOOK_URL not set.")
         sys.exit(1)
 
-    print("Loading verses...")
+    print("Loading verses and history...")
     verses_json = load_stripped_verses()
-    print(f"Loaded {len(verses_json):,} chars of verse data.")
+    history = load_history()
+    print(f"Loaded {len(verses_json):,} chars of verse data, {len(history)} past picks.")
 
     print("Asking Claude to pick a passage...")
-    verse = pick_verse(verses_json)
+    verse = pick_verse(verses_json, history)
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     verse["date"] = today
     ref = f"{verse['book']} {verse['chapter']}:{verse['verse_start']}"
@@ -277,6 +302,17 @@ def main():
     print(f"Saving to {VOTD_PATH}...")
     with open(VOTD_PATH, "w", encoding="utf-8") as f:
         json.dump(verse, f, indent=2, ensure_ascii=False)
+
+    # Append to history
+    history.append({
+        "date": today,
+        "book": verse["book"],
+        "chapter": verse["chapter"],
+        "verse_start": verse["verse_start"],
+        "verse_end": verse["verse_end"],
+    })
+    save_history(history)
+    print(f"History updated ({len(history)} entries).")
 
     print("Posting to Discord...")
     post_to_discord(verse)

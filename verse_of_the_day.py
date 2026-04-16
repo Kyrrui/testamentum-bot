@@ -37,12 +37,16 @@ def load_stripped_verses() -> str:
     return json.dumps(stripped, ensure_ascii=False)
 
 
-def pick_verse(verses_json: str) -> dict:
-    """Ask Claude to pick a verse range of the day.
-
-    Returns {book, chapter, verse_start, verse_end, verses: [{verse, text}], blurb}.
-    """
-    today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
+def _call_anthropic(system: list, messages: list, tools: list | None = None) -> dict:
+    """Make a single Anthropic API call and return the response JSON."""
+    body = {
+        "model": "claude-sonnet-4-20250514",
+        "max_tokens": 4096,
+        "system": system,
+        "messages": messages,
+    }
+    if tools:
+        body["tools"] = tools
 
     resp = requests.post(
         "https://api.anthropic.com/v1/messages",
@@ -51,77 +55,190 @@ def pick_verse(verses_json: str) -> dict:
             "content-type": "application/json",
             "anthropic-version": "2023-06-01",
         },
-        json={
-            "model": "claude-sonnet-4-20250514",
-            "max_tokens": 2048,
-            "system": [
-                {
-                    "type": "text",
-                    "text": (
-                        "You are a thoughtful scholar of the Marcionite Testamentum. "
-                        "Your role is to select a meaningful passage (verse range) for the Verse of the Day.\n\n"
-                        "Guidelines:\n"
-                        "- Pick a range of 2-6 consecutive verses that form a complete thought or passage.\n"
-                        "- Consider what day it is — holidays (Easter, Christmas, Thanksgiving, etc.), "
-                        "days of remembrance, seasonal themes, or what's happening in the world.\n"
-                        "- Vary your selections across all books — don't favor any single book.\n"
-                        "- Pick passages that are thought-provoking, comforting, challenging, or spiritually rich.\n"
-                        "- Your blurb should connect the passage to today — mention the date, any holidays, "
-                        "current events, seasonal themes, or why this particular passage speaks to the present moment. "
-                        "Be specific and grounded, not generic."
-                    ),
-                    "cache_control": {"type": "ephemeral"},
-                },
-                {
-                    "type": "text",
-                    "text": f"Here is the complete Testamentum:\n\n{verses_json}",
-                    "cache_control": {"type": "ephemeral"},
-                },
-            ],
-            "messages": [
-                {
-                    "role": "user",
-                    "content": (
-                        f"Today is {today}. "
-                        "Pick a Verse of the Day passage from the Testamentum. "
-                        "Respond in EXACTLY this JSON format, nothing else:\n"
-                        "{\n"
-                        '  "book": "Book Name",\n'
-                        '  "chapter": "1",\n'
-                        '  "verse_start": "1",\n'
-                        '  "verse_end": "4",\n'
-                        '  "verses": [\n'
-                        '    {"verse": "1", "text": "full verse text"},\n'
-                        '    {"verse": "2", "text": "full verse text"}\n'
-                        "  ],\n"
-                        '  "blurb": "A 2-4 sentence reflection connecting this passage to today. '
-                        "Mention the date, any holidays or observances, current events, or seasonal themes. "
-                        'Explain why this passage is meaningful right now."\n'
-                        "}"
-                    ),
-                },
-            ],
-        },
+        json=body,
         timeout=120,
     )
     resp.raise_for_status()
-    data = resp.json()
+    return resp.json()
 
-    content = data["content"][0]["text"].strip()
-    # Parse the JSON response — handle potential markdown wrapping
-    if content.startswith("```"):
-        content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()
 
-    result = json.loads(content)
+def _do_web_search(query: str) -> str:
+    """Perform a web search using DuckDuckGo and return text results."""
+    try:
+        from ddgs import DDGS
+        results = DDGS().text(query, max_results=8)
+        formatted = []
+        for r in results:
+            formatted.append(f"{r['title']}\n{r['body']}")
+        return "\n\n".join(formatted) if formatted else "No results found."
+    except Exception as e:
+        return f"Search failed: {e}"
 
-    # Log cache performance
-    usage = data.get("usage", {})
-    cache_read = usage.get("cache_read_input_tokens", 0)
-    cache_create = usage.get("cache_creation_input_tokens", 0)
-    input_tokens = usage.get("input_tokens", 0)
-    print(f"Tokens — input: {input_tokens}, cache_read: {cache_read}, cache_create: {cache_create}")
 
-    return result
+def _do_news_search(query: str) -> str:
+    """Search recent news using DuckDuckGo and return headlines."""
+    try:
+        from ddgs import DDGS
+        results = DDGS().news(query, max_results=8)
+        formatted = []
+        for r in results:
+            formatted.append(f"{r['title']}\n{r['body']}")
+        return "\n\n".join(formatted) if formatted else "No news results found."
+    except Exception as e:
+        return f"News search failed: {e}"
+
+
+def pick_verse(verses_json: str) -> dict:
+    """Ask Claude to pick a verse range of the day.
+
+    Claude has access to web search so it can look up today's news,
+    holidays, and events before choosing a passage.
+
+    Returns {book, chapter, verse_start, verse_end, verses: [{verse, text}], blurb}.
+    """
+    today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
+
+    system = [
+        {
+            "type": "text",
+            "text": (
+                "You are a thoughtful scholar of the Marcionite Testamentum. "
+                "Your role is to select a meaningful passage (verse range) for the Verse of the Day.\n\n"
+                "You have access to a web_search tool. USE IT to look up:\n"
+                "- What holidays or observances fall on today's date\n"
+                "- Today's major news headlines and current events\n"
+                "- Anything else that helps you connect the passage to the present moment\n\n"
+                "Do at least 2-3 searches before picking a verse. "
+                "Do NOT guess or assume what holidays or events are happening — search first.\n\n"
+                "Guidelines for picking a passage:\n"
+                "- Pick a range of 2-6 consecutive verses that form a complete thought.\n"
+                "- Vary selections across all books — don't favor any single book.\n"
+                "- Pick passages that are thought-provoking, comforting, challenging, or spiritually rich.\n"
+                "- Your blurb should connect the passage to today based on what you found from searching. "
+                "Reference specific real events, holidays, or news. Be specific and grounded, not generic.\n"
+                "- Do NOT fabricate or assume any holidays, events, or news — only reference what you confirmed via search."
+            ),
+            "cache_control": {"type": "ephemeral"},
+        },
+        {
+            "type": "text",
+            "text": f"Here is the complete Testamentum:\n\n{verses_json}",
+            "cache_control": {"type": "ephemeral"},
+        },
+    ]
+
+    tools = [
+        {
+            "name": "web_search",
+            "description": "Search the web for general information — holidays, observances, historical events for today's date, etc.",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "The search query",
+                    }
+                },
+                "required": ["query"],
+            },
+        },
+        {
+            "name": "news_search",
+            "description": "Search recent news headlines and current events. Use this to find out what's happening in the world today.",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "The news search query",
+                    }
+                },
+                "required": ["query"],
+            },
+        },
+    ]
+
+    messages = [
+        {
+            "role": "user",
+            "content": (
+                f"Today is {today}. "
+                "First, search the web to find out what's happening today — holidays, observances, "
+                "major news headlines, current events. Do multiple searches.\n\n"
+                "Then, pick a Verse of the Day passage from the Testamentum that connects to what you found.\n\n"
+                "After your searches, respond with ONLY this JSON format:\n"
+                "{\n"
+                '  "book": "Book Name",\n'
+                '  "chapter": "1",\n'
+                '  "verse_start": "1",\n'
+                '  "verse_end": "4",\n'
+                '  "verses": [\n'
+                '    {"verse": "1", "text": "full verse text"},\n'
+                '    {"verse": "2", "text": "full verse text"}\n'
+                "  ],\n"
+                '  "blurb": "A 2-4 sentence reflection connecting this passage to today. '
+                "Reference specific holidays, news, or events you found. "
+                'Be specific and grounded."\n'
+                "}"
+            ),
+        },
+    ]
+
+    # Agentic loop: let Claude search as much as it wants, then respond
+    max_turns = 10
+    for turn in range(max_turns):
+        data = _call_anthropic(system, messages, tools)
+
+        # Log usage
+        usage = data.get("usage", {})
+        cache_read = usage.get("cache_read_input_tokens", 0)
+        cache_create = usage.get("cache_creation_input_tokens", 0)
+        input_tokens = usage.get("input_tokens", 0)
+        print(f"  Turn {turn + 1} — input: {input_tokens}, cache_read: {cache_read}, cache_create: {cache_create}")
+
+        # Check if Claude wants to use tools
+        if data["stop_reason"] == "tool_use":
+            # Process all tool calls
+            tool_results = []
+            for block in data["content"]:
+                if block["type"] == "tool_use":
+                    query = block["input"]["query"]
+                    if block["name"] == "news_search":
+                        print(f"  News search: {query}")
+                        result = _do_news_search(query)
+                    else:
+                        print(f"  Web search: {query}")
+                        result = _do_web_search(query)
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block["id"],
+                        "content": result,
+                    })
+
+            # Add assistant message and tool results to conversation
+            messages.append({"role": "assistant", "content": data["content"]})
+            messages.append({"role": "user", "content": tool_results})
+            continue
+
+        # Claude is done searching — extract the final JSON response
+        text_content = ""
+        for block in data["content"]:
+            if block["type"] == "text":
+                text_content += block["text"]
+
+        content = text_content.strip()
+        if content.startswith("```"):
+            content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+
+        # Find JSON in the response (Claude might include preamble text)
+        json_start = content.find("{")
+        json_end = content.rfind("}") + 1
+        if json_start >= 0 and json_end > json_start:
+            content = content[json_start:json_end]
+
+        return json.loads(content)
+
+    raise RuntimeError("Claude did not produce a final answer within the turn limit.")
 
 
 def post_to_discord(verse: dict):

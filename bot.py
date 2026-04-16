@@ -1441,25 +1441,31 @@ async def postquiz_command(interaction: discord.Interaction):
     await interaction.followup.send("Daily quiz posted!", ephemeral=True)
 
 
-@tree.command(name="clearleaderboard", description="Reset the all-time quiz leaderboard (admin only)")
+@tree.command(name="clearleaderboard", description="Reset this server's quiz leaderboard (admin only)")
 @app_commands.default_permissions(administrator=True)
 async def clearleaderboard_command(interaction: discord.Interaction):
-    _save_alltime_lb({})
-    await interaction.response.send_message("All-time leaderboard has been reset.", ephemeral=True)
+    guild_id = str(interaction.guild_id)
+    lb = _load_alltime_lb()
+    if guild_id in lb:
+        del lb[guild_id]
+        _save_alltime_lb(lb)
+    await interaction.response.send_message("This server's leaderboard has been reset.", ephemeral=True)
 
 
-@tree.command(name="leaderboard", description="View the all-time daily quiz leaderboard")
+@tree.command(name="leaderboard", description="View this server's all-time quiz leaderboard")
 async def leaderboard_command(interaction: discord.Interaction):
-    lb_text = _build_alltime_leaderboard(15)
+    guild_id = str(interaction.guild_id) if interaction.guild_id else None
+    lb_text = _build_alltime_leaderboard(guild_id, 15)
     embed = discord.Embed(
         title="All-Time Quiz Leaderboard",
         description=lb_text,
         color=EMBED_COLOR,
     )
-    lb = _load_alltime_lb()
-    total_games = sum(e["games_played"] for e in lb.values()) if lb else 0
-    total_perfect = sum(e["perfect"] for e in lb.values()) if lb else 0
-    embed.set_footer(text=f"{len(lb)} players | {total_games} games played | {total_perfect} perfect scores")
+    all_lb = _load_alltime_lb()
+    guild_lb = all_lb.get(guild_id, {}) if guild_id else {}
+    total_games = sum(e["games_played"] for e in guild_lb.values()) if guild_lb else 0
+    total_perfect = sum(e["perfect"] for e in guild_lb.values()) if guild_lb else 0
+    embed.set_footer(text=f"{len(guild_lb)} players | {total_games} games played | {total_perfect} perfect scores")
     await interaction.response.send_message(embed=embed)
 
 
@@ -1613,7 +1619,7 @@ def _save_daily_quiz(quiz: dict):
 
 
 def _load_alltime_lb() -> dict:
-    """Load all-time leaderboard. {user_id: {name, total_score, games_played, perfect}}"""
+    """Load all-time leaderboard. {guild_id: {user_id: {name, total_score, games_played, perfect}}}"""
     if not os.path.exists(ALLTIME_LB_PATH):
         return {}
     with open(ALLTIME_LB_PATH, "r", encoding="utf-8") as f:
@@ -1625,16 +1631,17 @@ def _save_alltime_lb(lb: dict):
         json.dump(lb, f, indent=2, ensure_ascii=False)
 
 
-def _update_alltime_score(user_id: str, user_name: str, score: int):
-    """Add a completed quiz score to the all-time leaderboard."""
+def _update_alltime_score(guild_id: str, user_id: str, user_name: str, score: int):
+    """Add a completed quiz score to a server's all-time leaderboard."""
     lb = _load_alltime_lb()
-    if user_id not in lb:
-        lb[user_id] = {"name": user_name, "total_score": 0, "games_played": 0, "perfect": 0}
-    lb[user_id]["name"] = user_name  # keep name current
-    lb[user_id]["total_score"] += score
-    lb[user_id]["games_played"] += 1
+    guild_lb = lb.setdefault(guild_id, {})
+    if user_id not in guild_lb:
+        guild_lb[user_id] = {"name": user_name, "total_score": 0, "games_played": 0, "perfect": 0}
+    guild_lb[user_id]["name"] = user_name
+    guild_lb[user_id]["total_score"] += score
+    guild_lb[user_id]["games_played"] += 1
     if score == 3:
-        lb[user_id]["perfect"] += 1
+        guild_lb[user_id]["perfect"] += 1
     _save_alltime_lb(lb)
 
 
@@ -1657,9 +1664,13 @@ def _build_today_leaderboard(quiz: dict) -> str:
     return "\n".join(lines)
 
 
-def _build_alltime_leaderboard(max_entries: int = 10) -> str:
-    """Build all-time leaderboard string."""
-    lb = _load_alltime_lb()
+def _build_alltime_leaderboard(guild_id: str | None = None, max_entries: int = 10) -> str:
+    """Build all-time leaderboard string for a specific server."""
+    all_lb = _load_alltime_lb()
+    if not all_lb or not guild_id:
+        return "*No scores yet*"
+
+    lb = all_lb.get(guild_id, {})
     if not lb:
         return "*No scores yet*"
 
@@ -1680,7 +1691,6 @@ def _build_alltime_leaderboard(max_entries: int = 10) -> str:
 async def _update_quiz_embed(quiz: dict):
     """Update quiz embeds in all servers with both leaderboards."""
     today_lb = _build_today_leaderboard(quiz)
-    alltime_lb = _build_alltime_leaderboard(5)
 
     # Get all message locations
     messages = quiz.get("messages", {})
@@ -1696,6 +1706,9 @@ async def _update_quiz_embed(quiz: dict):
             message = await channel.fetch_message(int(msg_id))
         except discord.NotFound:
             continue
+
+        guild_id = str(channel.guild.id) if channel.guild else None
+        alltime_lb = _build_alltime_leaderboard(guild_id, 5)
 
         embed = message.embeds[0]
         embed.clear_fields()
@@ -1718,6 +1731,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
         return
 
     user_id = str(interaction.user.id)
+    guild_id = str(interaction.guild_id) if interaction.guild_id else "dm"
     user_name = interaction.user.display_name
     lb = quiz.setdefault("leaderboard", {})
 
@@ -1771,7 +1785,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             )
         else:
             user_entry["done"] = True
-            _update_alltime_score(user_id, user_name, user_entry["score"])
+            _update_alltime_score(guild_id, user_id, user_name, user_entry["score"])
             _save_daily_quiz(quiz)
             await _update_quiz_embed(quiz)
             await interaction.response.send_message(
@@ -1800,7 +1814,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             )
         else:
             user_entry["done"] = True
-            _update_alltime_score(user_id, user_name, user_entry["score"])
+            _update_alltime_score(guild_id, user_id, user_name, user_entry["score"])
             _save_daily_quiz(quiz)
             await _update_quiz_embed(quiz)
             await interaction.response.send_message(
@@ -1814,7 +1828,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
         user_entry["done"] = True
         if correct:
             user_entry["score"] += 1
-        _update_alltime_score(user_id, user_name, user_entry["score"])
+        _update_alltime_score(guild_id, user_id, user_name, user_entry["score"])
         _save_daily_quiz(quiz)
         await _update_quiz_embed(quiz)
         if correct:
@@ -1865,7 +1879,6 @@ async def _auto_post_quiz():
         return
 
     quiz_data = _generate_quiz_data()
-    alltime_text = _build_alltime_leaderboard(5)
 
     # Track message IDs per channel for leaderboard updates
     quiz_data["messages"] = {}
@@ -1875,6 +1888,9 @@ async def _auto_post_quiz():
         if not channel:
             print(f"  Quiz channel {ch_id} not found, skipping.")
             continue
+
+        guild_id = str(channel.guild.id) if channel.guild else None
+        alltime_text = _build_alltime_leaderboard(guild_id, 5)
 
         embed = discord.Embed(
             title="Daily Scripture Quiz",

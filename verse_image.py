@@ -68,7 +68,6 @@ def render_verse(
     font_num = ImageFont.truetype(FONT_REGULAR, 28)
     font_ref = ImageFont.truetype(FONT_ITALIC, 30)
     font_section = ImageFont.truetype(FONT_ITALIC, 26)
-    font_watermark = ImageFont.truetype(FONT_ITALIC, 18)
 
     # Pre-calculate layout height
     line_spacing = 8
@@ -104,7 +103,7 @@ def render_verse(
     y += 50  # gap before reference
     ref_bbox = font_ref.getbbox(reference)
     y += (ref_bbox[3] - ref_bbox[1])
-    y += 60  # bottom padding + watermark
+    y += 70  # bottom padding + border
 
     height = max(400, y)
 
@@ -189,12 +188,6 @@ def render_verse(
     ref_w = ref_bbox[2] - ref_bbox[0]
     draw.text(((WIDTH - ref_w) // 2, y), reference, fill=REF_COLOR, font=font_ref)
 
-    # Watermark
-    y = height - border_inset - 25
-    wm_text = "Testamentum Bot"
-    wm_bbox = font_watermark.getbbox(wm_text)
-    wm_w = wm_bbox[2] - wm_bbox[0]
-    draw.text(((WIDTH - wm_w) // 2, y), wm_text, fill=(80, 70, 55), font=font_watermark)
 
     # Save to BytesIO
     buf = io.BytesIO()

@@ -965,7 +965,11 @@ async def image_command(interaction: discord.Interaction, reference: str):
 
 
 class QuizView(TimeoutView):
-    """Scripture quiz — guess the book."""
+    """Scripture quiz — three rounds: book → chapter → verse."""
+
+    STAGE_BOOK = 0
+    STAGE_CHAPTER = 1
+    STAGE_VERSE = 2
 
     def __init__(self, book: str, chapter: str, verse: str, text: str):
         super().__init__(timeout=900)
@@ -973,52 +977,173 @@ class QuizView(TimeoutView):
         self.chapter = chapter
         self.verse = verse
         self.text = text
-        self.revealed = False
+        self.stage = self.STAGE_BOOK
+        self.score = 0
+        self.answered = False
 
-        # Pick 4 choices: the correct one + 3 random wrong ones
+        self._setup_book_buttons()
+
+    def _clear_buttons(self):
+        self.clear_items()
+
+    def _setup_book_buttons(self):
+        self._clear_buttons()
         all_books = list(DB["books"].keys())
-        wrong = [b for b in all_books if b != book]
+        wrong = [b for b in all_books if b != self.book]
         random.shuffle(wrong)
-        self.choices = wrong[:3] + [book]
-        random.shuffle(self.choices)
+        choices = wrong[:3] + [self.book]
+        random.shuffle(choices)
 
-        for choice in self.choices:
+        for choice in choices:
             btn = ui.Button(
                 label=choice,
                 style=discord.ButtonStyle.secondary,
-                custom_id=f"quiz_{choice}",
             )
-            btn.callback = self._make_callback(choice)
+            btn.callback = self._make_book_callback(choice)
             self.add_item(btn)
 
-    def _make_callback(self, choice: str):
+    def _setup_chapter_buttons(self):
+        self._clear_buttons()
+        ch_count = len(DB["books"][self.book]["chapters"])
+        all_chapters = list(range(1, ch_count + 1))
+        correct_ch = int(self.chapter)
+        wrong = [c for c in all_chapters if c != correct_ch]
+        random.shuffle(wrong)
+        choices = wrong[:3] + [correct_ch]
+        random.shuffle(choices)
+
+        for choice in choices:
+            btn = ui.Button(
+                label=f"Chapter {choice}",
+                style=discord.ButtonStyle.secondary,
+            )
+            btn.callback = self._make_chapter_callback(choice)
+            self.add_item(btn)
+
+    def _setup_verse_buttons(self):
+        self._clear_buttons()
+        ch_data = DB["books"][self.book]["chapters"][self.chapter]
+        all_verses = [int(v) for v in ch_data["verses"].keys()]
+        correct_v = int(self.verse)
+        wrong = [v for v in all_verses if v != correct_v]
+        random.shuffle(wrong)
+        choices = wrong[:3] + [correct_v]
+        random.shuffle(choices)
+
+        for choice in choices:
+            btn = ui.Button(
+                label=f"Verse {choice}",
+                style=discord.ButtonStyle.secondary,
+            )
+            btn.callback = self._make_verse_callback(choice)
+            self.add_item(btn)
+
+    def _make_book_callback(self, choice: str):
         async def callback(interaction: discord.Interaction):
-            if self.revealed:
-                await interaction.response.send_message(
-                    "This quiz has already been answered!", ephemeral=True
-                )
+            if self.answered:
+                await interaction.response.send_message("Already answered!", ephemeral=True)
                 return
-            self.revealed = True
 
             correct = choice == self.book
+            embed = interaction.message.embeds[0]
             ref = f"{self.book} {self.chapter}:{self.verse}"
 
-            # Update buttons to show correct/wrong
-            for item in self.children:
-                if isinstance(item, ui.Button):
-                    if item.custom_id == f"quiz_{self.book}":
-                        item.style = discord.ButtonStyle.success
-                    elif item.custom_id == f"quiz_{choice}" and not correct:
-                        item.style = discord.ButtonStyle.danger
-                    item.disabled = True
-
-            embed = interaction.message.embeds[0]
             if correct:
-                embed.color = 0x00FF00
-                embed.set_footer(text=f"Correct! This is {ref} — answered by {interaction.user.display_name}")
+                self.score += 1
+                self.stage = self.STAGE_CHAPTER
+                self._setup_chapter_buttons()
+                embed.description = (
+                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
+                    f"Book: **{self.book}** \u2705\n"
+                    f"*Now guess the chapter!*"
+                )
+                embed.color = EMBED_COLOR
+                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                await interaction.response.edit_message(embed=embed, view=self)
             else:
+                self.answered = True
+                self._clear_buttons()
                 embed.color = 0xFF0000
-                embed.set_footer(text=f"Wrong! This is {ref} — answered by {interaction.user.display_name}")
+                embed.description = (
+                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
+                    f"Wrong! The answer is **{ref}**"
+                )
+                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                await interaction.response.edit_message(embed=embed, view=self)
+
+        return callback
+
+    def _make_chapter_callback(self, choice: int):
+        async def callback(interaction: discord.Interaction):
+            if self.answered:
+                await interaction.response.send_message("Already answered!", ephemeral=True)
+                return
+
+            correct = choice == int(self.chapter)
+            embed = interaction.message.embeds[0]
+            ref = f"{self.book} {self.chapter}:{self.verse}"
+
+            if correct:
+                self.score += 1
+                self.stage = self.STAGE_VERSE
+                self._setup_verse_buttons()
+                embed.description = (
+                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
+                    f"Book: **{self.book}** \u2705\n"
+                    f"Chapter: **{self.chapter}** \u2705\n"
+                    f"*Now guess the verse!*"
+                )
+                embed.color = EMBED_COLOR
+                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                await interaction.response.edit_message(embed=embed, view=self)
+            else:
+                self.answered = True
+                self._clear_buttons()
+                embed.color = 0xFF0000
+                embed.description = (
+                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
+                    f"Book: **{self.book}** \u2705\n"
+                    f"Wrong chapter! The answer is **{ref}**"
+                )
+                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+                await interaction.response.edit_message(embed=embed, view=self)
+
+        return callback
+
+    def _make_verse_callback(self, choice: int):
+        async def callback(interaction: discord.Interaction):
+            if self.answered:
+                await interaction.response.send_message("Already answered!", ephemeral=True)
+                return
+
+            self.answered = True
+            correct = choice == int(self.verse)
+            embed = interaction.message.embeds[0]
+            ref = f"{self.book} {self.chapter}:{self.verse}"
+
+            if correct:
+                self.score += 1
+                self._clear_buttons()
+                embed.color = 0x00FF00
+                embed.description = (
+                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
+                    f"Book: **{self.book}** \u2705\n"
+                    f"Chapter: **{self.chapter}** \u2705\n"
+                    f"Verse: **{self.verse}** \u2705\n\n"
+                    f"**Perfect score!**"
+                )
+                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
+            else:
+                self._clear_buttons()
+                embed.color = 0xFFAA00
+                embed.description = (
+                    f"*Which book is this verse from?*\n\n>>> {self.text}\n\n"
+                    f"Book: **{self.book}** \u2705\n"
+                    f"Chapter: **{self.chapter}** \u2705\n"
+                    f"Verse: **{self.verse}** \u274c (you guessed {choice})\n\n"
+                    f"**Close! The answer is {ref}**"
+                )
+                embed.set_footer(text=f"Score: {self.score}/3 — answered by {interaction.user.display_name}")
 
             await interaction.response.edit_message(embed=embed, view=self)
 

@@ -169,7 +169,7 @@ def parse_book(book_name: str, url: str) -> dict:
 
     chapters = {}
     current_chapter = 0
-    is_psalm = "psalm" in book_name.lower()
+    current_section = None
 
     for block in blocks:
         if block[0] == "heading":
@@ -180,17 +180,23 @@ def parse_book(book_name: str, url: str) -> dict:
                 num = word_to_number(word)
                 if num is not None:
                     current_chapter = num
-                    chapters[str(current_chapter)] = {}
+                    current_section = None
+                    chapters[str(current_chapter)] = {"sections": {}, "verses": {}}
+            else:
+                # Section heading within a chapter
+                current_section = heading_text
         elif block[0] == "verse":
             verse_num = block[1]
             verse_text = block[2]
             # Clean up the text
             verse_text = re.sub(r"\s+", " ", verse_text).strip()
             if current_chapter == 0:
-                # Some books may not have chapter headings (single-chapter books)
                 current_chapter = 1
-                chapters["1"] = {}
-            chapters.setdefault(str(current_chapter), {})[str(verse_num)] = verse_text
+                chapters["1"] = {"sections": {}, "verses": {}}
+            ch = chapters.setdefault(str(current_chapter), {"sections": {}, "verses": {}})
+            ch["verses"][str(verse_num)] = verse_text
+            if current_section:
+                ch["sections"][str(verse_num)] = current_section
 
     return {
         "name": book_name,
@@ -207,7 +213,7 @@ def scrape_all() -> dict:
     for book_name, url in BOOKS.items():
         try:
             book_data = parse_book(book_name, url)
-            verse_count = sum(len(v) for v in book_data["chapters"].values())
+            verse_count = sum(len(ch["verses"]) for ch in book_data["chapters"].values())
             chapter_count = len(book_data["chapters"])
             print(f"    -> {chapter_count} chapters, {verse_count} verses")
             if verse_count == 0:
@@ -224,9 +230,9 @@ def validate_scrape(db: dict, errors: list[str]) -> bool:
     """Check that the scrape looks reasonable before overwriting the JSON."""
     total_books = len(db["books"])
     total_verses = sum(
-        len(v)
+        len(ch["verses"])
         for book in db["books"].values()
-        for v in book["chapters"].values()
+        for ch in book["chapters"].values()
     )
 
     # Must have all books
@@ -251,7 +257,7 @@ def validate_scrape(db: dict, errors: list[str]) -> bool:
     for book, ch, v in canaries:
         if book not in db["books"]:
             continue
-        text = db["books"][book]["chapters"].get(ch, {}).get(v, "")
+        text = db["books"][book]["chapters"].get(ch, {}).get("verses", {}).get(v, "")
         if len(text) < 10:
             errors.append(f"Canary verse {book} {ch}:{v} is missing or too short")
 
@@ -273,9 +279,9 @@ def main():
 
     total_books = len(db["books"])
     total_verses = sum(
-        len(v)
+        len(ch["verses"])
         for book in db["books"].values()
-        for v in book["chapters"].values()
+        for ch in book["chapters"].values()
     )
     print(f"\nScraped {total_books} books, {total_verses} total verses.")
 

@@ -2281,9 +2281,9 @@ async def _auto_post_quiz():
         guild_id = str(channel.guild.id) if channel.guild else None
         alltime_text = _build_alltime_leaderboard(guild_id, 5)
 
-        # Generate verse image without reference
-        quiz_img = render_verse("", [(1, quiz_data["text"])], hide_reference=True)
-        file = discord.File(quiz_img, filename="quiz.png")
+        # Generate fresh image and file for each channel
+        img_buf = render_verse("", [(1, quiz_data["text"])], hide_reference=True)
+        file = discord.File(img_buf, filename="quiz.png")
 
         embed = discord.Embed(
             title="Daily Scripture Quiz",
@@ -2307,7 +2307,6 @@ async def _auto_post_quiz():
             msg = await channel.send(embed=embed, view=view, file=file)
             quiz_data["messages"][str(ch_id)] = str(msg.id)
             print(f"  Posted quiz to #{channel.name} ({ch_id})")
-            quiz_img.seek(0)  # reset for next channel
         except discord.Forbidden:
             print(f"  No permission to post in {ch_id}, skipping.")
 

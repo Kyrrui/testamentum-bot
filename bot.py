@@ -2144,11 +2144,34 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
         return
 
     if user_entry["stage"] != stage:
-        await interaction.response.send_message(
-            f"You're on the **{user_entry['stage']}** round! "
-            f"Use the buttons from your current stage.",
-            ephemeral=True,
-        )
+        # User is on a later stage but clicked an earlier button.
+        # Resend the buttons for their current stage so they can continue.
+        current = user_entry["stage"]
+        if current == "chapter":
+            view = ui.View(timeout=None)
+            for j, ch in enumerate(quiz["chapter_choices"]):
+                btn = ui.Button(label=f"Chapter {ch}", style=discord.ButtonStyle.secondary)
+                btn.callback = _make_ephemeral_handler(f"dq_chapter_{j}")
+                view.add_item(btn)
+            await interaction.response.send_message(
+                f"You already got the book right (**{quiz['book']}**).\n\n*Now guess the chapter:*",
+                view=view, ephemeral=True,
+            )
+        elif current == "verse":
+            view = ui.View(timeout=None)
+            for j, v in enumerate(quiz["verse_choices"]):
+                btn = ui.Button(label=f"Verse {v}", style=discord.ButtonStyle.secondary)
+                btn.callback = _make_ephemeral_handler(f"dq_verse_{j}")
+                view.add_item(btn)
+            await interaction.response.send_message(
+                f"You already got **{quiz['book']} Chapter {quiz['chapter']}** right.\n\n*Now guess the verse:*",
+                view=view, ephemeral=True,
+            )
+        else:
+            await interaction.response.send_message(
+                f"You're on the **{current}** round! Use the buttons from your current stage.",
+                ephemeral=True,
+            )
         return
 
     ref = f"{quiz['book']} {quiz['chapter']}:{quiz['verse']}"

@@ -1,22 +1,26 @@
 {
-  "book": "1 Timothy",
-  "chapter": "6",
-  "verse_start": "6",
-  "verse_end": "8",
+  "book": "Evangelicon",
+  "chapter": "23",
+  "verse_start": "28",
+  "verse_end": "31",
   "verses": [
     {
-      "verse": "6",
-      "text": "But godliness with contentment is great gain."
+      "verse": "28",
+      "text": "But they constrained him, saying, Abide with us: for it is toward evening, and the day is far spent. And he went in to tarry with them."
     },
     {
-      "verse": "7",
-      "text": "For we brought nothing into this world, and it is certain we can carry nothing out."
+      "verse": "29",
+      "text": "And it came to pass, as he sat at meat with them, he took bread, and blessed it, and brake, and gave to them."
     },
     {
-      "verse": "8",
-      "text": "And having food and raiment let us be therewith content."
+      "verse": "30",
+      "text": "And their eyes were opened, and they knew him; and he vanished out of their sight."
+    },
+    {
+      "verse": "31",
+      "text": "And they said one to another, Did not our heart burn within us, while he talked with us by the way, and while he opened to us the scriptures?"
     }
   ],
-  "blurb": "In a culture that constantly tells us we need more—more success, more recognition, more stuff—Paul's words cut through the noise with startling clarity. True wealth isn't found in accumulation but in the quiet satisfaction of having what we need. On this ordinary Saturday, these verses remind us that contentment is not settling for less, but recognizing that godliness paired with gratitude for simple provisions is the richest life of all.",
-  "date": "2026-04-18"
+  "blurb": "The disciples on the road to Emmaus discovered that their mysterious companion was the risen Christ only when he broke bread with them—the very moment of revelation was also the moment he disappeared from sight. Sometimes our deepest encounters with the divine come not in grand displays but in simple acts of hospitality and shared meals. Their hearts had been burning with recognition long before their eyes were opened, reminding us that spiritual truth often registers in our hearts before our minds can fully grasp it.",
+  "date": "2026-04-19"
 }

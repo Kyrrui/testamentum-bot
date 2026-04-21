@@ -1,26 +1,30 @@
 {
-  "book": "Evangelicon",
-  "chapter": "19",
-  "verse_start": "22",
-  "verse_end": "25",
+  "book": "Psalmicon",
+  "chapter": "33",
+  "verse_start": "1",
+  "verse_end": "5",
   "verses": [
     {
-      "verse": "22",
-      "text": "And there shall be signs in sun, and moon, and stars; and upon the earth distress of nations, with perplexity; the sea and waves roaring;"
+      "verse": "1",
+      "text": "The dew of the Lord in quietness He distilled upon me:"
     },
     {
-      "verse": "23",
-      "text": "Men fainting for fear, and for expectation of the things which are coming on the world: for the powers of the heavens shall be shaken."
+      "verse": "2",
+      "text": "And the cloud of peace He caused to rise over my head, which guarded me continually;"
     },
     {
-      "verse": "24",
-      "text": "And then shall they see the Son of man coming in a cloud with great power."
+      "verse": "3",
+      "text": "It was to me for salvation: everything was shaken and they were affrighted;"
     },
     {
-      "verse": "25",
-      "text": "And when these things begin to come to pass, then look up, and lift up your heads; for your redemption draweth nigh."
+      "verse": "4",
+      "text": "And there came forth from them a smoke and a judgment; and I was keeping quiet in the order of the Lord:"
+    },
+    {
+      "verse": "5",
+      "text": "More than shelter was He to me and more than foundation."
     }
   ],
-  "blurb": "As news reports speak of major earthquakes and geomagnetic storms affecting our world today, Jesus' words remind us that even cosmic upheavals cannot shake God's ultimate sovereignty. When the earth trembles and the heavens display their power, we're called not to despair but to lift up our heads in hope. These moments of natural wonder and uncertainty point us toward the eternal stability found only in Christ.",
-  "date": "2026-04-20"
+  "blurb": "As news of a powerful 7.7-magnitude earthquake and tsunami alerts shake Japan today, these ancient words remind us of God's steadfast presence amid life's upheavals. When the earth itself trembles and fear grips human hearts, the Lord remains our unshakeable foundation and shelter. In times of natural disaster or personal crisis, we can find peace knowing that God's protective presence guards us continually, offering salvation that no earthly force can disturb.",
+  "date": "2026-04-21"
 }

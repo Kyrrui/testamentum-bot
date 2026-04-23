@@ -60,10 +60,10 @@ def _call_llm(system_text: str, user_text: str) -> str:
     body = {
         "model": OPENROUTER_MODEL,
         "max_tokens": 1024,
-        "response_format": {"type": "json_object"},
         "messages": [
             {"role": "system", "content": system_text},
             {"role": "user", "content": user_text},
+            {"role": "assistant", "content": "{"},  # prefill to force JSON output
         ],
     }
 
@@ -95,6 +95,9 @@ def _call_llm(system_text: str, user_text: str) -> str:
         choice = data["choices"][0]
         finish = choice.get("finish_reason")
         content = choice["message"]["content"] or ""
+        # Reattach the prefill if the model didn't include it
+        if not content.lstrip().startswith("{"):
+            content = "{" + content
         print(f"  Finish reason: {finish}")
         print(f"  Response preview: {content[:300]!r}")
         return content

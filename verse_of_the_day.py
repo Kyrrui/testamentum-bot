@@ -39,17 +39,19 @@ def save_history(history: list[dict]):
 
 
 def load_stripped_verses() -> str:
-    """Load the JSON and strip it to just book -> chapter -> verse -> text."""
+    """Load the verse database as compact plain text (much smaller than JSON)."""
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         db = json.load(f)
 
-    stripped = {}
+    lines = []
     for bname, bdata in db["books"].items():
-        stripped[bname] = {}
-        for ch_num, ch_data in bdata["chapters"].items():
-            stripped[bname][ch_num] = ch_data["verses"]
-
-    return json.dumps(stripped, ensure_ascii=False)
+        lines.append(f"=== {bname} ===")
+        for ch_num in sorted(bdata["chapters"].keys(), key=int):
+            ch_data = bdata["chapters"][ch_num]
+            for v_num in sorted(ch_data["verses"].keys(), key=int):
+                lines.append(f"{ch_num}:{v_num} {ch_data['verses'][v_num]}")
+        lines.append("")
+    return "\n".join(lines)
 
 
 def _call_llm(system_text: str, user_text: str) -> str:
@@ -83,6 +85,8 @@ def _call_llm(system_text: str, user_text: str) -> str:
             print(f"  Response: {resp.text[:200]}")
             time.sleep(wait)
             continue
+        if not resp.ok:
+            print(f"  Error {resp.status_code}: {resp.text[:1000]}")
         resp.raise_for_status()
         data = resp.json()
         # Log usage

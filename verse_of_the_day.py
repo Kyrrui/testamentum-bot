@@ -149,6 +149,15 @@ def pick_verse(verses_json: str, history: list[dict]) -> dict:
     if history:
         past_refs = [f"{h['book']} {h['chapter']}:{h['verse_start']}-{h['verse_end']}" for h in history]
         history_str = "Previously used passages (DO NOT repeat any of these):\n" + "\n".join(past_refs)
+
+        # Include recent blurbs so Claude can avoid repeating topics
+        recent_with_blurbs = [h for h in history[-7:] if h.get("blurb")]
+        if recent_with_blurbs:
+            blurb_lines = [f"- {h['date']}: {h['blurb']}" for h in recent_with_blurbs]
+            history_str += (
+                "\n\nRecent blurbs (DO NOT repeat the same news events or themes):\n"
+                + "\n".join(blurb_lines)
+            )
     else:
         history_str = ""
 
@@ -163,10 +172,15 @@ def pick_verse(verses_json: str, history: list[dict]) -> dict:
                 "IMPORTANT — what counts as relevant context:\n"
                 "- MAJOR holidays only: Christmas, Easter, Thanksgiving, New Year's, etc. "
                 "Ignore made-up novelty days like 'National Pancake Day' or 'National Librarian Day' — nobody cares about those.\n"
-                "- Significant world news: wars, disasters, major political events, historic moments.\n"
+                "- Significant BREAKING news from TODAY: news that actually broke in the last 24 hours. "
+                "Do NOT reference ongoing events that broke days ago (e.g. an earthquake from last week). "
+                "News goes stale fast — if it's not urgent and top-of-mind today, don't mention it.\n"
                 "- The season, time of year, or day of the week can be relevant but keep it natural.\n"
-                "- If nothing notable is happening today, that's fine — just pick a great passage "
-                "and write a thoughtful reflection without forcing a connection to some obscure holiday.\n\n"
+                "- DEFAULT TO NOT MENTIONING NEWS. Most days should just be a thoughtful reflection on "
+                "the passage itself. Only tie to current events when there's something genuinely major "
+                "happening that a reasonable person would expect pastoral reflection on.\n"
+                "- Look at the history of recent blurbs — if you've mentioned the same event more than "
+                "once already, DO NOT mention it again. Move on.\n\n"
                 "Guidelines for picking a passage:\n"
                 "- Pick a range of 2-6 consecutive verses that form a complete thought.\n"
                 "- Vary selections across all books — don't favor any single book.\n"
@@ -303,13 +317,14 @@ def main():
     with open(VOTD_PATH, "w", encoding="utf-8") as f:
         json.dump(verse, f, indent=2, ensure_ascii=False)
 
-    # Append to history
+    # Append to history (include blurb so we can avoid repeating topics)
     history.append({
         "date": today,
         "book": verse["book"],
         "chapter": verse["chapter"],
         "verse_start": verse["verse_start"],
         "verse_end": verse["verse_end"],
+        "blurb": verse.get("blurb", ""),
     })
     save_history(history)
     print(f"History updated ({len(history)} entries).")

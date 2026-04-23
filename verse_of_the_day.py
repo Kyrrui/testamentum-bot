@@ -60,6 +60,7 @@ def _call_llm(system_text: str, user_text: str) -> str:
     body = {
         "model": OPENROUTER_MODEL,
         "max_tokens": 1024,
+        "response_format": {"type": "json_object"},
         "messages": [
             {"role": "system", "content": system_text},
             {"role": "user", "content": user_text},
@@ -89,10 +90,14 @@ def _call_llm(system_text: str, user_text: str) -> str:
             print(f"  Error {resp.status_code}: {resp.text[:1000]}")
         resp.raise_for_status()
         data = resp.json()
-        # Log usage
         usage = data.get("usage", {})
         print(f"  Tokens — prompt: {usage.get('prompt_tokens', '?')}, completion: {usage.get('completion_tokens', '?')}")
-        return data["choices"][0]["message"]["content"]
+        choice = data["choices"][0]
+        finish = choice.get("finish_reason")
+        content = choice["message"]["content"] or ""
+        print(f"  Finish reason: {finish}")
+        print(f"  Response preview: {content[:300]!r}")
+        return content
     resp.raise_for_status()
 
 

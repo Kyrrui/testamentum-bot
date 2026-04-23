@@ -59,7 +59,7 @@ def _call_llm(system_text: str, user_text: str) -> str:
     import time
     body = {
         "model": OPENROUTER_MODEL,
-        "max_tokens": 4096,
+        "max_tokens": 1024,
         "messages": [
             {"role": "system", "content": system_text},
             {"role": "user", "content": user_text},

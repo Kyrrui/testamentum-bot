@@ -1,9 +1,9 @@
 """
-Verse of the Day — uses Claude to pick a meaningful verse from the Testamentum,
-then posts it to a Discord channel via webhook.
+Verse of the Day — uses an LLM (via OpenRouter) to pick a meaningful verse
+from the Testamentum, then posts it to a Discord channel via webhook.
 
 Requires environment variables:
-  ANTHROPIC_API_KEY — API key for Claude
+  OPENROUTER_API_KEY — API key for OpenRouter
   DISCORD_WEBHOOK_URL — Discord webhook URL for the target channel
 """
 
@@ -16,7 +16,8 @@ import requests
 
 from verse_image import render_verse
 
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "moonshotai/kimi-k2")
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
 VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")
@@ -51,31 +52,31 @@ def load_stripped_verses() -> str:
     return json.dumps(stripped, ensure_ascii=False)
 
 
-def _call_anthropic(system: list, messages: list, tools: list | None = None) -> dict:
-    """Make a single Anthropic API call and return the response JSON."""
-    body = {
-        "model": "claude-sonnet-4-20250514",
-        "max_tokens": 4096,
-        "system": system,
-        "messages": messages,
-    }
-    if tools:
-        body["tools"] = tools
-
+def _call_llm(system_text: str, user_text: str) -> str:
+    """Call the LLM via OpenRouter and return the text response."""
     import time
+    body = {
+        "model": OPENROUTER_MODEL,
+        "max_tokens": 4096,
+        "messages": [
+            {"role": "system", "content": system_text},
+            {"role": "user", "content": user_text},
+        ],
+    }
+
     for attempt in range(5):
         resp = requests.post(
-            "https://api.anthropic.com/v1/messages",
+            "https://openrouter.ai/api/v1/chat/completions",
             headers={
-                "x-api-key": ANTHROPIC_API_KEY,
-                "content-type": "application/json",
-                "anthropic-version": "2023-06-01",
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://github.com/Kyrrui/testamentum-bot",
+                "X-Title": "Testamentum Bot",
             },
             json=body,
-            timeout=120,
+            timeout=180,
         )
         if resp.status_code == 429:
-            # Check retry-after header, otherwise use exponential backoff
             retry_after = resp.headers.get("retry-after")
             wait = int(retry_after) if retry_after else min(2 ** attempt * 30, 120)
             print(f"  Rate limited, waiting {wait}s (attempt {attempt + 1}/5)...")
@@ -83,8 +84,12 @@ def _call_anthropic(system: list, messages: list, tools: list | None = None) -> 
             time.sleep(wait)
             continue
         resp.raise_for_status()
-        return resp.json()
-    resp.raise_for_status()  # raise on final failure
+        data = resp.json()
+        # Log usage
+        usage = data.get("usage", {})
+        print(f"  Tokens — prompt: {usage.get('prompt_tokens', '?')}, completion: {usage.get('completion_tokens', '?')}")
+        return data["choices"][0]["message"]["content"]
+    resp.raise_for_status()
 
 
 def _do_web_search(query: str) -> str:
@@ -161,90 +166,61 @@ def pick_verse(verses_json: str, history: list[dict]) -> dict:
     else:
         history_str = ""
 
-    # Phase 2: single Claude call with context + verses
-    system = [
-        {
-            "type": "text",
-            "text": (
-                "You are a thoughtful scholar of the Marcionite Testamentum. "
-                "Your role is to select a meaningful passage (verse range) for the Verse of the Day.\n\n"
-                "You will be given today's date, holidays, and news headlines as context.\n\n"
-                "IMPORTANT — what counts as relevant context:\n"
-                "- MAJOR holidays only: Christmas, Easter, Thanksgiving, New Year's, etc. "
-                "Ignore made-up novelty days like 'National Pancake Day' or 'National Librarian Day' — nobody cares about those.\n"
-                "- Significant BREAKING news from TODAY: news that actually broke in the last 24 hours. "
-                "Do NOT reference ongoing events that broke days ago (e.g. an earthquake from last week). "
-                "News goes stale fast — if it's not urgent and top-of-mind today, don't mention it.\n"
-                "- The season, time of year, or day of the week can be relevant but keep it natural.\n"
-                "- DEFAULT TO NOT MENTIONING NEWS. Most days should just be a thoughtful reflection on "
-                "the passage itself. Only tie to current events when there's something genuinely major "
-                "happening that a reasonable person would expect pastoral reflection on.\n"
-                "- Look at the history of recent blurbs — if you've mentioned the same event more than "
-                "once already, DO NOT mention it again. Move on.\n\n"
-                "Guidelines for picking a passage:\n"
-                "- Pick a range of 2-6 consecutive verses that form a complete thought.\n"
-                "- Vary selections across all books — don't favor any single book.\n"
-                "- NEVER repeat a previously used passage (you'll be given the history).\n"
-                "- Do NOT default to famous or opening verses (e.g. Evangelicon 1:1). "
-                "Dig deep — find hidden gems, lesser-known passages, surprising verses. "
-                "The Testamentum has 4,300+ verses across 24 books. Explore all of it.\n"
-                "- Pick passages that are thought-provoking, comforting, challenging, or spiritually rich.\n"
-                "- Your blurb should feel like a thoughtful pastor wrote it — warm, genuine, specific. "
-                "If there's a real major event or holiday, connect to it. If not, just reflect on the passage itself "
-                "and why it matters. Don't shoehorn in irrelevant connections.\n"
-                "- Do NOT fabricate or assume any holidays, events, or news — only reference what was provided in the context."
-            ),
-            "cache_control": {"type": "ephemeral"},
-        },
-        {
-            "type": "text",
-            "text": f"Here is the complete Testamentum:\n\n{verses_json}",
-            "cache_control": {"type": "ephemeral"},
-        },
-    ]
+    system_text = (
+        "You are a thoughtful scholar of the Marcionite Testamentum. "
+        "Your role is to select a meaningful passage (verse range) for the Verse of the Day.\n\n"
+        "You will be given today's date, holidays, news headlines, and the complete Testamentum as context.\n\n"
+        "IMPORTANT — what counts as relevant context:\n"
+        "- MAJOR holidays only: Christmas, Easter, Thanksgiving, New Year's, etc. "
+        "Ignore made-up novelty days like 'National Pancake Day' or 'National Librarian Day' — nobody cares about those.\n"
+        "- Significant BREAKING news from TODAY: news that actually broke in the last 24 hours. "
+        "Do NOT reference ongoing events that broke days ago (e.g. an earthquake from last week). "
+        "News goes stale fast — if it's not urgent and top-of-mind today, don't mention it.\n"
+        "- The season, time of year, or day of the week can be relevant but keep it natural.\n"
+        "- DEFAULT TO NOT MENTIONING NEWS. Most days should just be a thoughtful reflection on "
+        "the passage itself. Only tie to current events when there's something genuinely major "
+        "happening that a reasonable person would expect pastoral reflection on.\n"
+        "- Look at the history of recent blurbs — if you've mentioned the same event more than "
+        "once already, DO NOT mention it again. Move on.\n\n"
+        "Guidelines for picking a passage:\n"
+        "- Pick a range of 2-6 consecutive verses that form a complete thought.\n"
+        "- Vary selections across all books — don't favor any single book.\n"
+        "- NEVER repeat a previously used passage (you'll be given the history).\n"
+        "- Do NOT default to famous or opening verses (e.g. Evangelicon 1:1). "
+        "Dig deep — find hidden gems, lesser-known passages, surprising verses. "
+        "The Testamentum has 4,300+ verses across 24 books. Explore all of it.\n"
+        "- Pick passages that are thought-provoking, comforting, challenging, or spiritually rich.\n"
+        "- Your blurb should feel like a thoughtful pastor wrote it — warm, genuine, specific. "
+        "If there's a real major event or holiday, connect to it. If not, just reflect on the passage itself "
+        "and why it matters. Don't shoehorn in irrelevant connections.\n"
+        "- Do NOT fabricate or assume any holidays, events, or news — only reference what was provided in the context."
+    )
 
-    messages = [
-        {
-            "role": "user",
-            "content": (
-                f"Here is today's context:\n\n{context}\n\n"
-                + (f"{history_str}\n\n" if history_str else "")
-                + "Based on the above, pick a Verse of the Day passage from the Testamentum.\n\n"
-                "Respond with ONLY this JSON format:\n"
-                "{\n"
-                '  "book": "Book Name",\n'
-                '  "chapter": "1",\n'
-                '  "verse_start": "1",\n'
-                '  "verse_end": "4",\n'
-                '  "verses": [\n'
-                '    {"verse": "1", "text": "full verse text"},\n'
-                '    {"verse": "2", "text": "full verse text"}\n'
-                "  ],\n"
-                '  "blurb": "A 2-4 sentence reflection connecting this passage to today. '
-                "If there's a major holiday or significant news event, connect to it naturally. "
-                "Otherwise just reflect on the passage and why it matters. "
-                'Be warm, genuine, and specific — not generic."\n'
-                "}"
-            ),
-        },
-    ]
+    user_text = (
+        f"Here is the complete Testamentum:\n\n{verses_json}\n\n"
+        f"Here is today's context:\n\n{context}\n\n"
+        + (f"{history_str}\n\n" if history_str else "")
+        + "Based on the above, pick a Verse of the Day passage from the Testamentum.\n\n"
+        "Respond with ONLY this JSON format, no preamble, no markdown fences:\n"
+        "{\n"
+        '  "book": "Book Name",\n'
+        '  "chapter": "1",\n'
+        '  "verse_start": "1",\n'
+        '  "verse_end": "4",\n'
+        '  "verses": [\n'
+        '    {"verse": "1", "text": "full verse text"},\n'
+        '    {"verse": "2", "text": "full verse text"}\n'
+        "  ],\n"
+        '  "blurb": "A 2-4 sentence reflection connecting this passage to today. '
+        "If there's a major holiday or significant news event, connect to it naturally. "
+        "Otherwise just reflect on the passage and why it matters. "
+        'Be warm, genuine, and specific — not generic."\n'
+        "}"
+    )
 
-    data = _call_anthropic(system, messages)
+    raw = _call_llm(system_text, user_text)
 
-    # Log usage
-    usage = data.get("usage", {})
-    cache_read = usage.get("cache_read_input_tokens", 0)
-    cache_create = usage.get("cache_creation_input_tokens", 0)
-    input_tokens = usage.get("input_tokens", 0)
-    print(f"  Tokens — input: {input_tokens}, cache_read: {cache_read}, cache_create: {cache_create}")
-
-    # Extract the JSON response
-    text_content = ""
-    for block in data["content"]:
-        if block["type"] == "text":
-            text_content += block["text"]
-
-    content = text_content.strip()
+    content = raw.strip()
     if content.startswith("```"):
         content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()
 
@@ -290,12 +266,13 @@ def post_to_discord(verse: dict):
 
 
 def main():
-    if not ANTHROPIC_API_KEY:
-        print("ERROR: ANTHROPIC_API_KEY not set.")
+    if not OPENROUTER_API_KEY:
+        print("ERROR: OPENROUTER_API_KEY not set.")
         sys.exit(1)
     if not DISCORD_WEBHOOK_URL:
         print("ERROR: DISCORD_WEBHOOK_URL not set.")
         sys.exit(1)
+    print(f"Using model: {OPENROUTER_MODEL}")
 
     print("Loading verses and history...")
     verses_json = load_stripped_verses()

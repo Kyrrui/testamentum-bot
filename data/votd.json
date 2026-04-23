@@ -1,22 +1,26 @@
 {
-  "book": "2 Corinthians",
-  "chapter": "11",
-  "verse_start": "7",
-  "verse_end": "9",
+  "book": "1 Thessalonians",
+  "chapter": 4,
+  "verse_start": 13,
+  "verse_end": 16,
+  "blurb": "Paul’s words catch us where grief feels endless: he doesn’t promise instant relief, only that the dead in Christ rise first, so our tears are not the last chapter. Hold that hope like a lantern today—every sigh, every empty chair, is already seen by the One who descends with a shout and turns sorrow into morning.",
   "verses": [
     {
-      "verse": "7",
-      "text": "And lest I should be exalted above measure through the abundance of the revelations, there was given to me a thorn in the flesh, the messenger of Satan to buffet me, lest I should be exalted above measure."
+      "verse": "13",
+      "text": "But I would not have you to be ignorant, brethren, concerning them which are asleep, that ye sorrow not, even as others which have no hope."
     },
     {
-      "verse": "8",
-      "text": "For this thing I besought the Lord thrice, that it might depart from me."
+      "verse": "14",
+      "text": "For if we believe that Jesus died and rose again, even so them also which sleep in Jesus will God bring with him."
     },
     {
-      "verse": "9",
-      "text": "And he said unto me, My grace is sufficient for thee: for my strength is made perfect in weakness. Most gladly therefore will I rather glory in my infirmities, that the power of Christ may rest upon me."
+      "verse": "15",
+      "text": "For this we say unto you by the word of the Lord, that we which are alive and remain unto the coming of the Lord shall not prevent them which are asleep."
+    },
+    {
+      "verse": "16",
+      "text": "For the Lord himself shall descend from heaven with a shout, with the voice of the archangel, and with the trump of God: and the dead in Christ shall rise first:"
     }
   ],
-  "blurb": "As news breaks of a powerful earthquake off Japan's coast, we're reminded that even in our most vulnerable moments, divine grace proves sufficient. Paul's honest wrestling with his 'thorn in the flesh' shows us that strength isn't found in avoiding life's tremors, but in discovering that God's power is most evident when we acknowledge our need for it. In times of uncertainty and shaking—whether personal or global—we can find profound comfort in knowing that weakness becomes the very place where divine strength takes root.",
   "date": "2026-04-23"
 }

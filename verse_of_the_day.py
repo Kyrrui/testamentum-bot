@@ -38,20 +38,54 @@ def save_history(history: list[dict]):
         json.dump(history, f, indent=2, ensure_ascii=False)
 
 
-def load_stripped_verses() -> str:
-    """Load the verse database as compact plain text (much smaller than JSON)."""
+def load_db() -> dict:
     with open(DATA_PATH, "r", encoding="utf-8") as f:
-        db = json.load(f)
+        return json.load(f)
 
+
+def build_structure_summary(db: dict) -> str:
+    """Build a compact summary of the Testamentum structure with section headings.
+
+    Much smaller than the full text — lets the LLM pick a reference without
+    having to include 127k tokens of verses in the prompt.
+    """
     lines = []
     for bname, bdata in db["books"].items():
         lines.append(f"=== {bname} ===")
         for ch_num in sorted(bdata["chapters"].keys(), key=int):
             ch_data = bdata["chapters"][ch_num]
-            for v_num in sorted(ch_data["verses"].keys(), key=int):
-                lines.append(f"{ch_num}:{v_num} {ch_data['verses'][v_num]}")
+            verse_count = len(ch_data["verses"])
+            sections = ch_data.get("sections", {})
+            # List unique section headings in order
+            seen = []
+            for v_num in sorted(sections.keys(), key=int):
+                name = sections[v_num]
+                if not seen or seen[-1][0] != name:
+                    seen.append((name, v_num))
+            if seen:
+                sec_strs = [f"{name} (v{v})" for name, v in seen]
+                lines.append(f"Ch {ch_num} ({verse_count}v): {' | '.join(sec_strs)}")
+            else:
+                lines.append(f"Ch {ch_num} ({verse_count}v)")
         lines.append("")
     return "\n".join(lines)
+
+
+def lookup_verses(db: dict, book: str, chapter: str, v_start: int, v_end: int) -> list[dict] | None:
+    """Look up verse text from the local database."""
+    book_data = db["books"].get(book)
+    if not book_data:
+        return None
+    ch_data = book_data["chapters"].get(str(chapter))
+    if not ch_data:
+        return None
+
+    verses = []
+    for v in range(v_start, v_end + 1):
+        text = ch_data["verses"].get(str(v))
+        if text:
+            verses.append({"verse": str(v), "text": text})
+    return verses if verses else None
 
 
 def _call_llm(system_text: str, user_text: str) -> str:
@@ -148,23 +182,22 @@ def _gather_context() -> str:
     return context
 
 
-def pick_verse(verses_json: str, history: list[dict]) -> dict:
-    """Pick a verse of the day in two phases:
+def pick_verse(db: dict, history: list[dict]) -> dict:
+    """Pick a verse of the day in two steps:
 
-    1. Gather today's context via web/news search (no LLM needed)
-    2. Send context + full Testamentum + history to Claude Sonnet
+    1. LLM picks a passage reference based on structure + context
+    2. We look up the verse text locally and the LLM writes the blurb
 
-    Returns {book, chapter, verse_start, verse_end, verses: [{verse, text}], blurb}.
+    Returns {book, chapter, verse_start, verse_end, verses, blurb}.
     """
-    # Phase 1: gather context
     context = _gather_context()
+    structure = build_structure_summary(db)
 
-    # Build history string so Claude knows what's been used
+    # History string
     if history:
         past_refs = [f"{h['book']} {h['chapter']}:{h['verse_start']}-{h['verse_end']}" for h in history]
         history_str = "Previously used passages (DO NOT repeat any of these):\n" + "\n".join(past_refs)
 
-        # Include recent blurbs so Claude can avoid repeating topics
         recent_with_blurbs = [h for h in history[-7:] if h.get("blurb")]
         if recent_with_blurbs:
             blurb_lines = [f"- {h['date']}: {h['blurb']}" for h in recent_with_blurbs]
@@ -178,52 +211,35 @@ def pick_verse(verses_json: str, history: list[dict]) -> dict:
     system_text = (
         "You are a thoughtful scholar of the Marcionite Testamentum. "
         "Your role is to select a meaningful passage (verse range) for the Verse of the Day.\n\n"
-        "You will be given today's date, holidays, news headlines, and the complete Testamentum as context.\n\n"
         "IMPORTANT — what counts as relevant context:\n"
         "- MAJOR holidays only: Christmas, Easter, Thanksgiving, New Year's, etc. "
-        "Ignore made-up novelty days like 'National Pancake Day' or 'National Librarian Day' — nobody cares about those.\n"
-        "- Significant BREAKING news from TODAY: news that actually broke in the last 24 hours. "
-        "Do NOT reference ongoing events that broke days ago (e.g. an earthquake from last week). "
-        "News goes stale fast — if it's not urgent and top-of-mind today, don't mention it.\n"
-        "- The season, time of year, or day of the week can be relevant but keep it natural.\n"
+        "Ignore made-up novelty days like 'National Pancake Day' — nobody cares about those.\n"
+        "- Significant BREAKING news from TODAY only, not ongoing events from days ago.\n"
         "- DEFAULT TO NOT MENTIONING NEWS. Most days should just be a thoughtful reflection on "
-        "the passage itself. Only tie to current events when there's something genuinely major "
-        "happening that a reasonable person would expect pastoral reflection on.\n"
-        "- Look at the history of recent blurbs — if you've mentioned the same event more than "
-        "once already, DO NOT mention it again. Move on.\n\n"
-        "Guidelines for picking a passage:\n"
-        "- Pick a range of 2-6 consecutive verses that form a complete thought.\n"
+        "the passage itself.\n\n"
+        "Guidelines:\n"
+        "- Pick a range of 2-6 consecutive verses.\n"
         "- Vary selections across all books — don't favor any single book.\n"
-        "- NEVER repeat a previously used passage (you'll be given the history).\n"
-        "- Do NOT default to famous or opening verses (e.g. Evangelicon 1:1). "
-        "Dig deep — find hidden gems, lesser-known passages, surprising verses. "
-        "The Testamentum has 4,300+ verses across 24 books. Explore all of it.\n"
-        "- Pick passages that are thought-provoking, comforting, challenging, or spiritually rich.\n"
-        "- Your blurb should feel like a thoughtful pastor wrote it — warm, genuine, specific. "
-        "If there's a real major event or holiday, connect to it. If not, just reflect on the passage itself "
-        "and why it matters. Don't shoehorn in irrelevant connections.\n"
-        "- Do NOT fabricate or assume any holidays, events, or news — only reference what was provided in the context."
+        "- NEVER repeat a previously used passage.\n"
+        "- Don't default to famous verses (e.g. Evangelicon 1:1). Dig deep.\n"
+        "- Your blurb should feel like a thoughtful pastor wrote it — warm, genuine, specific.\n"
+        "- Do NOT fabricate any holidays, events, or news."
     )
 
     user_text = (
-        f"Here is the complete Testamentum:\n\n{verses_json}\n\n"
-        f"Here is today's context:\n\n{context}\n\n"
+        "Testamentum structure (book, chapters, section headings):\n\n"
+        f"{structure}\n\n"
+        f"Today's context:\n\n{context}\n\n"
         + (f"{history_str}\n\n" if history_str else "")
-        + "Based on the above, pick a Verse of the Day passage from the Testamentum.\n\n"
-        "Respond with ONLY this JSON format, no preamble, no markdown fences:\n"
+        + "Pick a Verse of the Day passage. "
+        "Use the section headings as hints about the passage's theme.\n\n"
+        "Respond with ONLY this JSON, no preamble or markdown fences:\n"
         "{\n"
         '  "book": "Book Name",\n'
         '  "chapter": "1",\n'
         '  "verse_start": "1",\n'
         '  "verse_end": "4",\n'
-        '  "verses": [\n'
-        '    {"verse": "1", "text": "full verse text"},\n'
-        '    {"verse": "2", "text": "full verse text"}\n'
-        "  ],\n"
-        '  "blurb": "A 2-4 sentence reflection connecting this passage to today. '
-        "If there's a major holiday or significant news event, connect to it naturally. "
-        "Otherwise just reflect on the passage and why it matters. "
-        'Be warm, genuine, and specific — not generic."\n'
+        '  "blurb": "A 2-4 sentence reflection. Warm, genuine, specific."\n'
         "}"
     )
 
@@ -238,7 +254,16 @@ def pick_verse(verses_json: str, history: list[dict]) -> dict:
     if json_start >= 0 and json_end > json_start:
         content = content[json_start:json_end]
 
-    return json.loads(content)
+    result = json.loads(content)
+
+    # Look up the actual verse text from our local db
+    v_start = int(result["verse_start"])
+    v_end = int(result["verse_end"])
+    verses = lookup_verses(db, result["book"], result["chapter"], v_start, v_end)
+    if not verses:
+        raise RuntimeError(f"LLM picked invalid reference: {result['book']} {result['chapter']}:{v_start}-{v_end}")
+    result["verses"] = verses
+    return result
 
 
 def post_to_discord(verse: dict):
@@ -284,12 +309,13 @@ def main():
     print(f"Using model: {OPENROUTER_MODEL}")
 
     print("Loading verses and history...")
-    verses_json = load_stripped_verses()
+    db = load_db()
     history = load_history()
-    print(f"Loaded {len(verses_json):,} chars of verse data, {len(history)} past picks.")
+    structure = build_structure_summary(db)
+    print(f"Structure summary: {len(structure):,} chars, {len(history)} past picks.")
 
-    print("Asking Claude to pick a passage...")
-    verse = pick_verse(verses_json, history)
+    print("Asking LLM to pick a passage...")
+    verse = pick_verse(db, history)
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     verse["date"] = today
     ref = f"{verse['book']} {verse['chapter']}:{verse['verse_start']}"

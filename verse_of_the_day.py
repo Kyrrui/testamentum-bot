@@ -148,36 +148,22 @@ def _do_web_search(query: str) -> str:
         return f"Search failed: {e}"
 
 
-def _do_news_search(query: str) -> str:
-    """Search recent news using DuckDuckGo and return headlines."""
-    try:
-        from ddgs import DDGS
-        results = DDGS().news(query, max_results=8)
-        formatted = []
-        for r in results:
-            formatted.append(f"{r['title']}\n{r['body']}")
-        return "\n\n".join(formatted) if formatted else "No news results found."
-    except Exception as e:
-        return f"News search failed: {e}"
-
-
 def _gather_context() -> str:
-    """Use Haiku to do web searches and gather today's context. Cheap and fast."""
-    today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
+    """Gather today's context — only major holidays, no news.
 
+    We deliberately skip news because the LLM tends to fixate on dramatic
+    headlines (wars, earthquakes, disasters) for multiple days in a row,
+    making the VOTD repetitive and doom-y.
+    """
+    today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
     print("  Gathering today's context...")
 
-    # Do the searches ourselves — no need for an agentic loop
     web_results = _do_web_search(f"{today} major holidays observances")
     print(f"  Web search done ({len(web_results)} chars)")
 
-    news_results = _do_news_search("today major world news headlines")
-    print(f"  News search done ({len(news_results)} chars)")
-
     context = (
         f"Today is {today}.\n\n"
-        f"=== Holidays and observances ===\n{web_results}\n\n"
-        f"=== Today's news headlines ===\n{news_results}"
+        f"=== Holidays and observances ===\n{web_results}"
     )
     return context
 
@@ -211,19 +197,24 @@ def pick_verse(db: dict, history: list[dict]) -> dict:
     system_text = (
         "You are a thoughtful scholar of the Marcionite Testamentum. "
         "Your role is to select a meaningful passage (verse range) for the Verse of the Day.\n\n"
-        "IMPORTANT — what counts as relevant context:\n"
-        "- MAJOR holidays only: Christmas, Easter, Thanksgiving, New Year's, etc. "
-        "Ignore made-up novelty days like 'National Pancake Day' — nobody cares about those.\n"
-        "- Significant BREAKING news from TODAY only, not ongoing events from days ago.\n"
-        "- DEFAULT TO NOT MENTIONING NEWS. Most days should just be a thoughtful reflection on "
-        "the passage itself.\n\n"
+        "The blurb should be a timeless pastoral reflection on the passage itself — "
+        "why this passage matters, what it invites the reader to consider, how it speaks "
+        "to the human condition.\n\n"
+        "DO NOT reference:\n"
+        "- Current events, news, headlines, disasters, wars, politics\n"
+        "- The specific day of the week (e.g. 'on this Friday')\n"
+        "- Minor or novelty observances like 'National Pancake Day'\n"
+        "- Holidays that aren't actually today\n\n"
+        "You MAY reference:\n"
+        "- A MAJOR holiday only if it's literally today (Christmas, Easter, Thanksgiving, etc.)\n"
+        "- Seasonal themes (spring renewal, autumn reflection) if they fit naturally\n\n"
         "Guidelines:\n"
         "- Pick a range of 2-6 consecutive verses.\n"
         "- Vary selections across all books — don't favor any single book.\n"
         "- NEVER repeat a previously used passage.\n"
         "- Don't default to famous verses (e.g. Evangelicon 1:1). Dig deep.\n"
-        "- Your blurb should feel like a thoughtful pastor wrote it — warm, genuine, specific.\n"
-        "- Do NOT fabricate any holidays, events, or news."
+        "- Your blurb should feel like a thoughtful pastor wrote it — warm, genuine, specific to "
+        "the passage's meaning, not to current events."
     )
 
     user_text = (

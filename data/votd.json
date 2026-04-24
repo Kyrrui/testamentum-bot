@@ -1,25 +1,25 @@
 {
-  "book": "Alexandrians",
-  "chapter": "5",
+  "book": "Laodiceans",
+  "chapter": "2",
   "verse_start": "1",
   "verse_end": "4",
-  "blurb": "“The Believer’s Rest” is not an idle pause but a living stillness: cease from your own wrangling, enter the rhythm of the One who finished the work before you woke. Today, let the earthquake headlines and Friday rush feel distant thunder while you sit inside the promise—God’s eighth-day calm that no swell of news can erode.",
+  "blurb": "Paul lifts the curtain on what really happened outside of time: while we were still numb, still alien, still dead in the trespasses that felt like life, God’s mercy made us alive together with Christ. Read it slowly—this is not theology about someone else, it is your own hidden history being handed back to you, signed in blood and sealed by grace.",
   "verses": [
     {
       "verse": "1",
-      "text": "Seeing therefore it remaineth that some must enter therein, and they to whom it was first preached entered not in because of unbelief:"
+      "text": "And you hath he quickened, who were dead in trespasses and sins;"
     },
     {
       "verse": "2",
-      "text": "For if Jesus had given them rest, then would he not afterward have spoken of another day."
+      "text": "Wherein in time past ye walked according to the course of this world, according to the prince of the power of the air, the spirit that now worketh in the children of disobedience:"
     },
     {
       "verse": "3",
-      "text": "There remaineth therefore a rest to the people of God."
+      "text": "Among whom also we all had our conversation in times past in the lusts of our flesh, fulfilling the desires of the flesh and of the mind; and were by nature the children of wrath, even as others."
     },
     {
       "verse": "4",
-      "text": "For the word of God is quick, and powerful, and sharper than any twoedged sword, piercing even to the dividing asunder of soul and spirit, and of the joints and marrow, and is a discerner of the thoughts and intents of the heart."
+      "text": "But God, who is rich in mercy, for his great love wherewith he loved us,"
     }
   ],
   "date": "2026-04-24"

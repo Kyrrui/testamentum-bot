@@ -1,26 +1,26 @@
 {
-  "book": "Laodiceans",
-  "chapter": "2",
+  "book": "2 Timothy",
+  "chapter": "4",
   "verse_start": "1",
   "verse_end": "4",
-  "blurb": "Paul lifts the curtain on what really happened outside of time: while we were still numb, still alien, still dead in the trespasses that felt like life, God’s mercy made us alive together with Christ. Read it slowly—this is not theology about someone else, it is your own hidden history being handed back to you, signed in blood and sealed by grace.",
+  "blurb": "Paul’s last charge rings like a church bell at dusk: preach the word, not trends; endure discomfort, not applause. In a season when voices compete for every ear, these verses re-center the pulpit and the private heart alike—God’s speech first, ours second, the world’s approval never.",
   "verses": [
     {
       "verse": "1",
-      "text": "And you hath he quickened, who were dead in trespasses and sins;"
+      "text": "I charge thee therefore before God, and the Lord Jesus Christ, who shall judge the quick and the dead at his appearing and his kingdom;"
     },
     {
       "verse": "2",
-      "text": "Wherein in time past ye walked according to the course of this world, according to the prince of the power of the air, the spirit that now worketh in the children of disobedience:"
+      "text": "For the time will come when they will not endure sound doctrine; but after their own lusts shall they heap to themselves teachers, having itching ears;"
     },
     {
       "verse": "3",
-      "text": "Among whom also we all had our conversation in times past in the lusts of our flesh, fulfilling the desires of the flesh and of the mind; and were by nature the children of wrath, even as others."
+      "text": "And they shall turn away their ears from the truth, and shall be turned unto fables."
     },
     {
       "verse": "4",
-      "text": "But God, who is rich in mercy, for his great love wherewith he loved us,"
+      "text": "For I am now ready to be offered, and the time of my departure is at hand."
     }
   ],
-  "date": "2026-04-24"
+  "date": "2026-04-25"
 }

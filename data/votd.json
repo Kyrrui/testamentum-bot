@@ -1,26 +1,26 @@
 {
-  "book": "2 Timothy",
-  "chapter": "4",
+  "book": "Colossians",
+  "chapter": "3",
   "verse_start": "1",
   "verse_end": "4",
-  "blurb": "Paul’s last charge rings like a church bell at dusk: preach the word, not trends; endure discomfort, not applause. In a season when voices compete for every ear, these verses re-center the pulpit and the private heart alike—God’s speech first, ours second, the world’s approval never.",
+  "blurb": "Already, Paul insists, your life has been lifted and hidden with Christ in God. The rest of today—its errands, its worries—cannot add or subtract from that concealment; it is finished treasure kept in an unbreakable vault. So set your mind there first, before the noise of duty rises, and let every earthly task become a quiet echo of the place where you already belong.",
   "verses": [
     {
       "verse": "1",
-      "text": "I charge thee therefore before God, and the Lord Jesus Christ, who shall judge the quick and the dead at his appearing and his kingdom;"
+      "text": "If ye then be risen with Christ, seek those things which are above, where Christ sitteth on the right hand of God."
     },
     {
       "verse": "2",
-      "text": "For the time will come when they will not endure sound doctrine; but after their own lusts shall they heap to themselves teachers, having itching ears;"
+      "text": "Set your affection on things above, not on things on the earth."
     },
     {
       "verse": "3",
-      "text": "And they shall turn away their ears from the truth, and shall be turned unto fables."
+      "text": "For ye are dead, and your life is hid with Christ in God."
     },
     {
       "verse": "4",
-      "text": "For I am now ready to be offered, and the time of my departure is at hand."
+      "text": "When Christ, who is our life, shall appear, then shall ye also appear with him in glory."
     }
   ],
-  "date": "2026-04-25"
+  "date": "2026-04-26"
 }

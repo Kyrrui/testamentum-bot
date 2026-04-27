@@ -1,26 +1,22 @@
 {
-  "book": "Colossians",
+  "book": "Alexandrians",
   "chapter": "3",
-  "verse_start": "1",
-  "verse_end": "4",
-  "blurb": "Already, Paul insists, your life has been lifted and hidden with Christ in God. The rest of today—its errands, its worries—cannot add or subtract from that concealment; it is finished treasure kept in an unbreakable vault. So set your mind there first, before the noise of duty rises, and let every earthly task become a quiet echo of the place where you already belong.",
+  "verse_start": "4",
+  "verse_end": "6",
+  "blurb": "The earth was subjected to us, yet we were subjected to futility—until the One who made us stooped lower than our failure. These lines hold the ache and the answer together: our brief, wounded life cradled inside the eternal Son’s decision to taste our dust. Let them steady you today; everything that feels too heavy for human shoulders has already been carried by hands that shaped the stars.",
   "verses": [
     {
-      "verse": "1",
-      "text": "If ye then be risen with Christ, seek those things which are above, where Christ sitteth on the right hand of God."
-    },
-    {
-      "verse": "2",
-      "text": "Set your affection on things above, not on things on the earth."
-    },
-    {
-      "verse": "3",
-      "text": "For ye are dead, and your life is hid with Christ in God."
-    },
-    {
       "verse": "4",
-      "text": "When Christ, who is our life, shall appear, then shall ye also appear with him in glory."
+      "text": "For unto the angels hath he not put in subjection the world to come, whereof we speak."
+    },
+    {
+      "verse": "5",
+      "text": "But one in a certain place testified, saying, What is man, that thou art mindful of him? or the son of man that thou visitest him?"
+    },
+    {
+      "verse": "6",
+      "text": "But we see Jesus, who was made a little lower than the angels for the suffering of death, crowned with glory and honour; that he by the grace of God should taste death for every man."
     }
   ],
-  "date": "2026-04-26"
+  "date": "2026-04-27"
 }

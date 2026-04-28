@@ -1,22 +1,26 @@
 {
-  "book": "Alexandrians",
-  "chapter": "3",
-  "verse_start": "4",
-  "verse_end": "6",
-  "blurb": "The earth was subjected to us, yet we were subjected to futility—until the One who made us stooped lower than our failure. These lines hold the ache and the answer together: our brief, wounded life cradled inside the eternal Son’s decision to taste our dust. Let them steady you today; everything that feels too heavy for human shoulders has already been carried by hands that shaped the stars.",
+  "book": "Philemon",
+  "chapter": "1",
+  "verse_start": "10",
+  "verse_end": "13",
+  "blurb": "Paul lifts a runaway slave and says: he is no longer property, he is my own heart. In that moment the gospel quietly topples an economy—relationships become dearer than debts, persons outrank roles. We are invited, still, to look across every boundary we have drawn and dare to call the once-excluded “brother, sister, heart.”",
   "verses": [
     {
-      "verse": "4",
-      "text": "For unto the angels hath he not put in subjection the world to come, whereof we speak."
+      "verse": "10",
+      "text": "I beseech thee for my son Onesimus, whom I have begotten in my bonds:"
     },
     {
-      "verse": "5",
-      "text": "But one in a certain place testified, saying, What is man, that thou art mindful of him? or the son of man that thou visitest him?"
+      "verse": "11",
+      "text": "Which in time past was to thee unprofitable, but now profitable to thee and to me:"
     },
     {
-      "verse": "6",
-      "text": "But we see Jesus, who was made a little lower than the angels for the suffering of death, crowned with glory and honour; that he by the grace of God should taste death for every man."
+      "verse": "12",
+      "text": "Whom I have sent again: thou therefore receive him, that is, mine own bowels:"
+    },
+    {
+      "verse": "13",
+      "text": "Whom I would have retained with me, that in thy stead he might have ministered unto me in the bonds of the gospel:"
     }
   ],
-  "date": "2026-04-27"
+  "date": "2026-04-28"
 }

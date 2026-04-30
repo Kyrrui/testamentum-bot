@@ -1,26 +1,26 @@
 {
-  "book": "Diognetus",
-  "chapter": "5",
+  "book": "1 Corinthians",
+  "chapter": "13",
   "verse_start": "1",
   "verse_end": "4",
-  "blurb": "The anonymous writer sketches Christians for a skeptical world: they dwell in cities yet live as citizens of heaven; they love those who hate them; they share everything yet endure everything as strangers. In these lines the gospel is revealed not as argument but as life—quiet, tenacious, unmistakably different. Read them slowly and let the portrait question the ease with which we blend in; our distinction is not loud slogans but the low, steady pulse of another kingdom already beating in our chests.",
+  "blurb": "Paul sets love at the top of the gifts, calling even tongues of angels and mountain-moving faith mere noise if love is absent. These verses remind us that the pulse of the gospel is not spectacle but self-giving presence; without love we are only a clanging cymbal in the world’s ears. Read the passage aloud and let it test every motive that marches you out the door today.",
   "verses": [
     {
       "verse": "1",
-      "text": "For Christians are not distinguished from the rest of mankind either in locality or in speech or in customs."
+      "text": "Though I speak with the tongues of men and of angels, and have not charity, I am become as sounding brass, or a tinkling cymbal."
     },
     {
       "verse": "2",
-      "text": "For they dwell not somewhere in cities of their own, neither do they use some different language, nor practise an extraordinary kind of life."
+      "text": "And though I have the gift of prophecy, and understand all mysteries, and all knowledge; and though I have all faith, so that I could remove mountains, and have not charity, I am nothing."
     },
     {
       "verse": "3",
-      "text": "Nor again do they possess any invention discovered by any intelligence or study of ingenious men, nor are they masters of any human dogma as some are."
+      "text": "And though I bestow all my goods to feed the poor, and though I give my body to be burned, and have not charity, it profiteth me nothing."
     },
     {
       "verse": "4",
-      "text": "But while they dwell in cities of Greeks and barbarians as the lot of each is cast, and follow the native customs in dress and food and the other arrangements of life, yet the constitution of their own citizenship, which they set forth, is marvellous, and confessedly contradicts expectation."
+      "text": "Charity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up,"
     }
   ],
-  "date": "2026-04-29"
+  "date": "2026-04-30"
 }

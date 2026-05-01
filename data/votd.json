@@ -1,26 +1,26 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "13",
+  "book": "Alexandrians",
+  "chapter": "12",
   "verse_start": "1",
   "verse_end": "4",
-  "blurb": "Paul sets love at the top of the gifts, calling even tongues of angels and mountain-moving faith mere noise if love is absent. These verses remind us that the pulse of the gospel is not spectacle but self-giving presence; without love we are only a clanging cymbal in the world’s ears. Read the passage aloud and let it test every motive that marches you out the door today.",
+  "blurb": "Faith, the author says, is the title deed to realities still unseen, the conviction that makes tomorrow’s mercy feel already in the hand. These verses invite us to trade wishful thinking for deliberate trust—evidence weighed, verdict rendered, life re-ordered around what cannot yet be touched. When doubt whispers that spiritual things are mist, the text answers: faith is substance, better grounded than the chair you sit in. Believe, and the invisible begins to bear your full weight.",
   "verses": [
     {
       "verse": "1",
-      "text": "Though I speak with the tongues of men and of angels, and have not charity, I am become as sounding brass, or a tinkling cymbal."
+      "text": "Now faith is the substance of things hoped for, the evidence of things not seen."
     },
     {
       "verse": "2",
-      "text": "And though I have the gift of prophecy, and understand all mysteries, and all knowledge; and though I have all faith, so that I could remove mountains, and have not charity, I am nothing."
+      "text": "For by it the elders obtained a good report."
     },
     {
       "verse": "3",
-      "text": "And though I bestow all my goods to feed the poor, and though I give my body to be burned, and have not charity, it profiteth me nothing."
+      "text": "Through faith we understand that the worlds were framed by the word of God, so that things which are seen were not made of things which do appear."
     },
     {
       "verse": "4",
-      "text": "Charity suffereth long, and is kind; charity envieth not; charity vaunteth not itself, is not puffed up,"
+      "text": "By faith Abel offered unto God a more excellent sacrifice than Cain, by which he obtained witness that he was righteous, God testifying of his gifts: and by it he being dead yet speaketh."
     }
   ],
-  "date": "2026-04-30"
+  "date": "2026-05-01"
 }

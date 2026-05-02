@@ -1,26 +1,38 @@
 {
-  "book": "Alexandrians",
-  "chapter": "12",
+  "book": "Diognetus",
+  "chapter": "9",
   "verse_start": "1",
-  "verse_end": "4",
-  "blurb": "Faith, the author says, is the title deed to realities still unseen, the conviction that makes tomorrow’s mercy feel already in the hand. These verses invite us to trade wishful thinking for deliberate trust—evidence weighed, verdict rendered, life re-ordered around what cannot yet be touched. When doubt whispers that spiritual things are mist, the text answers: faith is substance, better grounded than the chair you sit in. Believe, and the invisible begins to bear your full weight.",
+  "verse_end": "7",
+  "blurb": "Why did the Celestial Stranger wait so long? The writer answers that our misery, like a deep night, made the sudden sunrise kinder. These lines calm our impatience with providence: every mercy has its appointed hour; rushing it would be to eclipse the very patience that teaches us to hope. Let the delay itself enlarge your heart until it is roomy enough for the late-born gift when it comes.",
   "verses": [
     {
       "verse": "1",
-      "text": "Now faith is the substance of things hoped for, the evidence of things not seen."
+      "text": "Having thus planned everything already in His mind with His Son, He permitted us during the former time to be borne along by disorderly impulses as we desired, led astray by pleasures and lusts, not at all because He took delight in our sins, but because He bore with us, not because He approved of the past season of iniquity, but because He was creating the present season of righteousness, that, being convicted in the past time by our own deeds as unworthy of life, we might now be made deserving by the goodness of God, and having made clear our inability to enter into the kingdom of God of ourselves, might be enabled by the ability of God."
     },
     {
       "verse": "2",
-      "text": "For by it the elders obtained a good report."
+      "text": "And when our iniquity had been fully accomplished, and it had been made perfectly manifest that punishment and death were expected as its recompense, and the season came which God had ordained, when henceforth He should manifest His goodness and power O the exceeding great kindness and love of God, He hated us not, neither rejected us, nor bore us malice, but was long-suffering and patient, and in pity for us took upon Himself our sins, and Himself parted with His own Son as a ransom for us, the holy for the lawless, the guileless for the evil, the just for the unjust, the incorruptible for the corruptible, the immortal for the mortal."
     },
     {
       "verse": "3",
-      "text": "Through faith we understand that the worlds were framed by the word of God, so that things which are seen were not made of things which do appear."
+      "text": "For what else but His righteousness would have covered our sins?"
     },
     {
       "verse": "4",
-      "text": "By faith Abel offered unto God a more excellent sacrifice than Cain, by which he obtained witness that he was righteous, God testifying of his gifts: and by it he being dead yet speaketh."
+      "text": "In whom was it possible for us lawless and ungodly men to have been justified, save only in the Son of God?"
+    },
+    {
+      "verse": "5",
+      "text": "O the sweet exchange, O the inscrutable creation, O the unexpected benefits;"
+    },
+    {
+      "verse": "6",
+      "text": "That the iniquity of many should be concealed in One Righteous Man, and the righteousness of One should justify many that are iniquitous!"
+    },
+    {
+      "verse": "7",
+      "text": "Having then in the former time demonstrated the inability of our nature to obtain life, and having now revealed a Saviour able to save even creatures which have no ability, He willed that for both reasons we should believe in His goodness and should regard Him as nurse, father, teacher, counsellor, physician, mind, light, honour, glory, strength and life."
     }
   ],
-  "date": "2026-05-01"
+  "date": "2026-05-02"
 }

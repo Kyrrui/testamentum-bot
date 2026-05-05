@@ -1,26 +1,18 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "15",
-  "verse_start": "50",
-  "verse_end": "53",
-  "blurb": "What we can touch will not inherit what cannot fade; flesh and blood must be clothed with something death cannot soil. Paul dlares the mystery: we shall not be abandoned to decay, but suddenly wrapped in immortality like a new skin. The promise steadies every body bearing ache or limitation—your pain is temporary tailoring for an endless garment. Let these verses carry you today; the life that feels fragile now is being measured for a dwelling light cannot erode.",
+  "book": "Diognetus",
+  "chapter": 10,
+  "verse_start": 1,
+  "verse_end": 2,
+  "blurb": "The gift of faith is not a ticket to escape life but a reservoir hidden in the soul, releasing patience, self-control, and fearless love. These verses promise that whoever welcomes the divine teacher within will find the heart itself widened, its rough places smoothed, and every virtue written there as naturally as fruit on a well-rooted tree. Read them slowly and let the quiet assurance take root: the seed God plants neither panics nor gives up; it grows into a character that outlives every storm.",
   "verses": [
     {
-      "verse": "50",
-      "text": "Now this I say, brethren, that flesh and blood cannot inherit the kingdom of God; neither doth corruption inherit incorruption."
+      "verse": "1",
+      "text": "This faith if thou also desirest, apprehend first full knowledge of the Father."
     },
     {
-      "verse": "51",
-      "text": "Behold, I shew you a mystery; We shall not all sleep, but we shall all be changed,"
-    },
-    {
-      "verse": "52",
-      "text": "In a moment, in the twinkling of an eye, at the last trump: for the trumpet shall sound, and the dead shall be raised incorruptible, and we shall be changed."
-    },
-    {
-      "verse": "53",
-      "text": "For this corruptible must put on incorruption, and this mortal must put on immortality."
+      "verse": "2",
+      "text": "For God loved men for whose sake He made the world, to whom He subjected all things that are in the earth, to whom He gave reason and mind, whom alone He permitted to look up to heaven, whom He created after His own image, to whom He sent His only begotten Son, to whom He promised the kingdom which is in heaven, and will give it to those that have loved Him."
     }
   ],
-  "date": "2026-05-04"
+  "date": "2026-05-05"
 }

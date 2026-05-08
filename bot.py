@@ -2183,7 +2183,6 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             user_entry["score"] += 1
             user_entry["stage"] = "chapter"
             _save_daily_quiz(quiz)
-            await _update_quiz_embed(quiz)
 
             ch_view = ui.View(timeout=None)
             for j, ch in enumerate(quiz["chapter_choices"]):
@@ -2195,15 +2194,16 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
                 f"✅ Correct! The book is **{quiz['book']}**.\n\n*Now guess the chapter:*",
                 view=ch_view, ephemeral=True,
             )
+            client.loop.create_task(_update_quiz_embed(quiz))
         else:
             user_entry["done"] = True
             _update_alltime_score(guild_id, user_id, user_name, user_entry["score"])
             _save_daily_quiz(quiz)
-            await _update_quiz_embed(quiz)
             await interaction.response.send_message(
                 f"❌ Wrong! The answer is **{ref}**.\nYour score: **{user_entry['score']}/3**",
                 ephemeral=True,
             )
+            client.loop.create_task(_update_quiz_embed(quiz))
 
     elif stage == "chapter":
         choice = quiz["chapter_choices"][choice_idx]
@@ -2212,7 +2212,6 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             user_entry["score"] += 1
             user_entry["stage"] = "verse"
             _save_daily_quiz(quiz)
-            await _update_quiz_embed(quiz)
 
             v_view = ui.View(timeout=None)
             for j, v in enumerate(quiz["verse_choices"]):
@@ -2224,15 +2223,16 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
                 f"✅ Correct! It's **{quiz['book']} Chapter {quiz['chapter']}**.\n\n*Now guess the verse:*",
                 view=v_view, ephemeral=True,
             )
+            client.loop.create_task(_update_quiz_embed(quiz))
         else:
             user_entry["done"] = True
             _update_alltime_score(guild_id, user_id, user_name, user_entry["score"])
             _save_daily_quiz(quiz)
-            await _update_quiz_embed(quiz)
             await interaction.response.send_message(
                 f"❌ Wrong chapter! The answer is **{ref}**.\nYour score: **{user_entry['score']}/3**",
                 ephemeral=True,
             )
+            client.loop.create_task(_update_quiz_embed(quiz))
 
     elif stage == "verse":
         choice = quiz["verse_choices"][choice_idx]
@@ -2242,7 +2242,6 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             user_entry["score"] += 1
         _update_alltime_score(guild_id, user_id, user_name, user_entry["score"])
         _save_daily_quiz(quiz)
-        await _update_quiz_embed(quiz)
         if correct:
             await interaction.response.send_message(
                 f"✅ **Perfect score!** The answer is **{ref}**.\nYour score: **{user_entry['score']}/3**",
@@ -2253,6 +2252,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
                 f"❌ Close! The answer is **{ref}** (you guessed verse {choice}).\nYour score: **{user_entry['score']}/3**",
                 ephemeral=True,
             )
+        client.loop.create_task(_update_quiz_embed(quiz))
 
 
 def _make_ephemeral_handler(custom_id: str):

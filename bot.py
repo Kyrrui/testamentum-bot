@@ -2606,11 +2606,19 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
 
 def main():
+    import time
     token = os.getenv("DISCORD_TOKEN")
     if not token:
         print("ERROR: DISCORD_TOKEN not set. Create a .env file with your token.")
         return
-    client.run(token)
+    try:
+        client.run(token)
+    except discord.HTTPException as e:
+        if e.status == 429:
+            # Token-level rate limit. Sleep before exiting to avoid restart-loop.
+            print("Discord token is rate limited. Sleeping 10 minutes before exit so Railway doesn't immediately restart us.")
+            time.sleep(600)
+        raise
 
 
 if __name__ == "__main__":

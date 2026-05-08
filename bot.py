@@ -2613,10 +2613,12 @@ def main():
         return
     try:
         client.run(token)
-    except discord.HTTPException as e:
-        if e.status == 429:
-            # Token-level rate limit. Sleep before exiting to avoid restart-loop.
-            print("Discord token is rate limited. Sleeping 10 minutes before exit so Railway doesn't immediately restart us.")
+    except (discord.HTTPException, discord.LoginFailure, discord.DiscordServerError) as e:
+        status = getattr(e, "status", None)
+        # 429 = token-level rate limit, 5xx = Discord overloaded.
+        # Either way, retrying immediately makes things worse — sleep before exit.
+        if status == 429 or (status and status >= 500):
+            print(f"Discord login failed with status {status}. Sleeping 10 minutes before exit to avoid restart-loop.")
             time.sleep(600)
         raise
 

@@ -1,26 +1,26 @@
 {
   "book": "Laodiceans",
-  "chapter": 4,
-  "verse_start": 17,
-  "verse_end": 20,
-  "blurb": "The walk of love is neither parade nor prison; it is a steady stride whose every step is measured by Christ. These lines urge us to shed the wrinkled garments of former lives and dress each new morning in compassion, humility, formfitting grace. Let the pattern take hold: kindness before complaint, mercy before verdict, so that the watching world may read the gospel simply by watching the way you move through the day.",
+  "chapter": "5",
+  "verse_start": "22",
+  "verse_end": "25",
+  "blurb": "Marriage, Paul says, mirrors a cosmic romance: one Bridegroom, one bride, one unbroken vow. These verses invite every household to become a living parable—two imperfect people learning the rhythm of self-giving that flows from Christ to Church and back again. Let the low notes of forgiveness and the high notes of delight weave a song your neighbors can hear; when love keeps time with the gospel, even the silent rooms sing.",
   "verses": [
     {
-      "verse": "17",
-      "text": "This I say therefore, and testify in the Lord, that ye henceforth walk not as other Gentiles walk, in the vanity of their mind,"
+      "verse": "22",
+      "text": "Wives, submit yourselves unto your own husbands, as unto the Lord."
     },
     {
-      "verse": "18",
-      "text": "Having the understanding darkened, being alienated from the life of God through the ignorance that is in them, because of the blindness of their heart:"
+      "verse": "23",
+      "text": "For the husband is the head of the wife, even as Christ is the head of the church: and he is the saviour of the body."
     },
     {
-      "verse": "19",
-      "text": "Who being past feeling have given themselves over unto lasciviousness, to work all uncleanness with greediness."
+      "verse": "24",
+      "text": "Therefore as the church is subject unto Christ, so let the wives be to their own husbands in every thing."
     },
     {
-      "verse": "20",
-      "text": "But ye have not so learned Christ;"
+      "verse": "25",
+      "text": "Husbands, love your wives, even as Christ also loved the church, and gave himself for it;"
     }
   ],
-  "date": "2026-05-09"
+  "date": "2026-05-10"
 }

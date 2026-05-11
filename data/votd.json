@@ -1,26 +1,26 @@
 {
-  "book": "Laodiceans",
-  "chapter": "5",
-  "verse_start": "22",
-  "verse_end": "25",
-  "blurb": "Marriage, Paul says, mirrors a cosmic romance: one Bridegroom, one bride, one unbroken vow. These verses invite every household to become a living parable—two imperfect people learning the rhythm of self-giving that flows from Christ to Church and back again. Let the low notes of forgiveness and the high notes of delight weave a song your neighbors can hear; when love keeps time with the gospel, even the silent rooms sing.",
+  "book": "1 Corinthians",
+  "chapter": "11",
+  "verse_start": "23",
+  "verse_end": "26",
+  "blurb": "At every table where bread is broken and the cup is shared, time folds into eternity. These words invite you to taste anew the night when Love set his face toward the cross and still chose to give himself away. Let the simple elements become mirrors: as often as you eat and drink, you proclaim—not with eloquence speeches but with surrendered hearts—that a life laid down is the only food that truly feeds the world. Come hungry; leave bread for others.",
   "verses": [
     {
-      "verse": "22",
-      "text": "Wives, submit yourselves unto your own husbands, as unto the Lord."
-    },
-    {
       "verse": "23",
-      "text": "For the husband is the head of the wife, even as Christ is the head of the church: and he is the saviour of the body."
+      "text": "For I have received of the Lord that which also I delivered unto you, That the Lord Jesus the same night in which he was betrayed took bread:"
     },
     {
       "verse": "24",
-      "text": "Therefore as the church is subject unto Christ, so let the wives be to their own husbands in every thing."
+      "text": "And when he had given thanks, he brake it, and said, Take, eat: this is my body, which is broken for you: this do in remembrance of me."
     },
     {
       "verse": "25",
-      "text": "Husbands, love your wives, even as Christ also loved the church, and gave himself for it;"
+      "text": "After the same manner also he took the cup, when he had supped, saying, This cup is the new testament in my blood: this do ye, as oft as ye drink it, in remembrance of me."
+    },
+    {
+      "verse": "26",
+      "text": "For as often as ye eat this bread, and drink this cup, ye do shew the Lord’s death till he come."
     }
   ],
-  "date": "2026-05-10"
+  "date": "2026-05-11"
 }

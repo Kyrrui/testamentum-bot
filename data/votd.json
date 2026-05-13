@@ -1,26 +1,26 @@
 {
-  "book": "Psalmicon",
-  "chapter": "21",
-  "verse_start": "1",
-  "verse_end": "4",
-  "blurb": "The singer lifts his eyes toward the hills, convinced that help is already descending, already crossing the ridge. This is no vague optimism: it is a disciplined willingness to look beyond the next sorrow and name the One who comes. Let your own horizon fill with mercy this morning; wherever trouble waits, the Helper is already closer than the noise of your heart.",
+  "book": "Laodiceans",
+  "chapter": 3,
+  "verse_start": 1,
+  "verse_end": 4,
+  "blurb": "These verses whisper that the greatest stewardship is to protect what has been entrusted to us—not talents or treasures, but the simple news of grace. Paul, writing from chains, insists that every prison, every sorrow, every delay in life still finds its center in one task: to keep the mystery unstained, unwatered-down. Let today’s complicated duties shrink into this single calling: hold fast the treasure that another laid in your hands. Guard it, and you guard your own heart.",
   "verses": [
     {
       "verse": "1",
-      "text": "Joy is of the saints! and who shall put it on, but they alone?"
+      "text": "For this cause I Paul, the prisoner of Jesus Christ for you Gentiles,"
     },
     {
       "verse": "2",
-      "text": "Grace is of the elect! and who shall receive it except those who trust in it from the beginning?"
+      "text": "If ye have heard of the dispensation of the grace of God which is given me to you-ward:"
     },
     {
       "verse": "3",
-      "text": "Love is of the elect? And who shall put it on except those who have possessed it from the beginning?"
+      "text": "How that by revelation he made known unto me the mystery; as I wrote afore in few words,"
     },
     {
       "verse": "4",
-      "text": "Walk ye in the knowledge of the Most High without grudging: to His exultation and to the perfection of His knowledge."
+      "text": "Whereby, when ye read, ye may understand my knowledge in the mystery of Christ"
     }
   ],
-  "date": "2026-05-12"
+  "date": "2026-05-13"
 }

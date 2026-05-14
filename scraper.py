@@ -34,7 +34,7 @@ BOOKS = {
     # Homileticon
     "Diognetus": "https://marcionitechurchofchrist.org/diognetus/",
     # Synaxicon (Ignatius)
-    "Ephesians (Marcion)": "https://marcionitechurchofchrist.org/ephesians/",
+    "Ephesians": "https://marcionitechurchofchrist.org/ephesians/",
     "Magnesians": "https://marcionitechurchofchrist.org/magnesians/",
     "Trallians": "https://marcionitechurchofchrist.org/trallians/",
     "Romans (Marcion)": "https://marcionitechurchofchrist.org/mromans/",

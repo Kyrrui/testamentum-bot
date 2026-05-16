@@ -1,26 +1,26 @@
 {
-  "book": "Alexandrians",
-  "chapter": 12,
-  "verse_start": 1,
-  "verse_end": 4,
-  "blurb": "These verses invite us to run, eyes fixed not on earthly applause but on the pioneer who blazes the trail ahead. Faith is no lone sprint—clouds of completed saints cheer us on, urging weary hearts to steady their gait. Shake off every snare that clings, remember whose race it is, and walk gently again; endurance is born less of grit than of looking steadily, daily, at the one who first embraced the cross before he ever claimed the crown.",
+  "book": "Evangelicon",
+  "chapter": 13,
+  "verse_start": 36,
+  "verse_end": 39,
+  "blurb": "Lostness is less about distance than about being missed. The shepherd here does not grumble at the extra work; he is joy-scarred by what would be missing had even one remained astray. Each repentant soul adds another gleam to the banquet feast, and every little celebration echoes the larger one at the heart of God. Go find your next sheep today—you may discover the rejoicing starts the moment you set out.",
   "verses": [
     {
-      "verse": "1",
-      "text": "Now faith is the substance of things hoped for, the evidence of things not seen."
+      "verse": "36",
+      "text": "Now all the publicans and sinners were coming near unto him, to hear him."
     },
     {
-      "verse": "2",
-      "text": "For by it the elders obtained a good report."
+      "verse": "37",
+      "text": "And the Pharisees and scribes murmured, saying, This man receiveth sinners, and eateth with them."
     },
     {
-      "verse": "3",
-      "text": "Through faith we understand that the worlds were framed by the word of God, so that things which are seen were not made of things which do appear."
+      "verse": "38",
+      "text": "And he spake this parable unto them, saying,"
     },
     {
-      "verse": "4",
-      "text": "By faith Abel offered unto God a more excellent sacrifice than Cain, by which he obtained witness that he was righteous, God testifying of his gifts: and by it he being dead yet speaketh."
+      "verse": "39",
+      "text": "What man of you, having an hundred sheep, if he lose one of them, doth not leave the ninety and nine in the wilderness, and go after that which is lost, until he find it?"
     }
   ],
-  "date": "2026-05-15"
+  "date": "2026-05-16"
 }

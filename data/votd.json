@@ -1,18 +1,26 @@
 {
-  "book": "Magnesians",
-  "chapter": 7,
-  "verse_start": 1,
-  "verse_end": 2,
-  "blurb": "Let us live with Christ: words small enough to fit a child’s hand, large enough to cradle all of life.\n\nThe lesson is disarmingly simple—where Christ walks, earth becomes an altar, and every breath is a sacrifice of consent. When your silent prayer today overlaps the traffic’s noise or the laundry’s hum, remember that living \"with\" is more geography than sentiment: it is presence kept honest by his heartbeat beside yours.",
+  "book": "Smyrnaeans",
+  "chapter": "1",
+  "verse_start": "1",
+  "verse_end": "4",
+  "blurb": "At the’s dawn, fragile thanksgiving grows loudest against threat’s backdrop. Faith is not immunity from the wolves but the quiet, unshakeable conviction that tears counted by God outlast every roar. Gather the small graces you can name today; they are proof that gratitude is itself the music heaven trusts to drown the hush of fear.",
   "verses": [
     {
       "verse": "1",
-      "text": "If then those who had walked in ancient practices attained unto newness of hope, no longer observing sabbaths but fashioning their lives after the Lord’s day, on which our life also arose through Him and through His death which some men deny—a mystery whereby we attained unto belief, and for this cause we endure patiently, that we may be found disciples of Jesus Christ our only teacher."
+      "text": "Marcion, who is also Nauclerus, to the church of God the Father and of Jesus Christ the Beloved, which hath been mercifully endowed with every grace, being filled with faith and love and lacking in no grace, most reverend and bearing holy treasures;"
     },
     {
       "verse": "2",
-      "text": "If this be so, how shall we be able to live apart from Him?"
+      "text": "To the church which is in Smyrna of Asia, in a blameless spirit and in the word of God abundant greeting."
+    },
+    {
+      "verse": "3",
+      "text": "I give glory to Jesus Christ the God who bestowed such wisdom upon you;"
+    },
+    {
+      "verse": "4",
+      "text": "For I have perceived that ye are established in faith immovable, being as it were nailed on the cross of the Lord Jesus Christ, in flesh and in spirit, and firmly grounded in love in the blood of Christ, Son of God by the Divine will and power, that all righteousness might be fulfilled by Him, truly nailed up in the flesh for our sakes under Pontius Pilate and Herod the tetrarch of which fruit are we—that is, of His most blessed passion;"
     }
   ],
-  "date": "2026-05-17"
+  "date": "2026-05-18"
 }

@@ -1,25 +1,25 @@
 {
-  "book": "Alexandrians",
-  "chapter": 13,
-  "verse_start": 3,
-  "verse_end": 6,
-  "blurb": "A father’s discipline speaks smaller than wrath but deeper than indulgence; it trains the eyes to lift from earth to Zion. In the quiet rebuke of today’s small disappointment lies the unshaken kingdom already descending toward us. Bear the momentary hurt like a summonsation child bears a treasured rebuke—within it hides the shape of your future praise.",
+  "book": "1 Corinthians",
+  "chapter": "3",
+  "verse_start": "16",
+  "verse_end": "19",
+  "blurb": "These verses remind us that holiness is not a distant aspiration but a present reality—we ourselves are God's dwelling place. The temple is not made of stones but of breath and heartbeat, tears and laughter, the ordinary stuff of our days transformed into sacred space. When we grasp that the Spirit has chosen to make his home within us, even our smallest choices become acts of reverence, and the most mundane Tuesday afternoon becomes consecrated ground.",
   "verses": [
     {
-      "verse": "3",
-      "text": "And ye have forgotten the exhortation which speaketh unto you as unto children, My son, despise not thou the chastening of the Lord, nor faint when thou art rebuked of him:"
+      "verse": "16",
+      "text": "Know ye not that ye are the temple of God, and that the Spirit of God dwelleth in you?"
     },
     {
-      "verse": "4",
-      "text": "For whom the Lord loveth he chasteneth, and scourgeth every son whom he receiveth."
+      "verse": "17",
+      "text": "If any man defile the temple of God, he shall be himself destroyed; for the temple of God is holy, which temple ye are."
     },
     {
-      "verse": "5",
-      "text": "But if ye be without chastisement, whereof all are partakers, then are ye bastards, and not sons."
+      "verse": "18",
+      "text": "Let no man deceive himself. If any man among you seemeth to be wise in this world, let him become a fool, that he may be wise."
     },
     {
-      "verse": "6",
-      "text": "And make straight paths for your feet, lest that which is lame be turned out of the way; but let it rather be healed."
+      "verse": "19",
+      "text": "For the wisdom of this world is foolishness with God. For it is written, He taketh the wise in their own craftiness."
     }
   ],
   "date": "2026-05-19"

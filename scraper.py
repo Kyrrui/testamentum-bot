@@ -37,7 +37,7 @@ BOOKS = {
     "Ephesians": "https://marcionitechurchofchrist.org/ephesians/",
     "Magnesians": "https://marcionitechurchofchrist.org/magnesians/",
     "Trallians": "https://marcionitechurchofchrist.org/trallians/",
-    "Romans (Marcion)": "https://marcionitechurchofchrist.org/mromans/",
+    "mRomans": "https://marcionitechurchofchrist.org/mromans/",
     "Philadelphians": "https://marcionitechurchofchrist.org/philadelphians/",
     "Smyrnaeans": "https://marcionitechurchofchrist.org/symrnaeans/",
     "Metrodorus": "https://marcionitechurchofchrist.org/metrodorus/",

@@ -17,7 +17,7 @@ import requests
 from verse_image import render_verse
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
-OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "moonshotai/kimi-k2")
+OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
 VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")

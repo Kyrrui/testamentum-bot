@@ -1,26 +1,26 @@
 {
-  "book": "Galatians",
-  "chapter": "3",
+  "book": "Evangelicon",
+  "chapter": "15",
   "verse_start": "1",
   "verse_end": "4",
-  "blurb": "Paul's exasperated question cuts through religious pretense to expose the heart of the matter: we who began in the freedom of faith are now trying to perfect ourselves through the very law that once held us captive. The Spirit came not through our careful observance of rules but through the simple hearing of grace, yet how quickly we forget and return to the exhausting work of self-improvement. What folly to think we can complete by human effort what the Father began by divine gift—as if the same hand that raised Christ from the dead suddenly needed our assistance to finish what he started.",
+  "blurb": "Christ's warning about stumbling blocks reveals the Father's protective heart—he would rather we enter life maimed than perish whole in our pursuit of what destroys. The radical surgery he prescribes is not divine cruelty but divine mercy, cutting away what we think we cannot live without so that we might discover what we truly cannot die without. Sometimes the most loving thing the Father does is make our cherished sins too costly to keep, not because he delights in our loss but because he delights in our life.",
   "verses": [
     {
       "verse": "1",
-      "text": "O foolish Galatians, who hath bewitched you, that ye should not obey the truth, before whose eyes Jesus Christ hath been evidently set forth, crucified among you?"
+      "text": "Then said he unto the disciples, It is impossible but that offences will come: but woe unto him, through whom they come!"
     },
     {
       "verse": "2",
-      "text": "This only would I learn of you, Received ye the Spirit by the works of the law, or by the hearing of faith?"
+      "text": "It were better for him if he had not been born, or if a millstone were hanged about his neck and he were cast into the sea, than that he should offend one of these little ones,"
     },
     {
       "verse": "3",
-      "text": "Are ye so foolish? having begun in the Spirit, are ye now made perfect by the flesh?"
+      "text": "Take heed to yourselves: But if thy brother trespass against thee, rebuke him; and if he repent, forgive him."
     },
     {
       "verse": "4",
-      "text": "Have ye suffered so many things in vain? if it be yet in vain."
+      "text": "And if he trespass against thee seven times in the day, and seven times in the day turn again to thee, saying, I repent; thou shalt forgive him."
     }
   ],
-  "date": "2026-05-21"
+  "date": "2026-05-22"
 }

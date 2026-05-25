@@ -1,22 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "9",
-  "verse_start": "21",
-  "verse_end": "23",
-  "blurb": "Jesus' thanksgiving reveals the Father's delight in upending human expectations—what the wise and learned cannot grasp through their elaborate systems, babes receive as pure gift. The Stranger God does not distribute his revelations according to scholarly merit or religious achievement, but according to the simple receptivity of those who approach him empty-handed. This divine preference for the humble is not arbitrary favoritism but recognition that pride blocks the very channels through which grace flows most freely.",
+  "book": "Galatians",
+  "chapter": "5",
+  "verse_start": "1",
+  "verse_end": "4",
+  "blurb": "Christ has set us free not for the burden of new rules but for the joy of authentic relationship with the Father. To return to the law after tasting such grace is to trade sonship for slavery, to exchange the Father's embrace for the taskmaster's demands. Paul's stark warning echoes with pastoral urgency: we cannot have both the freedom of faith and the security of legal performance—one inevitably cancels the other. The yoke of Christ is easy precisely because it rests not on our shoulders but on his.",
   "verses": [
     {
-      "verse": "21",
-      "text": "In that hour Jesus rejoiced in spirit, and said, I thank thee, Lord of heaven, that thou hast hid these things from the wise and prudent, and hast revealed them unto babes: even so, Father; for so it was well-pleasing before thee."
+      "verse": "1",
+      "text": "Stand fast therefore in the liberty wherewith Christ hath made us free, and be not entangled again with the yoke of bondage."
     },
     {
-      "verse": "22",
-      "text": "All things were delivered to me by my Father: and no man knoweth who the Father is, but the Son, and who the Son is, but the Father, and he to whomsoever the Son wishes to reveal him."
+      "verse": "2",
+      "text": "Behold, I Paul say unto you, that if ye be circumcised, Christ shall profit you nothing."
     },
     {
-      "verse": "23",
-      "text": "Come unto me, all ye that labour and are heavy laden, and I will give you rest."
+      "verse": "3",
+      "text": "I testify that a man that is circumcised is a debtor to do the whole Law,"
+    },
+    {
+      "verse": "4",
+      "text": "Christ is become of no effect unto you, whosoever of you are justified by the law; ye are fallen from grace."
     }
   ],
-  "date": "2026-05-24"
+  "date": "2026-05-25"
 }

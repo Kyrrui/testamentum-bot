@@ -1,26 +1,22 @@
 {
-  "book": "Galatians",
-  "chapter": "5",
-  "verse_start": "1",
-  "verse_end": "4",
-  "blurb": "Christ has set us free not for the burden of new rules but for the joy of authentic relationship with the Father. To return to the law after tasting such grace is to trade sonship for slavery, to exchange the Father's embrace for the taskmaster's demands. Paul's stark warning echoes with pastoral urgency: we cannot have both the freedom of faith and the security of legal performance—one inevitably cancels the other. The yoke of Christ is easy precisely because it rests not on our shoulders but on his.",
+  "book": "Evangelicon",
+  "chapter": "14",
+  "verse_start": "16",
+  "verse_end": "18",
+  "blurb": "The Father's law stands in stark contrast to the Demiurge's demands—it is not written on stone tablets but inscribed on hearts transformed by grace. While the old covenant bound its subjects with external commands that revealed their inability to obey, the new covenant of the Stranger God operates from within, making righteousness a natural expression of those who have been made alive in the Spirit. What the law of Moses could never accomplish through centuries of striving, the Father achieves in a moment through the gift of his own nature dwelling within us.",
   "verses": [
     {
-      "verse": "1",
-      "text": "Stand fast therefore in the liberty wherewith Christ hath made us free, and be not entangled again with the yoke of bondage."
+      "verse": "16",
+      "text": "Think not that I am come to fulfil the law, or the prophets: I am not come to fulfil, but to destroy."
     },
     {
-      "verse": "2",
-      "text": "Behold, I Paul say unto you, that if ye be circumcised, Christ shall profit you nothing."
+      "verse": "17",
+      "text": "The law and the prophets were until John: since that time the kingdom of God is preached, and every man presseth into it."
     },
     {
-      "verse": "3",
-      "text": "I testify that a man that is circumcised is a debtor to do the whole Law,"
-    },
-    {
-      "verse": "4",
-      "text": "Christ is become of no effect unto you, whosoever of you are justified by the law; ye are fallen from grace."
+      "verse": "18",
+      "text": "And it is easier for heaven and earth to pass, than one tittle of my words to fail."
     }
   ],
-  "date": "2026-05-25"
+  "date": "2026-05-27"
 }

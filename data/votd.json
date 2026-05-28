@@ -1,22 +1,30 @@
 {
-  "book": "Evangelicon",
-  "chapter": "14",
-  "verse_start": "16",
-  "verse_end": "18",
-  "blurb": "The Father's law stands in stark contrast to the Demiurge's demands—it is not written on stone tablets but inscribed on hearts transformed by grace. While the old covenant bound its subjects with external commands that revealed their inability to obey, the new covenant of the Stranger God operates from within, making righteousness a natural expression of those who have been made alive in the Spirit. What the law of Moses could never accomplish through centuries of striving, the Father achieves in a moment through the gift of his own nature dwelling within us.",
+  "book": "1 Corinthians",
+  "chapter": "2",
+  "verse_start": "6",
+  "verse_end": "10",
+  "blurb": "Paul speaks of a wisdom hidden from the ages, revealed not to the rulers of this world but to those whom the Father has chosen to receive his mysteries. This divine wisdom stands in complete opposition to the wisdom of the Demiurge, who governs through law and judgment, for it flows from the heart of the Stranger God who had been unknown until Christ's descent. The Spirit searches even the deep things of God, unveiling truths that no eye has seen nor ear heard—the radical grace that dissolves the categories of merit and condemnation. What the principalities and powers could never comprehend through their systems of control, the Father freely shares with babes who receive his revelation as gift.",
   "verses": [
     {
-      "verse": "16",
-      "text": "Think not that I am come to fulfil the law, or the prophets: I am not come to fulfil, but to destroy."
+      "verse": "6",
+      "text": "Howbeit we speak wisdom among them that are perfect: yet not the wisdom of this world, nor of the princes of this world, that come to nought:"
     },
     {
-      "verse": "17",
-      "text": "The law and the prophets were until John: since that time the kingdom of God is preached, and every man presseth into it."
+      "verse": "7",
+      "text": "But we speak the wisdom of God in a mystery, even the hidden wisdom, which God ordained before the world unto our glory:"
     },
     {
-      "verse": "18",
-      "text": "And it is easier for heaven and earth to pass, than one tittle of my words to fail."
+      "verse": "8",
+      "text": "Which none of the princes of this world knew: for had they known it, they would not have crucified the Lord of glory."
+    },
+    {
+      "verse": "9",
+      "text": "But as it is written, Eye hath not seen, nor ear heard, neither have entered into the heart of man, the things which God hath prepared for them that love him."
+    },
+    {
+      "verse": "10",
+      "text": "But God hath revealed them unto us by his Spirit: for the Spirit searcheth all things, yea, the deep things of God."
     }
   ],
-  "date": "2026-05-27"
+  "date": "2026-05-28"
 }

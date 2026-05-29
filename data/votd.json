@@ -1,30 +1,26 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "2",
-  "verse_start": "6",
-  "verse_end": "10",
-  "blurb": "Paul speaks of a wisdom hidden from the ages, revealed not to the rulers of this world but to those whom the Father has chosen to receive his mysteries. This divine wisdom stands in complete opposition to the wisdom of the Demiurge, who governs through law and judgment, for it flows from the heart of the Stranger God who had been unknown until Christ's descent. The Spirit searches even the deep things of God, unveiling truths that no eye has seen nor ear heard—the radical grace that dissolves the categories of merit and condemnation. What the principalities and powers could never comprehend through their systems of control, the Father freely shares with babes who receive his revelation as gift.",
+  "book": "Evangelicon",
+  "chapter": "20",
+  "verse_start": "50",
+  "verse_end": "53",
+  "blurb": "Christ's new commandment reveals the revolutionary nature of the Stranger God's love—not the conditional affection earned through obedience to law, but the self-giving love that flows freely from the Father's own heart. This love bears no resemblance to the Demiurge's system of rewards and punishments, for it asks nothing of our performance and everything of our receptivity. When we love as Christ loved, we become living proof that the Father's grace has transformed us from the inside out, making us vessels of the same unconditional mercy that first rescued us from the law's demands.",
   "verses": [
     {
-      "verse": "6",
-      "text": "Howbeit we speak wisdom among them that are perfect: yet not the wisdom of this world, nor of the princes of this world, that come to nought:"
+      "verse": "50",
+      "text": "Therefore, when he was gone out, Jesus said, Now is the Son of man glorified, and God is glorified in him."
     },
     {
-      "verse": "7",
-      "text": "But we speak the wisdom of God in a mystery, even the hidden wisdom, which God ordained before the world unto our glory:"
+      "verse": "51",
+      "text": "If God be glorified in him, God shall also glorify him in himself, and shall straightway glorify him."
     },
     {
-      "verse": "8",
-      "text": "Which none of the princes of this world knew: for had they known it, they would not have crucified the Lord of glory."
+      "verse": "52",
+      "text": "Little children, yet a little while I am with you. Ye shall seek me: and as I said unto the Jews, Whither I go, ye cannot come; so now I say to you."
     },
     {
-      "verse": "9",
-      "text": "But as it is written, Eye hath not seen, nor ear heard, neither have entered into the heart of man, the things which God hath prepared for them that love him."
-    },
-    {
-      "verse": "10",
-      "text": "But God hath revealed them unto us by his Spirit: for the Spirit searcheth all things, yea, the deep things of God."
+      "verse": "53",
+      "text": "A new commandment I give unto you, That ye love one another; as I have loved you, that ye also love one another."
     }
   ],
-  "date": "2026-05-28"
+  "date": "2026-05-29"
 }

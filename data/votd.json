@@ -1,26 +1,26 @@
 {
-  "book": "Romans",
-  "chapter": "5",
-  "verse_start": "1",
-  "verse_end": "4",
-  "blurb": "Justification by faith ushers us into a peace that the law could never provide—not the fragile truce of perfect compliance, but the settled rest of those who have been declared righteous apart from works. This peace with the Father flows from grace, not achievement, creating a foundation so secure that even sufferings become instruments of transformation rather than threats to our standing. Where the Demiurge's system breeds anxiety over performance, the Stranger God's mercy produces a confidence that can actually rejoice in trials, knowing that nothing can separate us from the love revealed in Christ.",
+  "book": "Evangelicon",
+  "chapter": "7",
+  "verse_start": "16",
+  "verse_end": "19",
+  "blurb": "Christ's claim to equality with the Father scandalized those who knew only the Demiurge's distant sovereignty, yet it reveals the intimate nature of the Stranger God's love. The Creator demands worship through fear and separation, but the Father invites us into the very life shared between himself and his Son. This divine equality is not a throne to be grasped but a gift to be received—the promise that we too may participate in the unity that has existed from before all worlds. What the law could never bridge, grace makes immediate: the gap between Creator and creature dissolved in the embrace of the Father's own life.",
   "verses": [
     {
-      "verse": "1",
-      "text": "What shall we say then? Shall we continue in sin, that grace may abound?"
+      "verse": "16",
+      "text": "Therefore the Jews sought the more to kill him, because he not only had broken the sabbath, but said also that God was his Father, making himself equal with God."
     },
     {
-      "verse": "2",
-      "text": "God forbid. How shall we, that are dead to sin, live any longer therein?"
+      "verse": "17",
+      "text": "Then answered Jesus and said unto them, Verily, verily, I say unto you, The Son can do nothing of himself, but what he seeth the Father do: for what things soever he doeth, these also doeth the Son likewise."
     },
     {
-      "verse": "3",
-      "text": "Know ye not, that so many of us as were baptized into Jesus Christ were baptized into his death?"
+      "verse": "18",
+      "text": "For the Father loveth the Son, and sheweth him all things that himself doeth: and he will shew him greater works than these, that ye may marvel."
     },
     {
-      "verse": "4",
-      "text": "Therefore we are buried with him by baptism into death: that like as Christ was raised up from the dead by the glory of the Father, even so we also should walk in newness of life."
+      "verse": "19",
+      "text": "For as the Father raiseth up the dead, and quickeneth them; even so the Son quickeneth whom he will."
     }
   ],
-  "date": "2026-06-01"
+  "date": "2026-06-02"
 }

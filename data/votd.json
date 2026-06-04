@@ -1,18 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "10",
-  "verse_start": "1",
-  "verse_end": "4",
-  "blurb": "The Father's Prayer reveals the radical intimacy of the Stranger God—not a distant Creator to be approached with elaborate ritual, but a loving Parent who delights in simple communion with his children. Where the Demiurge's demands require perfect compliance before blessing, the Father invites us to ask freely, knowing that his grace precedes our prayers and his provision flows from love rather than merit. This prayer teaches us to approach heaven not as subjects seeking favor from a judge, but as children confident in their Father's tender care.",
+  "book": "Galatians",
+  "chapter": "4",
+  "verse_start": "21",
+  "verse_end": "24",
+  "blurb": "Paul's allegory of Sarah and Hagar illuminates the fundamental difference between the two covenants—one born of human striving under the Demiurge's law, the other flowing freely from the Stranger God's promise. Those who seek righteousness through legal observance remain children of bondage, trapped in the same system that held Abraham's household captive to performance and merit. But we who have received the Father's grace are children of the free woman, born not through the flesh's effort but through the Spirit's gift, heirs of a promise that predates and supersedes every demand of law.",
   "verses": [
     {
-      "verse": "1",
-      "text": "And it came to pass that, as he was praying in a certain place, when he ceased, one of his disciples said unto him, Lord, teach us to pray, as John also taught his disciples."
+      "verse": "21",
+      "text": "Tell me, ye that desire to be under the law, do ye not hear the law?"
     },
     {
-      "verse": "2",
-      "text": "And he said unto them, When ye pray, say,"
+      "verse": "22",
+      "text": "For it is written, that Abraham had two sons, the one by a bondmaid, the other by a freewoman."
+    },
+    {
+      "verse": "23",
+      "text": "But he who was of the bondwoman was born after the flesh; but he of the freewoman was by promise."
+    },
+    {
+      "verse": "24",
+      "text": "Which things are an allegory: for these are the two expositions; the one from the mount Sinai, which gendereth to bondage, which is Agar."
     }
   ],
-  "date": "2026-06-03"
+  "date": "2026-06-04"
 }

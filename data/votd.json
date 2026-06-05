@@ -1,26 +1,26 @@
 {
-  "book": "Galatians",
-  "chapter": "4",
-  "verse_start": "21",
-  "verse_end": "24",
-  "blurb": "Paul's allegory of Sarah and Hagar illuminates the fundamental difference between the two covenants—one born of human striving under the Demiurge's law, the other flowing freely from the Stranger God's promise. Those who seek righteousness through legal observance remain children of bondage, trapped in the same system that held Abraham's household captive to performance and merit. But we who have received the Father's grace are children of the free woman, born not through the flesh's effort but through the Spirit's gift, heirs of a promise that predates and supersedes every demand of law.",
+  "book": "Evangelicon",
+  "chapter": "11",
+  "verse_start": "61",
+  "verse_end": "64",
+  "blurb": "Christ came not to bring the peace of compromise between the old and new, but the fire of radical transformation that separates the Stranger God's grace from the Demiurge's law. This divine flame burns through the comfortable illusions that we can somehow blend the Father's mercy with the Creator's demands, revealing that the gospel allows no middle ground. The divisions Christ brings are not cruelty but clarity—the necessary distinction between those who cling to legal systems and those who have been set ablaze by the freedom that flows from grace alone.",
   "verses": [
     {
-      "verse": "21",
-      "text": "Tell me, ye that desire to be under the law, do ye not hear the law?"
+      "verse": "61",
+      "text": "I came to cast fire on the earth; and what will I, if it be already kindled?"
     },
     {
-      "verse": "22",
-      "text": "For it is written, that Abraham had two sons, the one by a bondmaid, the other by a freewoman."
+      "verse": "62",
+      "text": "But I have a baptism to be baptized with; and how am I constrained till it be accomplished!"
     },
     {
-      "verse": "23",
-      "text": "But he who was of the bondwoman was born after the flesh; but he of the freewoman was by promise."
+      "verse": "63",
+      "text": "Think ye that I am come to give peace on earth? I tell you, Nay; but rather division:"
     },
     {
-      "verse": "24",
-      "text": "Which things are an allegory: for these are the two expositions; the one from the mount Sinai, which gendereth to bondage, which is Agar."
+      "verse": "64",
+      "text": "For from henceforth there shall be five in one house divided, three against two, and two against three."
     }
   ],
-  "date": "2026-06-04"
+  "date": "2026-06-05"
 }

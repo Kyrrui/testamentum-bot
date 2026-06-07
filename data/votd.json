@@ -1,22 +1,26 @@
 {
   "book": "Evangelicon",
-  "chapter": "6",
-  "verse_start": "1",
-  "verse_end": "3",
-  "blurb": "Christ's radical inclusion of women as ministers and supporters of his mission stands in stark contrast to the Demiurge's exclusionary religious systems. Where the Creator's law confined women to subordinate roles and ritual restrictions, the Stranger God's grace breaks down every barrier, calling forth gifts and callings without regard to gender or social standing. The Father's kingdom operates by the logic of the Spirit rather than the flesh, creating a new community where service flows from grace rather than hierarchy.",
+  "chapter": "12",
+  "verse_start": "27",
+  "verse_end": "30",
+  "blurb": "The parable of the tares reveals the Father's patience with a mixed world, allowing wheat and weeds to grow together until the final harvest rather than demanding immediate purification through law. Where the Demiurge's system seeks to uproot evil through judgment and regulation, the Stranger God's wisdom recognizes that premature separation often destroys the very good it seeks to preserve. This divine restraint flows not from indifference to righteousness but from a love so profound that it risks the presence of evil rather than endanger a single child of grace.",
   "verses": [
     {
-      "verse": "1",
-      "text": "And it came to pass afterward, that he went throughout every city and village, preaching and showing the glad tidings of the kingdom of God: and the twelve were with him."
+      "verse": "27",
+      "text": "Then Jesus sent the multitude away, and went into the house: and his disciples came unto him, saying, Declare unto us the parable of the tares of the field."
     },
     {
-      "verse": "2",
-      "text": "And certain women, which had been healed of evil spirits and infirmities, Mary called Magdalene, out of whom went seven devils,"
+      "verse": "28",
+      "text": "He answered and said unto them, He that soweth the good seed is the Son of man;"
     },
     {
-      "verse": "3",
-      "text": "And Joanna the wife of Chuza, Herod’s steward, and Susanna, and many others, which ministered unto him of their substance."
+      "verse": "29",
+      "text": "The field is the world; the good seed are the children of the kingdom; but the tares are the children of the wicked one;"
+    },
+    {
+      "verse": "30",
+      "text": "The enemy that sowed them is the devil; the harvest is the end of the world; and the reapers are the angels."
     }
   ],
-  "date": "2026-06-06"
+  "date": "2026-06-07"
 }

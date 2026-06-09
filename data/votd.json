@@ -1,26 +1,26 @@
 {
-  "book": "2 Corinthians",
-  "chapter": "3",
-  "verse_start": "6",
-  "verse_end": "9",
-  "blurb": "Paul's ministry flows from the new covenant of the Spirit, not the old covenant of death carved in stone by the Demiurge. Where the Creator's law brought condemnation through its impossible demands, the Father's Spirit brings life through grace that transforms from within. The glory of Moses' system was real but fading, bound to disappoint; the glory of Christ's covenant increases eternally because it rests on the Father's unchanging mercy rather than human performance. We serve not as administrators of legal requirements but as ministers of the Spirit who gives life freely to all who believe.",
+  "book": "Romans",
+  "chapter": "8",
+  "verse_start": "1",
+  "verse_end": "4",
+  "blurb": "The Stranger God's victory is complete—no condemnation remains for those who dwell in Christ Jesus, liberated from the Demiurge's endless accusations and legal demands. Where the Creator's law could only diagnose sin without providing cure, the Father sent his Son to accomplish what legislation never could: the transformation of human nature itself. The Spirit's law of life operates not through external commands but through the indwelling presence of grace, fulfilling every righteous requirement not by our striving but by Christ's perfect work within us.",
   "verses": [
     {
-      "verse": "6",
-      "text": "Who also hath made us able ministers of the new testament; not of the letter, but of the spirit: for the letter killeth, but the spirit giveth life."
+      "verse": "1",
+      "text": "I say the truth in Christ, I lie not, my conscience also bearing me witness in the Holy Ghost,"
     },
     {
-      "verse": "7",
-      "text": "But if the ministration of death, written and engraven in stones, was glorious, so that the children of Israel could not stedfastly behold the face of Moses for the glory of his countenance; which glory was to be done away:"
+      "verse": "2",
+      "text": "That I have great heaviness and continual sorrow in my heart."
     },
     {
-      "verse": "8",
-      "text": "How shall not the ministration of the spirit be rather glorious?"
+      "verse": "3",
+      "text": "For I could wish that myself were accursed from Christ for my brethren, my kinsmen according to the flesh:"
     },
     {
-      "verse": "9",
-      "text": "For if the ministration of condemnation be glory, much more doth the ministration of righteousness exceed in glory."
+      "verse": "4",
+      "text": "Brethren, my heart’s desire and prayer to God for Israel is, that they might be saved."
     }
   ],
-  "date": "2026-06-08"
+  "date": "2026-06-09"
 }

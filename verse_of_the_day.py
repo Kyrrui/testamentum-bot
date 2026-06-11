@@ -1,14 +1,16 @@
 """
-Verse of the Day — uses an LLM (via OpenRouter) to pick a meaningful verse
-from the Testamentum, then posts it to a Discord channel via webhook.
+Verse of the Day — picks a random consecutive verse range from the
+Testamentum and posts the rendered image to a Discord channel via webhook.
+
+Avoids repeating any passage already in votd_history.json.
 
 Requires environment variables:
-  OPENROUTER_API_KEY — API key for OpenRouter
   DISCORD_WEBHOOK_URL — Discord webhook URL for the target channel
 """
 
 import json
 import os
+import random
 import sys
 from datetime import datetime, timezone
 
@@ -16,25 +18,23 @@ import requests
 
 from verse_image import render_verse
 
-OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
-OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
 VOTD_PATH = os.path.join(os.path.dirname(__file__), "data", "votd.json")
 HISTORY_PATH = os.path.join(os.path.dirname(__file__), "data", "votd_history.json")
-THEOLOGY_PATH = os.path.join(os.path.dirname(__file__), "docs", "marcionite_theology.md")
 EMBED_COLOR = 0x8B4513
 
+MIN_RANGE = 2
+MAX_RANGE = 6
+MAX_PICK_ATTEMPTS = 200
 
-def load_theology_reference() -> str:
-    if not os.path.exists(THEOLOGY_PATH):
-        return ""
-    with open(THEOLOGY_PATH, "r", encoding="utf-8") as f:
-        return f.read()
+
+def load_db() -> dict:
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 def load_history() -> list[dict]:
-    """Load VOTD history. Each entry has date, book, chapter, verse_start, verse_end."""
     if not os.path.exists(HISTORY_PATH):
         return []
     with open(HISTORY_PATH, "r", encoding="utf-8") as f:
@@ -46,249 +46,85 @@ def save_history(history: list[dict]):
         json.dump(history, f, indent=2, ensure_ascii=False)
 
 
-def load_db() -> dict:
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+def _ranges_overlap(a_book: str, a_ch: int, a_start: int, a_end: int,
+                    b_book: str, b_ch: int, b_start: int, b_end: int) -> bool:
+    if a_book != b_book or a_ch != b_ch:
+        return False
+    return not (a_end < b_start or b_end < a_start)
 
 
-def build_structure_summary(db: dict) -> str:
-    """Build a compact summary of the Testamentum structure with section headings.
-
-    Much smaller than the full text — lets the LLM pick a reference without
-    having to include 127k tokens of verses in the prompt.
-    """
-    lines = []
-    for bname, bdata in db["books"].items():
-        lines.append(f"=== {bname} ===")
-        for ch_num in sorted(bdata["chapters"].keys(), key=int):
-            ch_data = bdata["chapters"][ch_num]
-            verse_count = len(ch_data["verses"])
-            sections = ch_data.get("sections", {})
-            # List unique section headings in order
-            seen = []
-            for v_num in sorted(sections.keys(), key=int):
-                name = sections[v_num]
-                if not seen or seen[-1][0] != name:
-                    seen.append((name, v_num))
-            if seen:
-                sec_strs = [f"{name} (v{v})" for name, v in seen]
-                lines.append(f"Ch {ch_num} ({verse_count}v): {' | '.join(sec_strs)}")
-            else:
-                lines.append(f"Ch {ch_num} ({verse_count}v)")
-        lines.append("")
-    return "\n".join(lines)
-
-
-def lookup_verses(db: dict, book: str, chapter: str, v_start: int, v_end: int) -> list[dict] | None:
-    """Look up verse text from the local database."""
-    book_data = db["books"].get(book)
-    if not book_data:
-        return None
-    ch_data = book_data["chapters"].get(str(chapter))
-    if not ch_data:
-        return None
-
-    verses = []
-    for v in range(v_start, v_end + 1):
-        text = ch_data["verses"].get(str(v))
-        if text:
-            verses.append({"verse": str(v), "text": text})
-    return verses if verses else None
-
-
-def _call_llm(system_text: str, user_text: str) -> str:
-    """Call the LLM via OpenRouter and return the text response."""
-    import time
-    body = {
-        "model": OPENROUTER_MODEL,
-        "max_tokens": 1024,
-        "provider": {"order": ["moonshotai", "groq", "together"], "allow_fallbacks": True},
-        "messages": [
-            {"role": "system", "content": system_text},
-            {"role": "user", "content": user_text},
-        ],
-    }
-
-    for attempt in range(5):
-        resp = requests.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://github.com/Kyrrui/testamentum-bot",
-                "X-Title": "Testamentum Bot",
-            },
-            json=body,
-            timeout=180,
-        )
-        if resp.status_code == 429:
-            retry_after = resp.headers.get("retry-after")
-            wait = int(retry_after) if retry_after else min(2 ** attempt * 30, 120)
-            print(f"  Rate limited, waiting {wait}s (attempt {attempt + 1}/5)...")
-            print(f"  Response: {resp.text[:200]}")
-            time.sleep(wait)
+def _is_used(book: str, chapter: int, v_start: int, v_end: int, history: list[dict]) -> bool:
+    for h in history:
+        try:
+            h_ch = int(h["chapter"])
+            h_start = int(h["verse_start"])
+            h_end = int(h["verse_end"])
+        except (KeyError, ValueError, TypeError):
             continue
-        if not resp.ok:
-            print(f"  Error {resp.status_code}: {resp.text[:1000]}")
-        resp.raise_for_status()
-        data = resp.json()
-        usage = data.get("usage", {})
-        print(f"  Tokens — prompt: {usage.get('prompt_tokens', '?')}, completion: {usage.get('completion_tokens', '?')}")
-        choice = data["choices"][0]
-        finish = choice.get("finish_reason")
-        content = choice["message"]["content"] or ""
-        print(f"  Finish reason: {finish}")
-        print(f"  Response preview: {content[:300]!r}")
-        return content
-    resp.raise_for_status()
+        if _ranges_overlap(book, chapter, v_start, v_end,
+                           h["book"], h_ch, h_start, h_end):
+            return True
+    return False
 
 
-def _do_web_search(query: str) -> str:
-    """Perform a web search using DuckDuckGo and return text results."""
-    try:
-        from ddgs import DDGS
-        results = DDGS().text(query, max_results=8)
-        formatted = []
-        for r in results:
-            formatted.append(f"{r['title']}\n{r['body']}")
-        return "\n\n".join(formatted) if formatted else "No results found."
-    except Exception as e:
-        return f"Search failed: {e}"
+def pick_random_verse(db: dict, history: list[dict]) -> dict:
+    """Pick a random 2-6 verse range that hasn't been used before."""
+    books = list(db["books"].keys())
+    for _ in range(MAX_PICK_ATTEMPTS):
+        book = random.choice(books)
+        chapters = list(db["books"][book]["chapters"].keys())
+        chapter = random.choice(chapters)
+        ch_data = db["books"][book]["chapters"][chapter]
+        verse_nums = sorted(int(v) for v in ch_data["verses"].keys())
+        if not verse_nums:
+            continue
 
+        range_size = random.randint(MIN_RANGE, MAX_RANGE)
+        # Pick a starting verse such that we have at least range_size verses available
+        max_start_idx = max(0, len(verse_nums) - range_size)
+        start_idx = random.randint(0, max_start_idx)
+        v_start = verse_nums[start_idx]
+        # Build a consecutive run from this start
+        v_list = [v_start]
+        for nxt in verse_nums[start_idx + 1:]:
+            if nxt == v_list[-1] + 1 and len(v_list) < range_size:
+                v_list.append(nxt)
+            else:
+                break
+        # Ensure we got at least MIN_RANGE consecutive verses
+        if len(v_list) < MIN_RANGE:
+            continue
+        v_end = v_list[-1]
 
-def _gather_context() -> str:
-    """Gather today's context — only major holidays, no news.
+        if _is_used(book, int(chapter), v_start, v_end, history):
+            continue
 
-    We deliberately skip news because the LLM tends to fixate on dramatic
-    headlines (wars, earthquakes, disasters) for multiple days in a row,
-    making the VOTD repetitive and doom-y.
-    """
-    today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
-    print("  Gathering today's context...")
+        verses = [{"verse": str(v), "text": ch_data["verses"][str(v)]} for v in v_list]
+        return {
+            "book": book,
+            "chapter": chapter,
+            "verse_start": str(v_start),
+            "verse_end": str(v_end),
+            "verses": verses,
+        }
 
-    web_results = _do_web_search(f"{today} major holidays observances")
-    print(f"  Web search done ({len(web_results)} chars)")
-
-    context = (
-        f"Today is {today}.\n\n"
-        f"=== Holidays and observances ===\n{web_results}"
-    )
-    return context
-
-
-def pick_verse(db: dict, history: list[dict]) -> dict:
-    """Pick a verse of the day in two steps:
-
-    1. LLM picks a passage reference based on structure + context
-    2. We look up the verse text locally and the LLM writes the blurb
-
-    Returns {book, chapter, verse_start, verse_end, verses, blurb}.
-    """
-    context = _gather_context()
-    structure = build_structure_summary(db)
-
-    # History string
-    if history:
-        past_refs = [f"{h['book']} {h['chapter']}:{h['verse_start']}-{h['verse_end']}" for h in history]
-        history_str = "Previously used passages (DO NOT repeat any of these):\n" + "\n".join(past_refs)
-
-        recent_with_blurbs = [h for h in history[-7:] if h.get("blurb")]
-        if recent_with_blurbs:
-            blurb_lines = [f"- {h['date']}: {h['blurb']}" for h in recent_with_blurbs]
-            history_str += (
-                "\n\nRecent blurbs (DO NOT repeat the same news events or themes):\n"
-                + "\n".join(blurb_lines)
-            )
-    else:
-        history_str = ""
-
-    theology = load_theology_reference()
-
-    system_text = (
-        "You are a thoughtful presbyter of the Marcionite Testamentum, writing for a Marcionite Christian community. "
-        "Your role is to select a meaningful passage (verse range) for the Verse of the Day and write a "
-        "pastoral reflection grounded in Marcionite theology.\n\n"
-        "=== MARCIONITE THEOLOGY REFERENCE ===\n"
-        "All blurbs must be theologically consistent with the following reference. "
-        "Do NOT default to mainstream Christian theology — it contradicts core Marcionite belief.\n\n"
-        f"{theology}\n\n"
-        "=== TASK GUIDELINES ===\n"
-        "- Pick a range of 2-6 consecutive verses that form a complete thought.\n"
-        "- Vary selections across all books — don't favor any single book.\n"
-        "- NEVER repeat a previously used passage (history provided below).\n"
-        "- Don't default to famous verses. Dig deep into lesser-known passages.\n"
-        "- Use the section headings in the structure summary as hints about themes.\n\n"
-        "=== BLURB STYLE ===\n"
-        "- Warm, pastoral, contemplative — like a Marcionite presbyter writing for the faithful.\n"
-        "- 2-4 sentences.\n"
-        "- Center on grace, freedom from the law, the love of the Father revealed in Christ, the inner Spirit.\n"
-        "- Reflect Paul's antitheses (law/grace, wrath/mercy, flesh/spirit) when the passage supports it.\n"
-        "- Do NOT reference current events, news, day of week, novelty holidays, or holidays not happening today.\n"
-        "- Do NOT use orthodox Christian framings: no nativity, no incarnation as birth, no OT/NT continuity, "
-        "no conflation of the Creator with the Father.\n"
-        "- Major holidays (Easter, Pentecost) may be referenced if they fall today.\n"
-        "- Note: Marcionites do not celebrate Christmas as a nativity since Christ descended fully grown."
-    )
-
-    user_text = (
-        "Testamentum structure (book, chapters, section headings):\n\n"
-        f"{structure}\n\n"
-        f"Today's context:\n\n{context}\n\n"
-        + (f"{history_str}\n\n" if history_str else "")
-        + "Pick a Verse of the Day passage. "
-        "Use the section headings as hints about the passage's theme.\n\n"
-        "Respond with ONLY this JSON, no preamble or markdown fences:\n"
-        "{\n"
-        '  "book": "Book Name",\n'
-        '  "chapter": "1",\n'
-        '  "verse_start": "1",\n'
-        '  "verse_end": "4",\n'
-        '  "blurb": "A 2-4 sentence reflection. Warm, genuine, specific."\n'
-        "}"
-    )
-
-    raw = _call_llm(system_text, user_text)
-
-    content = raw.strip()
-    if content.startswith("```"):
-        content = content.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-
-    json_start = content.find("{")
-    json_end = content.rfind("}") + 1
-    if json_start >= 0 and json_end > json_start:
-        content = content[json_start:json_end]
-
-    result = json.loads(content)
-
-    # Look up the actual verse text from our local db
-    v_start = int(result["verse_start"])
-    v_end = int(result["verse_end"])
-    verses = lookup_verses(db, result["book"], result["chapter"], v_start, v_end)
-    if not verses:
-        raise RuntimeError(f"LLM picked invalid reference: {result['book']} {result['chapter']}:{v_start}-{v_end}")
-    result["verses"] = verses
-    return result
+    raise RuntimeError(f"Could not find an unused verse range after {MAX_PICK_ATTEMPTS} attempts.")
 
 
 def post_to_discord(verse: dict):
-    """Post the verse of the day to Discord via webhook with generated image."""
     today = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
 
     ref = f"{verse['book']} {verse['chapter']}:{verse['verse_start']}"
     if verse["verse_start"] != verse["verse_end"]:
         ref += f"-{verse['verse_end']}"
 
-    # Generate verse image
     verse_tuples = [(int(v["verse"]), v["text"]) for v in verse["verses"]]
     img_buf = render_verse(ref, verse_tuples)
 
-    # Embed with the image attached and blurb below
     embed = {
         "title": f"Verse of the Day — {today}",
-        "description": f"*{verse['blurb']}*",
         "image": {"url": "attachment://votd.png"},
         "color": EMBED_COLOR,
-        "footer": {"text": "Verse selection and summary generated by AI"},
     }
 
     payload = {"embeds": [embed]}
@@ -304,43 +140,34 @@ def post_to_discord(verse: dict):
 
 
 def main():
-    if not OPENROUTER_API_KEY:
-        print("ERROR: OPENROUTER_API_KEY not set.")
-        sys.exit(1)
     if not DISCORD_WEBHOOK_URL:
         print("ERROR: DISCORD_WEBHOOK_URL not set.")
         sys.exit(1)
-    print(f"Using model: {OPENROUTER_MODEL}")
 
     print("Loading verses and history...")
     db = load_db()
     history = load_history()
-    structure = build_structure_summary(db)
-    print(f"Structure summary: {len(structure):,} chars, {len(history)} past picks.")
+    print(f"Loaded {len(db['books'])} books, {len(history)} past picks.")
 
-    print("Asking LLM to pick a passage...")
-    verse = pick_verse(db, history)
+    print("Picking a random verse range...")
+    verse = pick_random_verse(db, history)
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     verse["date"] = today
     ref = f"{verse['book']} {verse['chapter']}:{verse['verse_start']}"
     if verse["verse_start"] != verse["verse_end"]:
         ref += f"-{verse['verse_end']}"
     print(f"Selected: {ref}")
-    print(f"Blurb: {verse['blurb']}")
 
-    # Save VOTD to file so the bot can serve /verseoftheday
     print(f"Saving to {VOTD_PATH}...")
     with open(VOTD_PATH, "w", encoding="utf-8") as f:
         json.dump(verse, f, indent=2, ensure_ascii=False)
 
-    # Append to history (include blurb so we can avoid repeating topics)
     history.append({
         "date": today,
         "book": verse["book"],
         "chapter": verse["chapter"],
         "verse_start": verse["verse_start"],
         "verse_end": verse["verse_end"],
-        "blurb": verse.get("blurb", ""),
     })
     save_history(history)
     print(f"History updated ({len(history)} entries).")

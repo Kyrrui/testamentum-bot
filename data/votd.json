@@ -1,25 +1,33 @@
 {
-  "book": "Smyrnaeans",
-  "chapter": "2",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "1",
+  "verse_start": "9",
+  "verse_end": "14",
   "verses": [
     {
-      "verse": "1",
-      "text": "For He suffered all these things for our sakes that we might be saved;"
+      "verse": "9",
+      "text": "That was the true Light, which lighteth every man that cometh into the world."
     },
     {
-      "verse": "2",
-      "text": "And He suffered truly, as also He raised Himself truly;"
+      "verse": "10",
+      "text": "He was in the world, and the world was made by him, and the world knew him not."
     },
     {
-      "verse": "3",
-      "text": "Not as certain unbelievers say, that He suffered in semblance, being themselves mere semblance."
+      "verse": "11",
+      "text": "He came unto his own, and his own received him not."
     },
     {
-      "verse": "4",
-      "text": "And according as their opinions are, so shall it happen to them, for they are without body and devil-like."
+      "verse": "12",
+      "text": "But as many as received him, to them gave he power to become the sons of God, even to them that believe on his name:"
+    },
+    {
+      "verse": "13",
+      "text": "Which were born, not of blood, nor of the will of the flesh, nor of the will of man, but of God."
+    },
+    {
+      "verse": "14",
+      "text": "And the Word was made flesh, and dwelt among us, and we beheld his glory, the glory as of the only begotten of the Father, full of grace and truth."
     }
   ],
-  "date": "2026-06-11"
+  "date": "2026-06-12"
 }

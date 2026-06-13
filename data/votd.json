@@ -1,33 +1,21 @@
 {
-  "book": "Evangelicon",
+  "book": "Galatians",
   "chapter": "1",
-  "verse_start": "9",
-  "verse_end": "14",
+  "verse_start": "20",
+  "verse_end": "22",
   "verses": [
     {
-      "verse": "9",
-      "text": "That was the true Light, which lighteth every man that cometh into the world."
+      "verse": "20",
+      "text": "Now the things which I write unto you, behold, before God, I lie not."
     },
     {
-      "verse": "10",
-      "text": "He was in the world, and the world was made by him, and the world knew him not."
+      "verse": "21",
+      "text": "Afterwards I came into the regions of Syria and Cilicia;"
     },
     {
-      "verse": "11",
-      "text": "He came unto his own, and his own received him not."
-    },
-    {
-      "verse": "12",
-      "text": "But as many as received him, to them gave he power to become the sons of God, even to them that believe on his name:"
-    },
-    {
-      "verse": "13",
-      "text": "Which were born, not of blood, nor of the will of the flesh, nor of the will of man, but of God."
-    },
-    {
-      "verse": "14",
-      "text": "And the Word was made flesh, and dwelt among us, and we beheld his glory, the glory as of the only begotten of the Father, full of grace and truth."
+      "verse": "22",
+      "text": "And was unknown by face unto the churches of Judaea which were in Christ:"
     }
   ],
-  "date": "2026-06-12"
+  "date": "2026-06-13"
 }

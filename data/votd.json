@@ -1,25 +1,25 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "12",
-  "verse_start": "4",
-  "verse_end": "7",
+  "book": "Philippians",
+  "chapter": "4",
+  "verse_start": "10",
+  "verse_end": "13",
   "verses": [
     {
-      "verse": "4",
-      "text": "Now there are diversities of gifts, but the same Spirit."
+      "verse": "10",
+      "text": "But I rejoiced in the Lord greatly, that now at the last your care of me hath flourished again; wherein ye were also careful, but ye lacked opportunity."
     },
     {
-      "verse": "5",
-      "text": "And there are differences of administrations, but the same Lord."
+      "verse": "11",
+      "text": "Not that I speak in respect of want: for I have learned, in whatsoever state I am, therewith to be content."
     },
     {
-      "verse": "6",
-      "text": "And there are diversities of operations, but it is the same God which worketh all in all."
+      "verse": "12",
+      "text": "I know both how to be abased, and I know how to abound: every where and in all things I am instructed both to be full and to be hungry, both to abound and to suffer need."
     },
     {
-      "verse": "7",
-      "text": "But the manifestation of the Spirit is given to every man to profit withal."
+      "verse": "13",
+      "text": "I can do all things through Christ which strengtheneth me."
     }
   ],
-  "date": "2026-06-14"
+  "date": "2026-06-15"
 }

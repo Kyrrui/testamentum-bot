@@ -1,24 +1,24 @@
 {
-  "book": "Metrodorus",
-  "chapter": "1",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "24",
+  "verse_start": "18",
+  "verse_end": "21",
   "verses": [
     {
-      "verse": "1",
-      "text": "Marcion, who is also Nauclerus, unto Metrodorus who is bishop of the church of the Smyrnaeans or rather who hath for his bishop God the Father and Jesus Christ, abundant greeting."
+      "verse": "18",
+      "text": "I am the true vine, and my Father is the husbandman."
     },
     {
-      "verse": "2",
-      "text": "Welcoming thy godly mind which is grounded as it were on an immovable rock, I give exceeding glory that it hath been vouchsafed me to see thy blameless face, whereof I would fain have joy in God."
+      "verse": "19",
+      "text": "Every branch in me that beareth not fruit he taketh away: and every branch that beareth fruit, he purgeth it, that it may bring forth more fruit."
     },
     {
-      "verse": "3",
-      "text": "I exhort thee in the grace wherewith thou art clothed to press forward in thy course and to exhort all men that they may be saved."
+      "verse": "20",
+      "text": "Now ye are clean through the word which I have spoken unto you."
     },
     {
-      "verse": "4",
-      "text": "Vindicate thine office in all diligence of flesh and of spirit."
+      "verse": "21",
+      "text": "Abide in me, and I in you. As the branch cannot bear fruit of itself, except it abide in the vine; no more can ye, except ye abide in me."
     }
   ],
   "date": "2026-06-16"

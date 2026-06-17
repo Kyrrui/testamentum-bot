@@ -1,25 +1,25 @@
 {
-  "book": "Evangelicon",
-  "chapter": "24",
-  "verse_start": "18",
-  "verse_end": "21",
+  "book": "2 Thessalonians",
+  "chapter": "3",
+  "verse_start": "6",
+  "verse_end": "9",
   "verses": [
     {
-      "verse": "18",
-      "text": "I am the true vine, and my Father is the husbandman."
+      "verse": "6",
+      "text": "Now we command you, brethren, in the name of our Lord Jesus Christ, that ye withdraw yourselves from every brother that walketh disorderly, and not after the tradition which he received of us."
     },
     {
-      "verse": "19",
-      "text": "Every branch in me that beareth not fruit he taketh away: and every branch that beareth fruit, he purgeth it, that it may bring forth more fruit."
+      "verse": "7",
+      "text": "For yourselves know how ye ought to follow us: for we behaved not ourselves disorderly among you;"
     },
     {
-      "verse": "20",
-      "text": "Now ye are clean through the word which I have spoken unto you."
+      "verse": "8",
+      "text": "Neither did we eat any man’s bread for nought; but wrought with labour and travail night and day, that we might not be chargeable to any of you:"
     },
     {
-      "verse": "21",
-      "text": "Abide in me, and I in you. As the branch cannot bear fruit of itself, except it abide in the vine; no more can ye, except ye abide in me."
+      "verse": "9",
+      "text": "Not because we have not power, but to make ourselves an ensample unto you to follow us."
     }
   ],
-  "date": "2026-06-16"
+  "date": "2026-06-17"
 }

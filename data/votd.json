@@ -1,25 +1,25 @@
 {
-  "book": "2 Thessalonians",
-  "chapter": "3",
-  "verse_start": "6",
-  "verse_end": "9",
+  "book": "Philadelphians",
+  "chapter": "4",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "6",
-      "text": "Now we command you, brethren, in the name of our Lord Jesus Christ, that ye withdraw yourselves from every brother that walketh disorderly, and not after the tradition which he received of us."
+      "verse": "1",
+      "text": "Abstain from noxious herbs, which are not the husbandry of Jesus Christ, because they are not the planting of the Father."
     },
     {
-      "verse": "7",
-      "text": "For yourselves know how ye ought to follow us: for we behaved not ourselves disorderly among you;"
+      "verse": "2",
+      "text": "Not that I have found division among you, but filtering."
     },
     {
-      "verse": "8",
-      "text": "Neither did we eat any man’s bread for nought; but wrought with labour and travail night and day, that we might not be chargeable to any of you:"
+      "verse": "3",
+      "text": "For as many as are of God and of Jesus Christ, they are with the bishop;"
     },
     {
-      "verse": "9",
-      "text": "Not because we have not power, but to make ourselves an ensample unto you to follow us."
+      "verse": "4",
+      "text": "And as many as shall repent and enter into the unity of the Church, these also shall be of God, that they may be living after Jesus Christ."
     }
   ],
-  "date": "2026-06-17"
+  "date": "2026-06-18"
 }

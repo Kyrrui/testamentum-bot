@@ -1,25 +1,33 @@
 {
-  "book": "Philadelphians",
-  "chapter": "4",
+  "book": "Evangelicon",
+  "chapter": "5",
   "verse_start": "1",
-  "verse_end": "4",
+  "verse_end": "6",
   "verses": [
     {
       "verse": "1",
-      "text": "Abstain from noxious herbs, which are not the husbandry of Jesus Christ, because they are not the planting of the Father."
+      "text": "Now when he had ended all his sayings in the audience of the people, he entered into Capernaum."
     },
     {
       "verse": "2",
-      "text": "Not that I have found division among you, but filtering."
+      "text": "And a certain centurion’s servant, who was dear unto him, was sick, and ready to die."
     },
     {
       "verse": "3",
-      "text": "For as many as are of God and of Jesus Christ, they are with the bishop;"
+      "text": "And when he heard of Jesus, he sent unto him the elders of the Jews, beseeching him that he would come and heal his servant."
     },
     {
       "verse": "4",
-      "text": "And as many as shall repent and enter into the unity of the Church, these also shall be of God, that they may be living after Jesus Christ."
+      "text": "And when they came to Jesus, they besought him instantly, saying, That he was worthy for whom he should do this:"
+    },
+    {
+      "verse": "5",
+      "text": "For he loveth our nation, and he hath built us a synagogue."
+    },
+    {
+      "verse": "6",
+      "text": "Then Jesus went with them. And when he was now not far from the house, the centurion sent friends to him, saying unto him, Lord, trouble not thyself: for I am not worthy that thou shouldest enter under my roof:"
     }
   ],
-  "date": "2026-06-18"
+  "date": "2026-06-19"
 }

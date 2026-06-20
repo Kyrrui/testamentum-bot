@@ -34,6 +34,7 @@ SERVER_CONFIG_PATH = os.path.join(RUNTIME_DIR, "server_config.json")
 USERDATA_DIR = os.path.join(RUNTIME_DIR, "users")
 os.makedirs(USERDATA_DIR, exist_ok=True)
 DIDASCALICON_HISTORY_PATH = os.path.join(RUNTIME_DIR, "didascalicon_history.json")
+THEOLOGY_CACHE_PATH = os.path.join(RUNTIME_DIR, "theology_cache.json")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
 
@@ -98,7 +99,7 @@ def _get_didascalicon_channels() -> list[int]:
 
 
 def _get_theology_channels() -> dict[int, str]:
-    """Return {channel_id: guild_id} for all configured theology channels."""
+    """Return {channel_id: guild_id} for servers that pinned a specific theology channel."""
     config = _load_server_config()
     result: dict[int, str] = {}
     for guild_id, c in config.items():
@@ -106,6 +107,14 @@ def _get_theology_channels() -> dict[int, str]:
         if ch:
             result[int(ch)] = guild_id
     return result
+
+
+def _is_theology_everywhere(guild_id: int | str | None) -> bool:
+    """True if the server has opted into auto-answering theology questions in any channel."""
+    if guild_id is None:
+        return False
+    config = _load_server_config()
+    return bool(config.get(str(guild_id), {}).get("theology_everywhere"))
 
 # --- Load Data ---
 
@@ -1472,6 +1481,26 @@ async def setup_theology(interaction: discord.Interaction, channel: discord.Text
     )
 
 
+@setup_group.command(name="theology-all", description="Enable/disable Didascalicon auto-answer across ALL channels in this server")
+@app_commands.describe(enabled="True to listen in every channel, False to turn off")
+async def setup_theology_all(interaction: discord.Interaction, enabled: bool):
+    config = _load_server_config()
+    guild_id = str(interaction.guild_id)
+    config.setdefault(guild_id, {})
+    if enabled:
+        config[guild_id]["theology_everywhere"] = True
+        msg = (
+            "The bot will now auto-answer Didascalicon-matched questions in **any channel** "
+            "on this server. To keep noise down, only messages ending with `?` (3+ words) "
+            "trigger a lookup. Results are cached so repeated questions don't re-call the LLM."
+        )
+    else:
+        config[guild_id].pop("theology_everywhere", None)
+        msg = "Server-wide theology auto-answer disabled. Pinned `/setup theology` channel (if any) still works."
+    _save_server_config(config)
+    await interaction.response.send_message(msg, ephemeral=True)
+
+
 @setup_group.command(name="disable", description="Disable a daily feature")
 @app_commands.describe(feature="Feature to disable")
 @app_commands.choices(feature=[
@@ -1479,6 +1508,7 @@ async def setup_theology(interaction: discord.Interaction, channel: discord.Text
     app_commands.Choice(name="votd", value="votd_channel"),
     app_commands.Choice(name="didascalicon", value="didascalicon_channel"),
     app_commands.Choice(name="theology", value="theology_channel"),
+    app_commands.Choice(name="theology-all", value="theology_everywhere"),
 ])
 async def setup_disable(interaction: discord.Interaction, feature: app_commands.Choice[str]):
     config = _load_server_config()
@@ -1511,6 +1541,8 @@ async def setup_status(interaction: discord.Interaction):
     lines.append(f"**Verse of the Day:** {fmt(guild_config.get('votd_channel'))}")
     lines.append(f"**Daily Didascalicon Q&A:** {fmt(guild_config.get('didascalicon_channel'))}")
     lines.append(f"**Theology channel (auto-answer):** {fmt(guild_config.get('theology_channel'))}")
+    everywhere = guild_config.get("theology_everywhere")
+    lines.append(f"**Theology auto-answer in ALL channels:** {'On' if everywhere else 'Off'}")
 
     embed = discord.Embed(
         title="Server Configuration",
@@ -2629,18 +2661,61 @@ async def daily_didascalicon_task():
 # --- Theology channel: LLM-matched verbatim Q&A response ---
 
 
-async def _llm_match_question(user_question: str, questions: list[dict]) -> int | None:
-    """Ask the LLM which Didascalicon question best matches the user's question.
+def _normalize_question(text: str) -> str:
+    """Normalize for cache key: lowercase, strip punctuation, collapse whitespace."""
+    text = text.lower().strip()
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
 
-    Returns the matching question's index, or None if no good match (or LLM unavailable).
-    The LLM is ONLY used for matching — the response text is always verbatim from JSON.
+
+def _load_theology_cache() -> dict:
+    """Cache maps normalized user question -> matched Didascalicon Q&A number (or "" for no match)."""
+    if not os.path.exists(THEOLOGY_CACHE_PATH):
+        return {}
+    try:
+        with open(THEOLOGY_CACHE_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _save_theology_cache(cache: dict):
+    with open(THEOLOGY_CACHE_PATH, "w", encoding="utf-8") as f:
+        json.dump(cache, f, indent=2, ensure_ascii=False)
+
+
+async def _llm_match_question(user_question: str, questions: list[dict]) -> int | None:
+    """Match a user's question to a Didascalicon Q&A.
+
+    Cached: persistent JSON keyed by normalized question text. Cache hits and
+    cached no-matches both avoid an OpenRouter call.
+
+    Returns the matching question's index, or None if no good match (or LLM
+    unavailable). The LLM is ONLY used for matching; the response text the bot
+    shows is always verbatim from the Didascalicon JSON.
     """
     if not OPENROUTER_API_KEY:
         return None
 
-    numbered = []
-    for i, q in enumerate(questions):
-        numbered.append(f"{i + 1}. {q['question']}")
+    key = _normalize_question(user_question)
+    if not key:
+        return None
+
+    cache = _load_theology_cache()
+    if key in cache:
+        cached = cache[key]
+        if not cached:
+            print("[theology] Cache hit: no-match (skipping LLM call)")
+            return None
+        for i, q in enumerate(questions):
+            if q["number"] == cached:
+                print(f"[theology] Cache hit: matched {cached} (skipping LLM call)")
+                return i
+        # Cached number no longer exists in the data — fall through to LLM
+        print(f"[theology] Cache hit ({cached}) is stale; calling LLM again")
+
+    numbered = [f"{i + 1}. {q['question']}" for i, q in enumerate(questions)]
     catalog = "\n".join(numbered)
 
     system_text = (
@@ -2657,6 +2732,7 @@ async def _llm_match_question(user_question: str, questions: list[dict]) -> int 
         "Reply with just the matching number, or 0 if no clear match."
     )
 
+    idx: int | None = None
     try:
         resp = http_requests.post(
             "https://openrouter.ai/api/v1/chat/completions",
@@ -2679,24 +2755,43 @@ async def _llm_match_question(user_question: str, questions: list[dict]) -> int 
         resp.raise_for_status()
         data = resp.json()
         raw = (data["choices"][0]["message"]["content"] or "").strip()
-        # Extract first integer in response
         m = re.search(r"-?\d+", raw)
-        if not m:
-            return None
-        idx = int(m.group(0))
-        if idx <= 0 or idx > len(questions):
-            return None
-        return idx - 1
+        if m:
+            n = int(m.group(0))
+            if 0 < n <= len(questions):
+                idx = n - 1
     except Exception as e:
         print(f"  Theology match LLM call failed: {e}")
         return None
 
+    # Cache the result (matched number or "" for no match)
+    cache[key] = questions[idx]["number"] if idx is not None else ""
+    try:
+        _save_theology_cache(cache)
+    except OSError as e:
+        print(f"  Failed to save theology cache: {e}")
+    return idx
 
-def _looks_like_question(text: str) -> bool:
-    """Heuristic: only try to match messages that look like genuine questions."""
-    if not text or len(text) < 8:
+
+def _looks_like_question(text: str, strict: bool = False) -> bool:
+    """Heuristic: only try to match messages that look like genuine questions.
+
+    In `strict` mode (used when we're listening on every channel in a server),
+    we require a `?` and at least 12 chars to avoid burning tokens on every
+    casual message that happens to start with "what".
+    """
+    if not text:
         return False
     if len(text) > 600:
+        return False
+    if strict:
+        if "?" not in text or len(text) < 12:
+            return False
+        # At least 3 words too — filters out "what?" / "really?"
+        if len(text.split()) < 3:
+            return False
+        return True
+    if len(text) < 8:
         return False
     if "?" in text:
         return True
@@ -2712,11 +2807,12 @@ def _looks_like_question(text: str) -> bool:
     return any(lowered.startswith(s) for s in starters)
 
 
-async def _handle_theology_question(message: discord.Message):
+async def _handle_theology_question(message: discord.Message, *, strict: bool = False):
     """If the message looks like a question and matches a Didascalicon Q&A, post the verbatim Q&A."""
     snippet = (message.content[:120] + "...") if len(message.content) > 120 else message.content
-    if not _looks_like_question(message.content):
-        print(f"[theology] Rejected (not a question): {snippet!r}")
+    if not _looks_like_question(message.content, strict=strict):
+        if not strict:  # only log rejections in pinned-channel mode (avoid log spam server-wide)
+            print(f"[theology] Rejected (not a question): {snippet!r}")
         return
     did = _load_didascalicon()
     questions = did.get("questions", [])
@@ -2816,15 +2912,19 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
 
-    # If this is a configured theology channel, try to auto-answer from Didascalicon.
-    # Runs in parallel with the inline verse expansion below.
+    # Theology auto-answer.
+    #   - Pinned-channel mode (legacy): /setup theology #channel → respond there
+    #     using the lenient heuristic (logs rejections for diagnostics).
+    #   - Server-wide mode: /setup theology-all on → respond in any channel,
+    #     using the strict heuristic so we don't burn tokens on casual chatter.
+    # Both modes hit the cached LLM matcher, so repeated questions never
+    # re-call OpenRouter.
     theology_channels = _get_theology_channels()
     if message.channel.id in theology_channels:
         print(f"[theology] Got message in configured channel {message.channel.id} from {message.author}")
-        client.loop.create_task(_handle_theology_question(message))
-    elif theology_channels:
-        # Helpful diagnostic — we are running, just not in a configured channel
-        pass
+        client.loop.create_task(_handle_theology_question(message, strict=False))
+    elif message.guild and _is_theology_everywhere(message.guild.id):
+        client.loop.create_task(_handle_theology_question(message, strict=True))
 
     # Find all verse references in the message
     matches = list(INLINE_REF_RE.finditer(message.content))

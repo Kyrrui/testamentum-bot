@@ -2526,7 +2526,7 @@ class DidascaliconPaginator(TimeoutView):
         super().__init__(timeout=900)
         self.qa = qa
         self.title_prefix = title_prefix
-        self.chunks = _chunk_text(qa.get("answer", ""))
+        self.chunks = _chunk_text(qa.get("answer", ""), max_len=1800)
         self.page = 0
         self.max_page = max(0, len(self.chunks) - 1)
         self._update_buttons()

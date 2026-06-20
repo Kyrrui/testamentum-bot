@@ -1,33 +1,41 @@
 {
   "book": "Evangelicon",
-  "chapter": "5",
+  "chapter": "16",
   "verse_start": "1",
-  "verse_end": "6",
+  "verse_end": "8",
   "verses": [
     {
       "verse": "1",
-      "text": "Now when he had ended all his sayings in the audience of the people, he entered into Capernaum."
+      "text": "And he spake also a parable unto them on the neccessity always to pray, and not to faint; Saying,"
     },
     {
       "verse": "2",
-      "text": "And a certain centurion’s servant, who was dear unto him, was sick, and ready to die."
+      "text": "there was in a city a judge, which feared not God, and regarded not man:"
     },
     {
       "verse": "3",
-      "text": "And when he heard of Jesus, he sent unto him the elders of the Jews, beseeching him that he would come and heal his servant."
+      "text": "And there was a certain widow in that city; and she came unto him, saying, Right me from my opponent at law."
     },
     {
       "verse": "4",
-      "text": "And when they came to Jesus, they besought him instantly, saying, That he was worthy for whom he should do this:"
+      "text": "And he would not for a time: but afterward he said within himself, Though I fear not God, and regard not man;"
     },
     {
       "verse": "5",
-      "text": "For he loveth our nation, and he hath built us a synagogue."
+      "text": "Yet because this widow gives me trouble, I will right her, lest by her coming to the end she weary me."
     },
     {
       "verse": "6",
-      "text": "Then Jesus went with them. And when he was now not far from the house, the centurion sent friends to him, saying unto him, Lord, trouble not thyself: for I am not worthy that thou shouldest enter under my roof:"
+      "text": "And the Lord said, Hear what the judge of the unrighteous saith."
+    },
+    {
+      "verse": "7",
+      "text": "And shall not God perform the righting of his elect, which cry unto him day and night, though he be long suffering over them?"
+    },
+    {
+      "verse": "8",
+      "text": "I say unto you that he will perform the righting of them speedily. Nevertheless when the Son of man cometh, shall he find the faith on the earth?"
     }
   ],
-  "date": "2026-06-19"
+  "date": "2026-06-20"
 }

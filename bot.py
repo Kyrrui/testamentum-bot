@@ -1501,15 +1501,16 @@ async def setup_status(interaction: discord.Interaction):
     guild_id = str(interaction.guild_id)
     guild_config = config.get(guild_id, {})
 
+    def fmt(ch_id: str | None) -> str:
+        if not ch_id:
+            return "Not configured"
+        return f"<#{ch_id}> (id: `{ch_id}`)"
+
     lines = []
-    quiz_ch = guild_config.get("quiz_channel")
-    votd_ch = guild_config.get("votd_channel")
-    did_ch = guild_config.get("didascalicon_channel")
-    theo_ch = guild_config.get("theology_channel")
-    lines.append(f"**Daily Quiz:** {f'<#{quiz_ch}>' if quiz_ch else 'Not configured'}")
-    lines.append(f"**Verse of the Day:** {f'<#{votd_ch}>' if votd_ch else 'Not configured'}")
-    lines.append(f"**Daily Didascalicon Q&A:** {f'<#{did_ch}>' if did_ch else 'Not configured'}")
-    lines.append(f"**Theology channel (auto-answer):** {f'<#{theo_ch}>' if theo_ch else 'Not configured'}")
+    lines.append(f"**Daily Quiz:** {fmt(guild_config.get('quiz_channel'))}")
+    lines.append(f"**Verse of the Day:** {fmt(guild_config.get('votd_channel'))}")
+    lines.append(f"**Daily Didascalicon Q&A:** {fmt(guild_config.get('didascalicon_channel'))}")
+    lines.append(f"**Theology channel (auto-answer):** {fmt(guild_config.get('theology_channel'))}")
 
     embed = discord.Embed(
         title="Server Configuration",
@@ -2781,7 +2782,11 @@ async def on_message(message: discord.Message):
     # Runs in parallel with the inline verse expansion below.
     theology_channels = _get_theology_channels()
     if message.channel.id in theology_channels:
+        print(f"[theology] Got message in configured channel {message.channel.id} from {message.author}")
         client.loop.create_task(_handle_theology_question(message))
+    elif theology_channels:
+        # Helpful diagnostic — we are running, just not in a configured channel
+        pass
 
     # Find all verse references in the message
     matches = list(INLINE_REF_RE.finditer(message.content))

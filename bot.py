@@ -1568,7 +1568,7 @@ async def asktheology_command(interaction: discord.Interaction, question: str):
     await interaction.followup.send(
         f"Matched **{qa['number']}. {qa['question']}**", ephemeral=True
     )
-    await _post_qa(interaction.channel, qa, title_prefix="")
+    await _send_qa(interaction.channel, qa, title_prefix="")
 
 
 @tree.command(name="clearleaderboard", description="Reset this server's quiz leaderboard (admin only)")
@@ -2519,39 +2519,76 @@ def _chunk_text(text: str, max_len: int = 3800) -> list[str]:
     return chunks
 
 
-def _build_qa_embeds(qa: dict, title_prefix: str = "") -> list[discord.Embed]:
-    """Build one or more embeds for a Q&A. Long answers split across multiple."""
-    answer = qa.get("answer", "")
-    chunks = _chunk_text(answer)
-    embeds: list[discord.Embed] = []
-    lesson_str = f"Lesson {qa['lesson']} — {qa.get('lesson_title', '')}".strip(" —")
-    for i, chunk in enumerate(chunks):
-        if i == 0:
-            title = f"{title_prefix}{qa['number']}. {qa['question']}"
-            embed = discord.Embed(
-                title=title[:256],
-                description=chunk,
-                color=EMBED_COLOR,
-            )
-            if lesson_str:
-                embed.set_footer(text=f"Didascalicon · {lesson_str}")
-        else:
-            embed = discord.Embed(
-                description=chunk,
-                color=EMBED_COLOR,
-            )
-            embed.set_footer(text=f"Didascalicon · (continued)")
-        embeds.append(embed)
-    return embeds
+class DidascaliconPaginator(TimeoutView):
+    """Paginated Q&A display — one embed per page, Prev/Next buttons."""
+
+    def __init__(self, qa: dict, title_prefix: str = ""):
+        super().__init__(timeout=900)
+        self.qa = qa
+        self.title_prefix = title_prefix
+        self.chunks = _chunk_text(qa.get("answer", ""))
+        self.page = 0
+        self.max_page = max(0, len(self.chunks) - 1)
+        self._update_buttons()
+
+    def _update_buttons(self):
+        self.prev_btn.disabled = self.page == 0
+        self.next_btn.disabled = self.page >= self.max_page
+
+    def make_embed(self) -> discord.Embed:
+        qa = self.qa
+        chunk = self.chunks[self.page] if self.chunks else ""
+        title = f"{self.title_prefix}{qa['number']}. {qa['question']}"
+        embed = discord.Embed(
+            title=title[:256],
+            description=chunk,
+            color=EMBED_COLOR,
+        )
+        lesson_str = f"Lesson {qa['lesson']} — {qa.get('lesson_title', '')}".strip(" —")
+        page_str = f"Page {self.page + 1}/{self.max_page + 1}" if self.max_page > 0 else ""
+        footer_parts = ["Didascalicon"]
+        if lesson_str:
+            footer_parts.append(lesson_str)
+        if page_str:
+            footer_parts.append(page_str)
+        embed.set_footer(text=" · ".join(footer_parts))
+        return embed
+
+    @ui.button(label="Previous", style=discord.ButtonStyle.secondary)
+    async def prev_btn(self, interaction: discord.Interaction, button: ui.Button):
+        self.page = max(0, self.page - 1)
+        self._update_buttons()
+        await interaction.response.edit_message(embed=self.make_embed(), view=self)
+
+    @ui.button(label="Next", style=discord.ButtonStyle.secondary)
+    async def next_btn(self, interaction: discord.Interaction, button: ui.Button):
+        self.page = min(self.max_page, self.page + 1)
+        self._update_buttons()
+        await interaction.response.edit_message(embed=self.make_embed(), view=self)
 
 
-async def _post_qa(channel: discord.abc.Messageable, qa: dict, title_prefix: str = ""):
-    """Post a Q&A to a channel. Sends each embed as its own message because
-    Discord caps the combined size of all embeds in a single message at 6000
-    characters, and our chunks alone can exceed that when added together."""
-    embeds = _build_qa_embeds(qa, title_prefix=title_prefix)
-    for embed in embeds:
-        await channel.send(embed=embed)
+async def _send_qa(
+    target: discord.Message | discord.abc.Messageable,
+    qa: dict,
+    title_prefix: str = "",
+    *,
+    reply: bool = False,
+) -> discord.Message:
+    """Send a paginated Q&A. If `reply=True`, target must be a discord.Message
+    and the bot will reply to it; otherwise target is a channel and we send normally.
+    """
+    view = DidascaliconPaginator(qa, title_prefix=title_prefix)
+    embed = view.make_embed()
+    # If the Q&A fits in one page, drop the buttons entirely.
+    if view.max_page == 0:
+        view = None
+    if reply:
+        msg = await target.reply(embed=embed, view=view, mention_author=False)
+    else:
+        msg = await target.send(embed=embed, view=view)
+    if view is not None:
+        view.message = msg
+    return msg
 
 
 async def _auto_post_didascalicon():
@@ -2575,7 +2612,7 @@ async def _auto_post_didascalicon():
             print(f"  Didascalicon channel {ch_id} not found.")
             continue
         try:
-            await _post_qa(channel, qa, title_prefix=title_prefix)
+            await _send_qa(channel, qa, title_prefix=title_prefix)
             print(f"  Posted Didascalicon {qa['number']} to #{channel.name} ({ch_id})")
         except discord.Forbidden:
             print(f"  No permission to post Didascalicon in {ch_id}.")
@@ -2697,7 +2734,7 @@ async def _handle_theology_question(message: discord.Message):
     qa = questions[idx]
     print(f"[theology] Matched -> {qa['number']}. {qa['question']}")
     try:
-        await _post_qa(message.channel, qa, title_prefix="")
+        await _send_qa(message, qa, title_prefix="", reply=True)
     except discord.Forbidden:
         print(f"  No permission to reply in theology channel {message.channel.id}.")
     except Exception as e:

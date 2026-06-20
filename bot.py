@@ -1535,6 +1535,41 @@ async def postdidascalicon_command(interaction: discord.Interaction):
     await interaction.followup.send("Daily Didascalicon posted.", ephemeral=True)
 
 
+@tree.command(name="asktheology", description="Test the Didascalicon matcher (admin only)")
+@app_commands.describe(question="Question to match against the Didascalicon")
+@app_commands.default_permissions(administrator=True)
+async def asktheology_command(interaction: discord.Interaction, question: str):
+    await interaction.response.defer(ephemeral=True)
+    did = _load_didascalicon()
+    questions = did.get("questions", [])
+    if not questions:
+        await interaction.followup.send("Didascalicon data not loaded.", ephemeral=True)
+        return
+    if not OPENROUTER_API_KEY:
+        await interaction.followup.send(
+            "OPENROUTER_API_KEY env var is not set on the bot — theology matching cannot run.",
+            ephemeral=True,
+        )
+        return
+    if not _looks_like_question(question):
+        await interaction.followup.send(
+            f"Heuristic rejected this as not-a-question: {question!r}",
+            ephemeral=True,
+        )
+        return
+    idx = await _llm_match_question(question, questions)
+    if idx is None:
+        await interaction.followup.send(
+            "LLM returned no match for that question.", ephemeral=True
+        )
+        return
+    qa = questions[idx]
+    await interaction.followup.send(
+        f"Matched **{qa['number']}. {qa['question']}**", ephemeral=True
+    )
+    await _post_qa(interaction.channel, qa, title_prefix="")
+
+
 @tree.command(name="clearleaderboard", description="Reset this server's quiz leaderboard (admin only)")
 @app_commands.default_permissions(administrator=True)
 async def clearleaderboard_command(interaction: discord.Interaction):
@@ -2627,28 +2662,44 @@ def _looks_like_question(text: str) -> bool:
     if "?" in text:
         return True
     lowered = text.lower().lstrip()
-    starters = ("who ", "what ", "when ", "where ", "why ", "how ", "is ", "are ",
-                "do ", "does ", "did ", "can ", "could ", "should ", "would ",
-                "will ", "may ", "might ")
+    starters = (
+        "who ", "what ", "when ", "where ", "why ", "how ",
+        "is ", "are ", "was ", "were ", "am ",
+        "do ", "does ", "did ",
+        "can ", "could ", "should ", "would ", "will ", "may ", "might ",
+        "has ", "have ", "had ",
+        "tell me ", "explain ", "describe ",
+    )
     return any(lowered.startswith(s) for s in starters)
 
 
 async def _handle_theology_question(message: discord.Message):
     """If the message looks like a question and matches a Didascalicon Q&A, post the verbatim Q&A."""
+    snippet = (message.content[:120] + "...") if len(message.content) > 120 else message.content
     if not _looks_like_question(message.content):
+        print(f"[theology] Rejected (not a question): {snippet!r}")
         return
     did = _load_didascalicon()
     questions = did.get("questions", [])
     if not questions:
+        print("[theology] No Didascalicon data loaded.")
         return
+    if not OPENROUTER_API_KEY:
+        print("[theology] OPENROUTER_API_KEY not set; skipping match.")
+        return
+    print(f"[theology] Matching: {snippet!r}")
     idx = await _llm_match_question(message.content, questions)
     if idx is None:
+        print("[theology] No match returned by LLM.")
         return
     qa = questions[idx]
+    print(f"[theology] Matched -> {qa['number']}. {qa['question']}")
     try:
         await _post_qa(message.channel, qa, title_prefix="")
     except discord.Forbidden:
         print(f"  No permission to reply in theology channel {message.channel.id}.")
+    except Exception as e:
+        print(f"  Error posting theology reply: {e}")
 
 
 @tasks.loop(time=datetime.time(hour=10, minute=5))  # 10:05 UTC = 6:05 AM EST

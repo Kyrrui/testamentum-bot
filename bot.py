@@ -21,6 +21,7 @@ load_dotenv()
 
 # Static data (bundled with repo)
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
+DIDASCALICON_PATH = os.path.join(os.path.dirname(__file__), "data", "didascalicon.json")
 
 # Runtime data (persistent volume on Railway, or local data/ for dev)
 RUNTIME_DIR = os.getenv("DATA_DIR", os.path.join(os.path.dirname(__file__), "data"))
@@ -32,6 +33,9 @@ ALLTIME_LB_PATH = os.path.join(RUNTIME_DIR, "quiz_leaderboard.json")
 SERVER_CONFIG_PATH = os.path.join(RUNTIME_DIR, "server_config.json")
 USERDATA_DIR = os.path.join(RUNTIME_DIR, "users")
 os.makedirs(USERDATA_DIR, exist_ok=True)
+DIDASCALICON_HISTORY_PATH = os.path.join(RUNTIME_DIR, "didascalicon_history.json")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")  # legacy fallback
@@ -85,6 +89,23 @@ def _get_votd_channels() -> list[int]:
     """Get all configured VOTD channel IDs across all servers."""
     config = _load_server_config()
     return [int(c["votd_channel"]) for c in config.values() if c.get("votd_channel")]
+
+
+def _get_didascalicon_channels() -> list[int]:
+    """Get all configured Didascalicon daily channel IDs across all servers."""
+    config = _load_server_config()
+    return [int(c["didascalicon_channel"]) for c in config.values() if c.get("didascalicon_channel")]
+
+
+def _get_theology_channels() -> dict[int, str]:
+    """Return {channel_id: guild_id} for all configured theology channels."""
+    config = _load_server_config()
+    result: dict[int, str] = {}
+    for guild_id, c in config.items():
+        ch = c.get("theology_channel")
+        if ch:
+            result[int(ch)] = guild_id
+    return result
 
 # --- Load Data ---
 
@@ -1424,11 +1445,40 @@ async def setup_votd(interaction: discord.Interaction, channel: discord.TextChan
     )
 
 
+@setup_group.command(name="didascalicon", description="Set the channel for the daily Didascalicon Q&A")
+@app_commands.describe(channel="Channel for the daily Didascalicon Q&A")
+async def setup_didascalicon(interaction: discord.Interaction, channel: discord.TextChannel):
+    config = _load_server_config()
+    guild_id = str(interaction.guild_id)
+    config.setdefault(guild_id, {})
+    config[guild_id]["didascalicon_channel"] = str(channel.id)
+    _save_server_config(config)
+    await interaction.response.send_message(
+        f"Daily Didascalicon Q&A will be posted to {channel.mention}.", ephemeral=True
+    )
+
+
+@setup_group.command(name="theology", description="Set the channel where questions get auto-answered from the Didascalicon")
+@app_commands.describe(channel="Theology channel where the bot listens for questions")
+async def setup_theology(interaction: discord.Interaction, channel: discord.TextChannel):
+    config = _load_server_config()
+    guild_id = str(interaction.guild_id)
+    config.setdefault(guild_id, {})
+    config[guild_id]["theology_channel"] = str(channel.id)
+    _save_server_config(config)
+    await interaction.response.send_message(
+        f"Theology questions in {channel.mention} will be answered from the Didascalicon.",
+        ephemeral=True,
+    )
+
+
 @setup_group.command(name="disable", description="Disable a daily feature")
 @app_commands.describe(feature="Feature to disable")
 @app_commands.choices(feature=[
     app_commands.Choice(name="quiz", value="quiz_channel"),
     app_commands.Choice(name="votd", value="votd_channel"),
+    app_commands.Choice(name="didascalicon", value="didascalicon_channel"),
+    app_commands.Choice(name="theology", value="theology_channel"),
 ])
 async def setup_disable(interaction: discord.Interaction, feature: app_commands.Choice[str]):
     config = _load_server_config()
@@ -1454,8 +1504,12 @@ async def setup_status(interaction: discord.Interaction):
     lines = []
     quiz_ch = guild_config.get("quiz_channel")
     votd_ch = guild_config.get("votd_channel")
+    did_ch = guild_config.get("didascalicon_channel")
+    theo_ch = guild_config.get("theology_channel")
     lines.append(f"**Daily Quiz:** {f'<#{quiz_ch}>' if quiz_ch else 'Not configured'}")
     lines.append(f"**Verse of the Day:** {f'<#{votd_ch}>' if votd_ch else 'Not configured'}")
+    lines.append(f"**Daily Didascalicon Q&A:** {f'<#{did_ch}>' if did_ch else 'Not configured'}")
+    lines.append(f"**Theology channel (auto-answer):** {f'<#{theo_ch}>' if theo_ch else 'Not configured'}")
 
     embed = discord.Embed(
         title="Server Configuration",
@@ -1471,6 +1525,14 @@ async def postquiz_command(interaction: discord.Interaction):
     await interaction.response.defer()
     await _auto_post_quiz()
     await interaction.followup.send("Daily quiz posted!", ephemeral=True)
+
+
+@tree.command(name="postdidascalicon", description="Manually trigger the daily Didascalicon Q&A (admin only)")
+@app_commands.default_permissions(administrator=True)
+async def postdidascalicon_command(interaction: discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+    await _auto_post_didascalicon()
+    await interaction.followup.send("Daily Didascalicon posted.", ephemeral=True)
 
 
 @tree.command(name="clearleaderboard", description="Reset this server's quiz leaderboard (admin only)")
@@ -1947,10 +2009,20 @@ async def help_command(interaction: discord.Interaction):
         inline=False,
     )
     embed.add_field(
+        name="Didascalicon (Catechism Q&A)",
+        value=(
+            "Auto-answers theology questions in the configured channel using the "
+            "Marcionite Didascalicon. A random Q&A is also posted daily."
+        ),
+        inline=False,
+    )
+    embed.add_field(
         name="Server Setup (admin)",
         value=(
-            "`/setup quiz #channel` — set daily quiz channel\n"
-            "`/setup votd #channel` — set Verse of the Day channel\n"
+            "`/setup quiz #channel` — daily quiz channel\n"
+            "`/setup votd #channel` — Verse of the Day channel\n"
+            "`/setup didascalicon #channel` — daily Didascalicon Q&A channel\n"
+            "`/setup theology #channel` — theology channel (questions auto-answered)\n"
             "`/setup disable` — disable a feature\n"
             "`/setup status` — show current config"
         ),
@@ -2343,6 +2415,242 @@ async def _auto_post_quiz():
     print(f"Daily quiz posted: {quiz_data['book']} {quiz_data['chapter']}:{quiz_data['verse']}")
 
 
+# --- Didascalicon (catechism Q&A) ---
+
+
+_DIDASCALICON_CACHE: dict | None = None
+
+
+def _load_didascalicon() -> dict:
+    global _DIDASCALICON_CACHE
+    if _DIDASCALICON_CACHE is None:
+        if not os.path.exists(DIDASCALICON_PATH):
+            _DIDASCALICON_CACHE = {"lessons": [], "questions": []}
+        else:
+            with open(DIDASCALICON_PATH, "r", encoding="utf-8") as f:
+                _DIDASCALICON_CACHE = json.load(f)
+    return _DIDASCALICON_CACHE
+
+
+def _load_did_history() -> list[str]:
+    """List of Q&A 'number' strings already posted (for daily rotation)."""
+    if not os.path.exists(DIDASCALICON_HISTORY_PATH):
+        return []
+    with open(DIDASCALICON_HISTORY_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _save_did_history(history: list[str]):
+    with open(DIDASCALICON_HISTORY_PATH, "w", encoding="utf-8") as f:
+        json.dump(history, f, indent=2, ensure_ascii=False)
+
+
+def _pick_random_qa(did: dict, history: list[str]) -> dict | None:
+    """Pick a random Q&A not yet used. Resets history if all used."""
+    questions = did.get("questions", [])
+    if not questions:
+        return None
+    pool = [q for q in questions if q["number"] not in history]
+    if not pool:
+        history.clear()
+        pool = questions
+    return random.choice(pool)
+
+
+def _chunk_text(text: str, max_len: int = 3800) -> list[str]:
+    """Split text into chunks <= max_len, breaking on paragraph or sentence boundaries."""
+    if len(text) <= max_len:
+        return [text]
+    chunks: list[str] = []
+    remaining = text
+    while remaining:
+        if len(remaining) <= max_len:
+            chunks.append(remaining)
+            break
+        slice_ = remaining[:max_len]
+        # Prefer break on paragraph (double newline), then sentence end, then space
+        break_at = slice_.rfind("\n\n")
+        if break_at < max_len // 2:
+            break_at = slice_.rfind(". ")
+            if break_at >= max_len // 2:
+                break_at += 1  # keep the period with the chunk
+        if break_at < max_len // 2:
+            break_at = slice_.rfind(" ")
+        if break_at <= 0:
+            break_at = max_len
+        chunks.append(remaining[:break_at].rstrip())
+        remaining = remaining[break_at:].lstrip()
+    return chunks
+
+
+def _build_qa_embeds(qa: dict, title_prefix: str = "") -> list[discord.Embed]:
+    """Build one or more embeds for a Q&A. Long answers split across multiple."""
+    answer = qa.get("answer", "")
+    chunks = _chunk_text(answer)
+    embeds: list[discord.Embed] = []
+    lesson_str = f"Lesson {qa['lesson']} — {qa.get('lesson_title', '')}".strip(" —")
+    for i, chunk in enumerate(chunks):
+        if i == 0:
+            title = f"{title_prefix}{qa['number']}. {qa['question']}"
+            embed = discord.Embed(
+                title=title[:256],
+                description=chunk,
+                color=EMBED_COLOR,
+            )
+            if lesson_str:
+                embed.set_footer(text=f"Didascalicon · {lesson_str}")
+        else:
+            embed = discord.Embed(
+                description=chunk,
+                color=EMBED_COLOR,
+            )
+            embed.set_footer(text=f"Didascalicon · (continued)")
+        embeds.append(embed)
+    return embeds
+
+
+async def _post_qa(channel: discord.abc.Messageable, qa: dict, title_prefix: str = ""):
+    """Post a Q&A to a channel. Handles multi-embed splitting for long answers."""
+    embeds = _build_qa_embeds(qa, title_prefix=title_prefix)
+    # Discord allows up to 10 embeds per message
+    for i in range(0, len(embeds), 10):
+        await channel.send(embeds=embeds[i:i + 10])
+
+
+async def _auto_post_didascalicon():
+    """Post the daily Didascalicon Q&A to all configured channels."""
+    channels = _get_didascalicon_channels()
+    if not channels:
+        print("No Didascalicon channels configured.")
+        return
+
+    did = _load_didascalicon()
+    history = _load_did_history()
+    qa = _pick_random_qa(did, history)
+    if not qa:
+        print("No Didascalicon data available.")
+        return
+
+    title_prefix = "Daily Didascalicon — "
+    for ch_id in channels:
+        channel = client.get_channel(ch_id)
+        if not channel:
+            print(f"  Didascalicon channel {ch_id} not found.")
+            continue
+        try:
+            await _post_qa(channel, qa, title_prefix=title_prefix)
+            print(f"  Posted Didascalicon {qa['number']} to #{channel.name} ({ch_id})")
+        except discord.Forbidden:
+            print(f"  No permission to post Didascalicon in {ch_id}.")
+
+    history.append(qa["number"])
+    _save_did_history(history)
+
+
+@tasks.loop(time=datetime.time(hour=10, minute=10))  # 10:10 UTC = 6:10 AM EST
+async def daily_didascalicon_task():
+    await _auto_post_didascalicon()
+
+
+# --- Theology channel: LLM-matched verbatim Q&A response ---
+
+
+async def _llm_match_question(user_question: str, questions: list[dict]) -> int | None:
+    """Ask the LLM which Didascalicon question best matches the user's question.
+
+    Returns the matching question's index, or None if no good match (or LLM unavailable).
+    The LLM is ONLY used for matching — the response text is always verbatim from JSON.
+    """
+    if not OPENROUTER_API_KEY:
+        return None
+
+    numbered = []
+    for i, q in enumerate(questions):
+        numbered.append(f"{i + 1}. {q['question']}")
+    catalog = "\n".join(numbered)
+
+    system_text = (
+        "You match a user's question to a catalog of Marcionite Didascalicon questions. "
+        "Reply with ONLY a single integer:\n"
+        "- The number (1-based) of the catalog question that the user is asking about, OR\n"
+        "- 0 if no catalog question is a clear match (require high confidence: the user's "
+        "question must be substantially the same question, not just a related topic).\n\n"
+        "Respond with the integer only. No words, no punctuation, no formatting."
+    )
+    user_text = (
+        f"User's question:\n{user_question}\n\n"
+        f"Catalog of Didascalicon questions:\n{catalog}\n\n"
+        "Reply with just the matching number, or 0 if no clear match."
+    )
+
+    try:
+        resp = http_requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://github.com/Kyrrui/testamentum-bot",
+                "X-Title": "Testamentum Bot",
+            },
+            json={
+                "model": OPENROUTER_MODEL,
+                "max_tokens": 8,
+                "messages": [
+                    {"role": "system", "content": system_text},
+                    {"role": "user", "content": user_text},
+                ],
+            },
+            timeout=30,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        raw = (data["choices"][0]["message"]["content"] or "").strip()
+        # Extract first integer in response
+        m = re.search(r"-?\d+", raw)
+        if not m:
+            return None
+        idx = int(m.group(0))
+        if idx <= 0 or idx > len(questions):
+            return None
+        return idx - 1
+    except Exception as e:
+        print(f"  Theology match LLM call failed: {e}")
+        return None
+
+
+def _looks_like_question(text: str) -> bool:
+    """Heuristic: only try to match messages that look like genuine questions."""
+    if not text or len(text) < 8:
+        return False
+    if len(text) > 600:
+        return False
+    if "?" in text:
+        return True
+    lowered = text.lower().lstrip()
+    starters = ("who ", "what ", "when ", "where ", "why ", "how ", "is ", "are ",
+                "do ", "does ", "did ", "can ", "could ", "should ", "would ",
+                "will ", "may ", "might ")
+    return any(lowered.startswith(s) for s in starters)
+
+
+async def _handle_theology_question(message: discord.Message):
+    """If the message looks like a question and matches a Didascalicon Q&A, post the verbatim Q&A."""
+    if not _looks_like_question(message.content):
+        return
+    did = _load_didascalicon()
+    questions = did.get("questions", [])
+    if not questions:
+        return
+    idx = await _llm_match_question(message.content, questions)
+    if idx is None:
+        return
+    qa = questions[idx]
+    try:
+        await _post_qa(message.channel, qa, title_prefix="")
+    except discord.Forbidden:
+        print(f"  No permission to reply in theology channel {message.channel.id}.")
+
+
 @tasks.loop(time=datetime.time(hour=10, minute=5))  # 10:05 UTC = 6:05 AM EST
 async def daily_quiz_task():
     await _auto_post_quiz()
@@ -2402,9 +2710,14 @@ async def on_ready():
     if not votd_repost_task.is_running():
         votd_repost_task.start()
         print("VOTD repost task scheduled.")
+    if not daily_didascalicon_task.is_running():
+        daily_didascalicon_task.start()
+        print("Daily Didascalicon task scheduled.")
     await tree.sync()
     print(f"Bot is ready! Logged in as {client.user}")
     print(f"Loaded {len(DB['books'])} books, {verse_count()} verses")
+    did = _load_didascalicon()
+    print(f"Loaded {len(did.get('questions', []))} Didascalicon Q&As")
 
 
 @client.event
@@ -2412,6 +2725,12 @@ async def on_message(message: discord.Message):
     # Ignore bot messages
     if message.author.bot:
         return
+
+    # If this is a configured theology channel, try to auto-answer from Didascalicon.
+    # Runs in parallel with the inline verse expansion below.
+    theology_channels = _get_theology_channels()
+    if message.channel.id in theology_channels:
+        client.loop.create_task(_handle_theology_question(message))
 
     # Find all verse references in the message
     matches = list(INLINE_REF_RE.finditer(message.content))

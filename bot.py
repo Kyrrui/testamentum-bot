@@ -2546,11 +2546,12 @@ def _build_qa_embeds(qa: dict, title_prefix: str = "") -> list[discord.Embed]:
 
 
 async def _post_qa(channel: discord.abc.Messageable, qa: dict, title_prefix: str = ""):
-    """Post a Q&A to a channel. Handles multi-embed splitting for long answers."""
+    """Post a Q&A to a channel. Sends each embed as its own message because
+    Discord caps the combined size of all embeds in a single message at 6000
+    characters, and our chunks alone can exceed that when added together."""
     embeds = _build_qa_embeds(qa, title_prefix=title_prefix)
-    # Discord allows up to 10 embeds per message
-    for i in range(0, len(embeds), 10):
-        await channel.send(embeds=embeds[i:i + 10])
+    for embed in embeds:
+        await channel.send(embed=embed)
 
 
 async def _auto_post_didascalicon():

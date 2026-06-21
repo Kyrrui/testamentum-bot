@@ -1619,6 +1619,53 @@ async def resetnews_command(interaction: discord.Interaction):
     )
 
 
+@tree.command(name="testannounce", description="Force-post the most recent news article to all announcement channels (admin only)")
+@app_commands.default_permissions(administrator=True)
+async def testannounce_command(interaction: discord.Interaction):
+    """Force-post the latest article to verify the end-to-end pipeline.
+    Bypasses the seen-set check but does NOT modify it — the real watcher
+    will still treat that article as already-seen."""
+    await interaction.response.defer(ephemeral=True)
+    channels = _get_announcements_channels()
+    if not channels:
+        await interaction.followup.send(
+            "No announcement channels configured. Run `/setup announcements #channel` first.",
+            ephemeral=True,
+        )
+        return
+    try:
+        articles = announcements.fetch_feed()
+    except Exception as e:
+        await interaction.followup.send(f"Feed fetch failed: {e}", ephemeral=True)
+        return
+    if not articles:
+        await interaction.followup.send("Feed returned no articles.", ephemeral=True)
+        return
+
+    latest = articles[-1]
+    posted = 0
+    for ch_id in channels:
+        channel = client.get_channel(ch_id)
+        if not channel:
+            continue
+        try:
+            await channel.send(
+                content="@everyone",
+                embed=_build_announcement_embed(latest),
+                allowed_mentions=discord.AllowedMentions(everyone=True),
+            )
+            posted += 1
+        except discord.Forbidden:
+            await interaction.followup.send(
+                f"No permission to post (or mention @everyone) in <#{ch_id}>.",
+                ephemeral=True,
+            )
+    await interaction.followup.send(
+        f"Force-posted **{latest['title']}** to {posted} channel(s). Seen-set unchanged.",
+        ephemeral=True,
+    )
+
+
 @tree.command(name="asktheology", description="Test the Didascalicon matcher (admin only)")
 @app_commands.describe(question="Question to match against the Didascalicon")
 @app_commands.default_permissions(administrator=True)

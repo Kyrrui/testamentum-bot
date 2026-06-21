@@ -66,6 +66,32 @@ def _entry_to_article(entry) -> Article | None:
     )
 
 
+def fetch_og_image(article_url: str, timeout: int = 15) -> str | None:
+    """Fetch the article page and extract the og:image (or twitter:image) URL.
+
+    Returns the image URL on success, or None on any failure / missing tag.
+    Never raises — callers shouldn't crash if the hero image lookup fails.
+    """
+    try:
+        from bs4 import BeautifulSoup
+        resp = requests.get(article_url, headers=BROWSER_HEADERS, timeout=timeout)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for selector, attr in (
+            ('meta[property="og:image"]', "content"),
+            ('meta[name="og:image"]', "content"),
+            ('meta[property="twitter:image"]', "content"),
+            ('meta[name="twitter:image"]', "content"),
+        ):
+            tag = soup.select_one(selector)
+            if tag and tag.get(attr):
+                return tag[attr].strip()
+        return None
+    except Exception as e:
+        print(f"[announcements] og:image fetch failed for {article_url}: {e}")
+        return None
+
+
 def fetch_feed(url: str = FEED_URL, timeout: int = 30) -> list[Article]:
     """Fetch and parse the news feed. Returns list of Articles, oldest-first.
 

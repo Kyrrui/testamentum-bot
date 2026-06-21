@@ -1643,6 +1643,7 @@ async def testannounce_command(interaction: discord.Interaction):
         return
 
     latest = articles[-1]
+    _enrich_with_image(latest)
     posted = 0
     for ch_id in channels:
         channel = client.get_channel(ch_id)
@@ -2830,11 +2831,20 @@ def _build_announcement_embed(article: dict) -> discord.Embed:
     )
     if article.get("author"):
         embed.set_author(name=article["author"])
+    if article.get("image_url"):
+        embed.set_image(url=article["image_url"])
     if article.get("published_iso"):
         embed.set_footer(text=f"Marcionite Church News · {article['published_iso'][:10]}")
     else:
         embed.set_footer(text="Marcionite Church News")
     return embed
+
+
+def _enrich_with_image(article: dict) -> dict:
+    """If we don't already know the hero image for this article, fetch og:image now."""
+    if not article.get("image_url") and article.get("url"):
+        article["image_url"] = announcements.fetch_og_image(article["url"]) or ""
+    return article
 
 
 async def _check_announcements():
@@ -2875,6 +2885,9 @@ async def _check_announcements():
         return
 
     print(f"[announcements] {len(new_articles)} new article(s) found")
+    # Fetch the hero image once per new article (not once per channel).
+    for art in new_articles:
+        _enrich_with_image(art)
     for ch_id in channels:
         channel = client.get_channel(ch_id)
         if not channel:

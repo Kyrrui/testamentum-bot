@@ -16,6 +16,7 @@ from discord import app_commands, ui
 from discord.ext import tasks
 from dotenv import load_dotenv
 from verse_image import render_verse
+import announcements
 
 load_dotenv()
 
@@ -35,6 +36,8 @@ USERDATA_DIR = os.path.join(RUNTIME_DIR, "users")
 os.makedirs(USERDATA_DIR, exist_ok=True)
 DIDASCALICON_HISTORY_PATH = os.path.join(RUNTIME_DIR, "didascalicon_history.json")
 THEOLOGY_CACHE_PATH = os.path.join(RUNTIME_DIR, "theology_cache.json")
+ANNOUNCEMENTS_SEEN_PATH = os.path.join(RUNTIME_DIR, "announcements_seen.json")
+ANNOUNCEMENTS_SEEN_MAX = 500
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
 
@@ -96,6 +99,12 @@ def _get_didascalicon_channels() -> list[int]:
     """Get all configured Didascalicon daily channel IDs across all servers."""
     config = _load_server_config()
     return [int(c["didascalicon_channel"]) for c in config.values() if c.get("didascalicon_channel")]
+
+
+def _get_announcements_channels() -> list[int]:
+    """Get all configured news/announcements channel IDs across all servers."""
+    config = _load_server_config()
+    return [int(c["announcements_channel"]) for c in config.values() if c.get("announcements_channel")]
 
 
 def _get_theology_channels() -> dict[int, str]:
@@ -1467,6 +1476,21 @@ async def setup_didascalicon(interaction: discord.Interaction, channel: discord.
     )
 
 
+@setup_group.command(name="announcements", description="Set the channel for new-article announcements (@everyone pings)")
+@app_commands.describe(channel="Channel to ping @everyone in when a new article is published on the website")
+async def setup_announcements(interaction: discord.Interaction, channel: discord.TextChannel):
+    config = _load_server_config()
+    guild_id = str(interaction.guild_id)
+    config.setdefault(guild_id, {})
+    config[guild_id]["announcements_channel"] = str(channel.id)
+    _save_server_config(config)
+    await interaction.response.send_message(
+        f"New articles from the Marcionite Church website will be announced in {channel.mention} "
+        f"with an @everyone ping. Make sure the bot has **Mention Everyone** permission in that channel.",
+        ephemeral=True,
+    )
+
+
 @setup_group.command(name="theology", description="Set the channel where questions get auto-answered from the Didascalicon")
 @app_commands.describe(channel="Theology channel where the bot listens for questions")
 async def setup_theology(interaction: discord.Interaction, channel: discord.TextChannel):
@@ -1509,6 +1533,7 @@ async def setup_theology_all(interaction: discord.Interaction, enabled: bool):
     app_commands.Choice(name="didascalicon", value="didascalicon_channel"),
     app_commands.Choice(name="theology", value="theology_channel"),
     app_commands.Choice(name="theology-all", value="theology_everywhere"),
+    app_commands.Choice(name="announcements", value="announcements_channel"),
 ])
 async def setup_disable(interaction: discord.Interaction, feature: app_commands.Choice[str]):
     config = _load_server_config()
@@ -1543,6 +1568,7 @@ async def setup_status(interaction: discord.Interaction):
     lines.append(f"**Theology channel (auto-answer):** {fmt(guild_config.get('theology_channel'))}")
     everywhere = guild_config.get("theology_everywhere")
     lines.append(f"**Theology auto-answer in ALL channels:** {'On' if everywhere else 'Off'}")
+    lines.append(f"**News Announcements (@everyone):** {fmt(guild_config.get('announcements_channel'))}")
 
     embed = discord.Embed(
         title="Server Configuration",
@@ -1566,6 +1592,31 @@ async def postdidascalicon_command(interaction: discord.Interaction):
     await interaction.response.defer(ephemeral=True)
     await _auto_post_didascalicon()
     await interaction.followup.send("Daily Didascalicon posted.", ephemeral=True)
+
+
+@tree.command(name="checknews", description="Poll the news feed now (admin only)")
+@app_commands.default_permissions(administrator=True)
+async def checknews_command(interaction: discord.Interaction):
+    await interaction.response.defer(ephemeral=True)
+    await _check_announcements()
+    seen = _load_announcements_seen() or {}
+    n = len(seen.get("seen_urls", []))
+    last = seen.get("last_checked", "never")
+    await interaction.followup.send(
+        f"News check complete. Seen-set has {n} URL(s). Last checked: {last}",
+        ephemeral=True,
+    )
+
+
+@tree.command(name="resetnews", description="Reset the seen-articles cache (admin only — will reseed silently on next check)")
+@app_commands.default_permissions(administrator=True)
+async def resetnews_command(interaction: discord.Interaction):
+    if os.path.exists(ANNOUNCEMENTS_SEEN_PATH):
+        os.remove(ANNOUNCEMENTS_SEEN_PATH)
+    await interaction.response.send_message(
+        "News seen-cache cleared. The next poll will reseed it from the current feed and post nothing.",
+        ephemeral=True,
+    )
 
 
 @tree.command(name="asktheology", description="Test the Didascalicon matcher (admin only)")
@@ -2085,12 +2136,22 @@ async def help_command(interaction: discord.Interaction):
         inline=False,
     )
     embed.add_field(
+        name="Announcements",
+        value=(
+            "Watches the Marcionite Church website news feed every 20 min "
+            "and pings @everyone in the configured channel when a new article is published."
+        ),
+        inline=False,
+    )
+    embed.add_field(
         name="Server Setup (admin)",
         value=(
             "`/setup quiz #channel` — daily quiz channel\n"
             "`/setup votd #channel` — Verse of the Day channel\n"
             "`/setup didascalicon #channel` — daily Didascalicon Q&A channel\n"
             "`/setup theology #channel` — theology channel (questions auto-answered)\n"
+            "`/setup theology-all enabled:true` — theology auto-answer in every channel\n"
+            "`/setup announcements #channel` — channel for new-article @everyone pings\n"
             "`/setup disable` — disable a feature\n"
             "`/setup status` — show current config"
         ),
@@ -2658,6 +2719,155 @@ async def daily_didascalicon_task():
     await _auto_post_didascalicon()
 
 
+# --- Announcements: poll RSS feed for new news articles and post to configured channels ---
+
+
+def _load_announcements_seen() -> dict:
+    """Persistent seen-set. Shape: {"seen_urls": [...], "last_checked": "ISO-8601"}.
+
+    Returns None if the file does NOT exist — that's our first-run signal.
+    Returns an empty dict-shape if the file is corrupt.
+    """
+    if not os.path.exists(ANNOUNCEMENTS_SEEN_PATH):
+        return None  # sentinel: never been initialized
+    try:
+        with open(ANNOUNCEMENTS_SEEN_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            if not isinstance(data, dict):
+                return {"seen_urls": [], "last_checked": ""}
+            data.setdefault("seen_urls", [])
+            data.setdefault("last_checked", "")
+            return data
+    except (json.JSONDecodeError, OSError):
+        return {"seen_urls": [], "last_checked": ""}
+
+
+def _save_announcements_seen(data: dict):
+    with open(ANNOUNCEMENTS_SEEN_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+def _build_announcement_embed(article: dict) -> discord.Embed:
+    title = article.get("title", "New article")
+    url = article.get("url", "")
+    summary = (article.get("summary") or "").strip()
+    # Drop the WordPress excerpt trailer ("The post X appeared first on Y")
+    # both as raw HTML and after tag-stripping.
+    summary = re.sub(
+        r"<p>\s*The post\s.*?appeared first on.*?</p>\s*$",
+        "",
+        summary,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    # Strip remaining HTML tags
+    summary = re.sub(r"<[^>]+>", "", summary)
+    summary = re.sub(r"\s+", " ", summary).strip()
+    # Decode HTML entities (&hellip;, &#8230;, &amp;, ...)
+    import html as _html
+    summary = _html.unescape(summary)
+    # Belt-and-suspenders trailer strip if the HTML version didn't catch it
+    summary = re.sub(
+        r"\s*The post\s.*?appeared first on.*$",
+        "",
+        summary,
+        flags=re.IGNORECASE,
+    ).strip()
+    if len(summary) > 350:
+        summary = summary[:347].rstrip() + "..."
+
+    embed = discord.Embed(
+        title=title[:256],
+        url=url,
+        description=summary if summary else None,
+        color=EMBED_COLOR,
+    )
+    if article.get("author"):
+        embed.set_author(name=article["author"])
+    if article.get("published_iso"):
+        embed.set_footer(text=f"Marcionite Church News · {article['published_iso'][:10]}")
+    else:
+        embed.set_footer(text="Marcionite Church News")
+    return embed
+
+
+async def _check_announcements():
+    """Poll the news RSS feed. Post any new articles to configured channels."""
+    channels = _get_announcements_channels()
+    if not channels:
+        return
+
+    try:
+        articles = announcements.fetch_feed()
+    except Exception as e:
+        print(f"[announcements] Feed fetch failed: {e}")
+        return
+
+    if not articles:
+        return
+
+    seen = _load_announcements_seen()
+    current_urls = [a["url"] for a in articles]
+
+    if seen is None:
+        # First run: seed the cache with everything currently in the feed and post NOTHING.
+        # This prevents a fresh deploy from flooding @everyone with weeks of back-catalog.
+        _save_announcements_seen({
+            "seen_urls": current_urls[-ANNOUNCEMENTS_SEEN_MAX:],
+            "last_checked": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        })
+        print(f"[announcements] First run — seeded {len(current_urls)} URL(s), posting nothing.")
+        return
+
+    seen_set = set(seen["seen_urls"])
+    new_articles = [a for a in articles if a["url"] not in seen_set]
+
+    if not new_articles:
+        # Touch last_checked even on no-op runs so we can see the bot is alive.
+        seen["last_checked"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        _save_announcements_seen(seen)
+        return
+
+    print(f"[announcements] {len(new_articles)} new article(s) found")
+    for ch_id in channels:
+        channel = client.get_channel(ch_id)
+        if not channel:
+            print(f"  News channel {ch_id} not found.")
+            continue
+        try:
+            # First article: ping @everyone. Subsequent articles in the same batch
+            # go without the ping (avoid spam if many drop at once).
+            for i, art in enumerate(new_articles):
+                content = "@everyone" if i == 0 else None
+                allowed = discord.AllowedMentions(everyone=True) if i == 0 else discord.AllowedMentions.none()
+                await channel.send(
+                    content=content,
+                    embed=_build_announcement_embed(art),
+                    allowed_mentions=allowed,
+                )
+            print(f"  Posted {len(new_articles)} article(s) to #{channel.name} ({ch_id})")
+        except discord.Forbidden:
+            print(f"  No permission to post announcements in {ch_id}.")
+        except Exception as e:
+            print(f"  Error posting announcement in {ch_id}: {e}")
+
+    # Union the new URLs into the seen-set and cap at the most recent N.
+    merged = list(seen["seen_urls"])
+    for url in current_urls:
+        if url not in merged:
+            merged.append(url)
+    seen["seen_urls"] = merged[-ANNOUNCEMENTS_SEEN_MAX:]
+    seen["last_checked"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    _save_announcements_seen(seen)
+
+
+@tasks.loop(minutes=20)
+async def announcements_task():
+    try:
+        await _check_announcements()
+    except Exception as e:
+        print(f"[announcements] Unexpected error in task loop: {e}")
+
+
 # --- Theology channel: LLM-matched verbatim Q&A response ---
 
 
@@ -2899,6 +3109,9 @@ async def on_ready():
     if not daily_didascalicon_task.is_running():
         daily_didascalicon_task.start()
         print("Daily Didascalicon task scheduled.")
+    if not announcements_task.is_running():
+        announcements_task.start()
+        print("News announcements task scheduled (every 20 min).")
     await tree.sync()
     print(f"Bot is ready! Logged in as {client.user}")
     print(f"Loaded {len(DB['books'])} books, {verse_count()} verses")

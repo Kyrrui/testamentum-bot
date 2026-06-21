@@ -1,41 +1,25 @@
 {
-  "book": "Evangelicon",
+  "book": "Psalmicon",
   "chapter": "16",
   "verse_start": "1",
-  "verse_end": "8",
+  "verse_end": "4",
   "verses": [
     {
       "verse": "1",
-      "text": "And he spake also a parable unto them on the neccessity always to pray, and not to faint; Saying,"
+      "text": "As the work of the husbandman is the ploughshare, and the work of the steersman is the guidance of the ship,"
     },
     {
       "verse": "2",
-      "text": "there was in a city a judge, which feared not God, and regarded not man:"
+      "text": "So also is my work the psalm of the Lord; my craft is in His praises."
     },
     {
       "verse": "3",
-      "text": "And there was a certain widow in that city; and she came unto him, saying, Right me from my opponent at law."
+      "text": "Because His love hath nourished my heart, and even unto my lips He hath poured forth His fruits."
     },
     {
       "verse": "4",
-      "text": "And he would not for a time: but afterward he said within himself, Though I fear not God, and regard not man;"
-    },
-    {
-      "verse": "5",
-      "text": "Yet because this widow gives me trouble, I will right her, lest by her coming to the end she weary me."
-    },
-    {
-      "verse": "6",
-      "text": "And the Lord said, Hear what the judge of the unrighteous saith."
-    },
-    {
-      "verse": "7",
-      "text": "And shall not God perform the righting of his elect, which cry unto him day and night, though he be long suffering over them?"
-    },
-    {
-      "verse": "8",
-      "text": "I say unto you that he will perform the righting of them speedily. Nevertheless when the Son of man cometh, shall he find the faith on the earth?"
+      "text": "For my love is the Lord, and therefore will I sing unto Him."
     }
   ],
-  "date": "2026-06-20"
+  "date": "2026-06-21"
 }

@@ -2760,12 +2760,18 @@ async def _send_qa(
     """Send a paginated Q&A using the persistent view (no timeout)."""
     chunks = _chunk_text(qa.get("answer", ""), max_len=1800)
     max_page = max(0, len(chunks) - 1)
+    print(
+        f"[didascalicon] _send_qa: {qa['number']} answer={len(qa.get('answer', ''))}c "
+        f"-> {len(chunks)} chunk(s), max_page={max_page}"
+    )
     embed = _build_qa_embed(qa, page=0, max_page=max_page, title_prefix=title_prefix)
+    # Always attach the view so the buttons show up — single-page answers
+    # just leave both disabled (cosmetic but consistent).
+    view = DidascaliconPersistentView()
+    view.prev_btn.disabled = True  # always disabled on page 0
     if max_page == 0:
-        view = None  # single page — no buttons needed
-    else:
-        view = DidascaliconPersistentView()
-        view.prev_btn.disabled = True  # we're on page 0
+        view.next_btn.disabled = True
+    print(f"[didascalicon] view buttons: prev.disabled={view.prev_btn.disabled} next.disabled={view.next_btn.disabled}")
     if reply:
         msg = await target.reply(embed=embed, view=view, mention_author=False)
     else:

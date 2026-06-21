@@ -2660,52 +2660,94 @@ def _chunk_text(text: str, max_len: int = 3800) -> list[str]:
     return chunks
 
 
-class DidascaliconPaginator(TimeoutView):
-    """Paginated Q&A display — one embed per page, Prev/Next buttons."""
+def _build_qa_embed(qa: dict, page: int, max_page: int, title_prefix: str = "") -> discord.Embed:
+    """Build the embed for a single page of a Didascalicon Q&A."""
+    chunks = _chunk_text(qa.get("answer", ""), max_len=1800)
+    chunk = chunks[page] if chunks else ""
+    title = f"{title_prefix}{qa['number']}. {qa['question']}"
+    embed = discord.Embed(
+        title=title[:256],
+        description=chunk,
+        color=EMBED_COLOR,
+    )
+    lesson_str = f"Lesson {qa['lesson']} — {qa.get('lesson_title', '')}".strip(" —")
+    footer_parts = ["Didascalicon"]
+    if lesson_str:
+        footer_parts.append(lesson_str)
+    if max_page > 0:
+        footer_parts.append(f"Page {page + 1}/{max_page + 1}")
+    embed.set_footer(text=" · ".join(footer_parts))
+    return embed
 
-    def __init__(self, qa: dict, title_prefix: str = ""):
-        super().__init__(timeout=900)
-        self.qa = qa
-        self.title_prefix = title_prefix
-        self.chunks = _chunk_text(qa.get("answer", ""), max_len=1800)
-        self.page = 0
-        self.max_page = max(0, len(self.chunks) - 1)
-        self._update_buttons()
 
-    def _update_buttons(self):
-        self.prev_btn.disabled = self.page == 0
-        self.next_btn.disabled = self.page >= self.max_page
+# Embed title formats we send:
+#   "1.01. <question>"                     (theology reply, no prefix)
+#   "Daily Didascalicon — 1.01. <question>" (daily auto-post)
+# Use a regex that grabs the number from anywhere in the title.
+_DID_TITLE_NUMBER_RE = re.compile(r"\b(\d+\.\d{1,3})\.\s")
+_DID_FOOTER_PAGE_RE = re.compile(r"Page\s+(\d+)/(\d+)")
 
-    def make_embed(self) -> discord.Embed:
-        qa = self.qa
-        chunk = self.chunks[self.page] if self.chunks else ""
-        title = f"{self.title_prefix}{qa['number']}. {qa['question']}"
-        embed = discord.Embed(
-            title=title[:256],
-            description=chunk,
-            color=EMBED_COLOR,
-        )
-        lesson_str = f"Lesson {qa['lesson']} — {qa.get('lesson_title', '')}".strip(" —")
-        page_str = f"Page {self.page + 1}/{self.max_page + 1}" if self.max_page > 0 else ""
-        footer_parts = ["Didascalicon"]
-        if lesson_str:
-            footer_parts.append(lesson_str)
-        if page_str:
-            footer_parts.append(page_str)
-        embed.set_footer(text=" · ".join(footer_parts))
-        return embed
 
-    @ui.button(label="Previous", style=discord.ButtonStyle.secondary)
+def _extract_qa_state(message: discord.Message) -> tuple[dict, int, int, str] | None:
+    """From a posted Didascalicon message, recover (qa, page, max_page, title_prefix)."""
+    if not message.embeds:
+        return None
+    embed = message.embeds[0]
+    title = embed.title or ""
+    m = _DID_TITLE_NUMBER_RE.search(title)
+    if not m:
+        return None
+    qa_number = m.group(1)
+    did = _load_didascalicon()
+    qa = next((q for q in did.get("questions", []) if q["number"] == qa_number), None)
+    if not qa:
+        return None
+    # Anything before the "<N>.<NN>. " in the title is the prefix.
+    prefix = title[:m.start()]
+    # Recompute max_page from the (current) answer so a re-scrape doesn't break old posts.
+    chunks = _chunk_text(qa.get("answer", ""), max_len=1800)
+    max_page = max(0, len(chunks) - 1)
+    # Current page from footer (defaults to 0 if missing).
+    footer = embed.footer.text or ""
+    page_m = _DID_FOOTER_PAGE_RE.search(footer)
+    page = (int(page_m.group(1)) - 1) if page_m else 0
+    page = max(0, min(page, max_page))
+    return qa, page, max_page, prefix
+
+
+class DidascaliconPersistentView(ui.View):
+    """Pagination buttons for Didascalicon Q&A. Persistent (no timeout) so
+    users can still page through the morning's post in the evening. State is
+    recovered from the message itself on each click — no in-memory state."""
+
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @ui.button(label="Previous", style=discord.ButtonStyle.secondary, custom_id="did_prev")
     async def prev_btn(self, interaction: discord.Interaction, button: ui.Button):
-        self.page = max(0, self.page - 1)
-        self._update_buttons()
-        await interaction.response.edit_message(embed=self.make_embed(), view=self)
+        await self._flip(interaction, delta=-1)
 
-    @ui.button(label="Next", style=discord.ButtonStyle.secondary)
+    @ui.button(label="Next", style=discord.ButtonStyle.secondary, custom_id="did_next")
     async def next_btn(self, interaction: discord.Interaction, button: ui.Button):
-        self.page = min(self.max_page, self.page + 1)
-        self._update_buttons()
-        await interaction.response.edit_message(embed=self.make_embed(), view=self)
+        await self._flip(interaction, delta=+1)
+
+    async def _flip(self, interaction: discord.Interaction, *, delta: int):
+        state = _extract_qa_state(interaction.message)
+        if not state:
+            await interaction.response.send_message(
+                "Sorry — couldn't recover the Q&A this message refers to. "
+                "It may have been removed from the source.",
+                ephemeral=True,
+            )
+            return
+        qa, page, max_page, prefix = state
+        new_page = max(0, min(page + delta, max_page))
+        new_view = DidascaliconPersistentView()
+        # Disable Prev on page 0 / Next on last page.
+        new_view.prev_btn.disabled = new_page == 0
+        new_view.next_btn.disabled = new_page >= max_page
+        new_embed = _build_qa_embed(qa, page=new_page, max_page=max_page, title_prefix=prefix)
+        await interaction.response.edit_message(embed=new_embed, view=new_view)
 
 
 async def _send_qa(
@@ -2715,20 +2757,19 @@ async def _send_qa(
     *,
     reply: bool = False,
 ) -> discord.Message:
-    """Send a paginated Q&A. If `reply=True`, target must be a discord.Message
-    and the bot will reply to it; otherwise target is a channel and we send normally.
-    """
-    view = DidascaliconPaginator(qa, title_prefix=title_prefix)
-    embed = view.make_embed()
-    # If the Q&A fits in one page, drop the buttons entirely.
-    if view.max_page == 0:
-        view = None
+    """Send a paginated Q&A using the persistent view (no timeout)."""
+    chunks = _chunk_text(qa.get("answer", ""), max_len=1800)
+    max_page = max(0, len(chunks) - 1)
+    embed = _build_qa_embed(qa, page=0, max_page=max_page, title_prefix=title_prefix)
+    if max_page == 0:
+        view = None  # single page — no buttons needed
+    else:
+        view = DidascaliconPersistentView()
+        view.prev_btn.disabled = True  # we're on page 0
     if reply:
         msg = await target.reply(embed=embed, view=view, mention_author=False)
     else:
         msg = await target.send(embed=embed, view=view)
-    if view is not None:
-        view.message = msg
     return msg
 
 
@@ -3160,6 +3201,7 @@ async def votd_repost_task():
 @client.event
 async def on_ready():
     client.add_view(DailyQuizPersistentView())
+    client.add_view(DidascaliconPersistentView())
     if not daily_quiz_task.is_running():
         daily_quiz_task.start()
         print("Daily quiz task scheduled.")

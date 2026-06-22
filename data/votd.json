@@ -1,25 +1,25 @@
 {
-  "book": "Psalmicon",
-  "chapter": "16",
+  "book": "mRomans",
+  "chapter": "7",
   "verse_start": "1",
   "verse_end": "4",
   "verses": [
     {
       "verse": "1",
-      "text": "As the work of the husbandman is the ploughshare, and the work of the steersman is the guidance of the ship,"
+      "text": "The farthest bounds of the universe shall profit me nothing, neither the kingdoms of this world."
     },
     {
       "verse": "2",
-      "text": "So also is my work the psalm of the Lord; my craft is in His praises."
+      "text": "It is good for me to die for Jesus Christ rather than to reign over the farthest bounds of the earth."
     },
     {
       "verse": "3",
-      "text": "Because His love hath nourished my heart, and even unto my lips He hath poured forth His fruits."
+      "text": "Him I seek, who died on our behalf;"
     },
     {
       "verse": "4",
-      "text": "For my love is the Lord, and therefore will I sing unto Him."
+      "text": "Him I desire, who rose again for our sake."
     }
   ],
-  "date": "2026-06-21"
+  "date": "2026-06-22"
 }

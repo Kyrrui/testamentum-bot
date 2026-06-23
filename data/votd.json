@@ -1,25 +1,25 @@
 {
-  "book": "mRomans",
-  "chapter": "7",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "2",
+  "verse_start": "67",
+  "verse_end": "70",
   "verses": [
     {
-      "verse": "1",
-      "text": "The farthest bounds of the universe shall profit me nothing, neither the kingdoms of this world."
+      "verse": "67",
+      "text": "And John also was baptizing in Aenon near to Salim, because there was much water there: and they came, and were baptized."
     },
     {
-      "verse": "2",
-      "text": "It is good for me to die for Jesus Christ rather than to reign over the farthest bounds of the earth."
+      "verse": "68",
+      "text": "For John was not yet cast into prison."
     },
     {
-      "verse": "3",
-      "text": "Him I seek, who died on our behalf;"
+      "verse": "69",
+      "text": "Then there arose a question between some of John’s disciples and the Jews about purifying."
     },
     {
-      "verse": "4",
-      "text": "Him I desire, who rose again for our sake."
+      "verse": "70",
+      "text": "And they came unto John, and said unto him, Rabbi, he that was with thee beyond Jordan, to whom thou barest witness, behold, the same baptizeth, and all men come to him."
     }
   ],
-  "date": "2026-06-22"
+  "date": "2026-06-23"
 }

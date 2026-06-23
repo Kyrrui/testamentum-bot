@@ -38,6 +38,9 @@ DIDASCALICON_HISTORY_PATH = os.path.join(RUNTIME_DIR, "didascalicon_history.json
 THEOLOGY_CACHE_PATH = os.path.join(RUNTIME_DIR, "theology_cache.json")
 ANNOUNCEMENTS_SEEN_PATH = os.path.join(RUNTIME_DIR, "announcements_seen.json")
 ANNOUNCEMENTS_SEEN_MAX = 500
+THEOLOGY_REPLIES_PATH = os.path.join(RUNTIME_DIR, "theology_replies.json")
+THEOLOGY_USER_COOLDOWN_DAYS = 30
+THEOLOGY_CHANNEL_COOLDOWN_HOURS = 24
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
 
@@ -3124,6 +3127,88 @@ def _looks_like_question(text: str, strict: bool = False) -> bool:
     return any(lowered.startswith(s) for s in starters)
 
 
+def _load_theology_replies() -> dict:
+    """Reply-cooldown ledger: who has seen which Q&A, when, and where."""
+    if not os.path.exists(THEOLOGY_REPLIES_PATH):
+        return {"users": {}, "channels": {}}
+    try:
+        with open(THEOLOGY_REPLIES_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            data.setdefault("users", {})
+            data.setdefault("channels", {})
+            return data
+    except (json.JSONDecodeError, OSError):
+        return {"users": {}, "channels": {}}
+
+
+def _save_theology_replies(data: dict):
+    # Prune anything older than the max cooldown window before writing —
+    # keeps the file from growing forever.
+    cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=THEOLOGY_USER_COOLDOWN_DAYS)
+
+    def prune(bucket: dict) -> dict:
+        out = {}
+        for outer_id, inner in bucket.items():
+            kept = {}
+            for qa_number, iso_ts in inner.items():
+                try:
+                    ts = datetime.datetime.fromisoformat(iso_ts)
+                    if ts.tzinfo is None:
+                        ts = ts.replace(tzinfo=datetime.timezone.utc)
+                except Exception:
+                    continue
+                if ts >= cutoff:
+                    kept[qa_number] = iso_ts
+            if kept:
+                out[outer_id] = kept
+        return out
+
+    data["users"] = prune(data.get("users", {}))
+    data["channels"] = prune(data.get("channels", {}))
+
+    with open(THEOLOGY_REPLIES_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+def _theology_cooldown_reason(user_id: str, channel_id: str, qa_number: str) -> str | None:
+    """Return a short reason string if this reply should be throttled, else None."""
+    data = _load_theology_replies()
+    now = datetime.datetime.now(datetime.timezone.utc)
+
+    user_ts_iso = data.get("users", {}).get(user_id, {}).get(qa_number)
+    if user_ts_iso:
+        try:
+            ts = datetime.datetime.fromisoformat(user_ts_iso)
+            if ts.tzinfo is None:
+                ts = ts.replace(tzinfo=datetime.timezone.utc)
+            if now - ts < datetime.timedelta(days=THEOLOGY_USER_COOLDOWN_DAYS):
+                return f"user already saw {qa_number} on {ts.date().isoformat()}"
+        except Exception:
+            pass
+
+    channel_ts_iso = data.get("channels", {}).get(channel_id, {}).get(qa_number)
+    if channel_ts_iso:
+        try:
+            ts = datetime.datetime.fromisoformat(channel_ts_iso)
+            if ts.tzinfo is None:
+                ts = ts.replace(tzinfo=datetime.timezone.utc)
+            if now - ts < datetime.timedelta(hours=THEOLOGY_CHANNEL_COOLDOWN_HOURS):
+                return f"channel already saw {qa_number} at {ts.isoformat(timespec='minutes')}"
+        except Exception:
+            pass
+
+    return None
+
+
+def _record_theology_reply(user_id: str, channel_id: str, qa_number: str):
+    """Stamp the cooldown ledger with a fresh reply."""
+    data = _load_theology_replies()
+    now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    data.setdefault("users", {}).setdefault(user_id, {})[qa_number] = now_iso
+    data.setdefault("channels", {}).setdefault(channel_id, {})[qa_number] = now_iso
+    _save_theology_replies(data)
+
+
 async def _handle_theology_question(message: discord.Message, *, strict: bool = False):
     """If the message looks like a question and matches a Didascalicon Q&A, post the verbatim Q&A."""
     snippet = (message.content[:120] + "...") if len(message.content) > 120 else message.content
@@ -3146,8 +3231,17 @@ async def _handle_theology_question(message: discord.Message, *, strict: bool = 
         return
     qa = questions[idx]
     print(f"[theology] Matched -> {qa['number']}. {qa['question']}")
+
+    user_id = str(message.author.id)
+    channel_id = str(message.channel.id)
+    cooldown = _theology_cooldown_reason(user_id, channel_id, qa["number"])
+    if cooldown:
+        print(f"[theology] Throttled: {cooldown}")
+        return
+
     try:
         await _send_qa(message, qa, title_prefix="", reply=True)
+        _record_theology_reply(user_id, channel_id, qa["number"])
     except discord.Forbidden:
         print(f"  No permission to reply in theology channel {message.channel.id}.")
     except Exception as e:

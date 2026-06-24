@@ -1,25 +1,29 @@
 {
   "book": "Evangelicon",
-  "chapter": "2",
-  "verse_start": "67",
-  "verse_end": "70",
+  "chapter": "3",
+  "verse_start": "37",
+  "verse_end": "41",
   "verses": [
     {
-      "verse": "67",
-      "text": "And John also was baptizing in Aenon near to Salim, because there was much water there: and they came, and were baptized."
+      "verse": "37",
+      "text": "And it came to pass on a certain day, as he was teaching, that there were Pharisees and doctors of the law sitting by, which were come out of every town of Galilee, and Judaea, and Jerusalem: and the power of the Lord was present to heal them."
     },
     {
-      "verse": "68",
-      "text": "For John was not yet cast into prison."
+      "verse": "38",
+      "text": "And, behold, men brought in a bed a man which was taken with the palsy: and they sought means to bring him in, and to lay him before him."
     },
     {
-      "verse": "69",
-      "text": "Then there arose a question between some of John’s disciples and the Jews about purifying."
+      "verse": "39",
+      "text": "And when they could not find by what way they might bring him in because of the multitude, they went upon the housetop, and let him down through the tiling with his couch into the midst before Jesus."
     },
     {
-      "verse": "70",
-      "text": "And they came unto John, and said unto him, Rabbi, he that was with thee beyond Jordan, to whom thou barest witness, behold, the same baptizeth, and all men come to him."
+      "verse": "40",
+      "text": "And when he saw their faith, he said unto him, Man, thy sins are forgiven thee."
+    },
+    {
+      "verse": "41",
+      "text": "And the scribes and the Pharisees began to reason, saying, Who is this which speaketh blasphemies? Who can forgive sins, but God alone?"
     }
   ],
-  "date": "2026-06-23"
+  "date": "2026-06-24"
 }

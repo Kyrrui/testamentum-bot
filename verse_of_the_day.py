@@ -80,6 +80,27 @@ def _is_used(book: str, chapter: int, v_start: int, v_end: int, history: list[di
     return False
 
 
+def lookup_section(db: dict, book: str, chapter: str, v_start: int) -> str | None:
+    """Find the section heading that covers verse `v_start` in this chapter."""
+    ch_data = db["books"].get(book, {}).get("chapters", {}).get(str(chapter))
+    if not ch_data:
+        return None
+    sections = ch_data.get("sections") or {}
+    # `sections` maps verse-num -> name; either it's keyed per-verse (every
+    # verse covered) or only at section starts. Try exact match first, then
+    # fall back to the nearest start at or below v_start.
+    if str(v_start) in sections:
+        return sections[str(v_start)] or None
+    starts = sorted((int(k) for k in sections.keys()))
+    candidate = None
+    for s in starts:
+        if s <= v_start:
+            candidate = sections[str(s)]
+        else:
+            break
+    return candidate or None
+
+
 def lookup_verses(db: dict, book: str, chapter: str, v_start: int, v_end: int) -> list[dict] | None:
     book_data = db["books"].get(book)
     if not book_data:
@@ -222,6 +243,7 @@ def pick_llm_verse(db: dict, history: list[dict]) -> dict | None:
             "verse_start": str(v_start),
             "verse_end": str(v_end),
             "verses": verses,
+            "section": lookup_section(db, book, chapter, v_start) or "",
         }
     except Exception as e:
         print(f"  LLM selection failed: {e}")
@@ -266,6 +288,7 @@ def pick_random_verse(db: dict, history: list[dict]) -> dict:
             "verse_start": str(v_start),
             "verse_end": str(v_end),
             "verses": verses,
+            "section": lookup_section(db, book, chapter, v_start) or "",
         }
 
     raise RuntimeError(f"Could not find an unused verse range after {MAX_PICK_ATTEMPTS} attempts.")
@@ -281,7 +304,8 @@ def post_to_discord(verse: dict):
         ref += f"-{verse['verse_end']}"
 
     verse_tuples = [(int(v["verse"]), v["text"]) for v in verse["verses"]]
-    img_buf = render_verse(ref, verse_tuples)
+    section = verse.get("section") or None
+    img_buf = render_verse(ref, verse_tuples, section=section)
 
     embed = {
         "title": f"Verse of the Day — {today}",

@@ -811,7 +811,8 @@ async def votd_command(interaction: discord.Interaction):
 
     # Generate verse image
     verse_tuples = [(int(v["verse"]), v["text"]) for v in votd["verses"]]
-    buf = render_verse(ref, verse_tuples)
+    section = _votd_section(votd)
+    buf = render_verse(ref, verse_tuples, section=section)
     file = discord.File(buf, filename="votd.png")
 
     embed = discord.Embed(
@@ -2228,6 +2229,36 @@ async def help_command(interaction: discord.Interaction):
 # --- Daily Quiz (persistent view) ---
 
 
+def _votd_section(votd: dict) -> str | None:
+    """Return the section heading for the VOTD's starting verse, if any.
+
+    Prefers the explicit `section` field saved by the picker; falls back to
+    looking it up from our local DB so older votd.json files still work.
+    """
+    explicit = (votd.get("section") or "").strip()
+    if explicit:
+        return explicit
+    try:
+        book = votd["book"]
+        chapter = str(votd["chapter"])
+        v_start = int(votd["verse_start"])
+    except (KeyError, ValueError, TypeError):
+        return None
+    ch_data = DB["books"].get(book, {}).get("chapters", {}).get(chapter)
+    if not ch_data:
+        return None
+    sections = ch_data.get("sections") or {}
+    if str(v_start) in sections:
+        return sections[str(v_start)] or None
+    candidate = None
+    for s in sorted((int(k) for k in sections.keys())):
+        if s <= v_start:
+            candidate = sections[str(s)]
+        else:
+            break
+    return candidate or None
+
+
 def _fetch_votd() -> dict | None:
     """Fetch the latest VOTD from GitHub, falling back to local file."""
     try:
@@ -3276,7 +3307,8 @@ async def votd_repost_task():
         ref += f"-{votd['verse_end']}"
 
     verse_tuples = [(int(v["verse"]), v["text"]) for v in votd["verses"]]
-    buf = render_verse(ref, verse_tuples)
+    section = _votd_section(votd)
+    buf = render_verse(ref, verse_tuples, section=section)
 
     for ch_id in channels:
         channel = client.get_channel(ch_id)

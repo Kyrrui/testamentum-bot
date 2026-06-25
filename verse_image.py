@@ -14,6 +14,7 @@ from PIL import Image, ImageDraw, ImageFont
 ASSETS_DIR = os.path.join(os.path.dirname(__file__), "assets")
 FONT_REGULAR = os.path.join(ASSETS_DIR, "EBGaramond.ttf")
 FONT_ITALIC = os.path.join(ASSETS_DIR, "EBGaramond-Italic.ttf")
+CHI_RHO_PATH = os.path.join(ASSETS_DIR, "chi_rho.png")
 
 # Image dimensions
 WIDTH = 1200
@@ -71,35 +72,45 @@ def _draw_diamond_line(draw: ImageDraw.ImageDraw, cx: int, y: int, *,
     )
 
 
-def _draw_chi_rho(draw: ImageDraw.ImageDraw, cx: int, cy: int, size: int, color=ACCENT_COLOR):
-    """Draw the Chi-Rho Christogram centered at (cx, cy).
+_CHI_RHO_CACHE: dict[tuple[int, tuple], Image.Image] = {}
 
-    Composition: a large chi (X) with a rho's stem rising upward through the
-    intersection. The rho's bowl is a 'D'-shaped loop attached to the top of
-    the stem, opening to the right.
-    """
-    line_w = max(3, size // 12)
-    half = size // 2
 
-    # Bowl geometry — sized so the loop sits at the top of the stem and the
-    # stem itself extends well above the chi's intersection point.
-    bowl_r = max(7, size // 4)
-    bowl_top = cy - half - (bowl_r * 2) // 3  # how high the bowl reaches
-    bowl_cy = bowl_top + bowl_r
-    stem_top = bowl_cy  # the stem ends inside the bowl
+def _get_chi_rho_image(size: int, color=ACCENT_COLOR) -> Image.Image | None:
+    """Load assets/chi_rho.png, recolor it to `color`, scale to `size` px tall.
 
-    # Chi: two diagonals forming an X
-    draw.line([(cx - half, cy + half), (cx + half, cy - half)], fill=color, width=line_w)
-    draw.line([(cx - half, cy - half), (cx + half, cy + half)], fill=color, width=line_w)
+    The source PNG is expected to be a dark mark on transparency. We keep its
+    alpha channel and fill the visible pixels with the target color so the mark
+    reads as white on the black card. Cached per (size, color)."""
+    cache_key = (size, tuple(color))
+    if cache_key in _CHI_RHO_CACHE:
+        return _CHI_RHO_CACHE[cache_key]
+    if not os.path.exists(CHI_RHO_PATH):
+        return None
+    try:
+        src = Image.open(CHI_RHO_PATH).convert("RGBA")
+    except Exception:
+        return None
+    # Replace the visible pixels with `color`, keep alpha for shape.
+    alpha = src.split()[-1]
+    solid = Image.new("RGBA", src.size, tuple(color) + (255,))
+    solid.putalpha(alpha)
+    # Scale to target height, preserving aspect ratio.
+    src_w, src_h = solid.size
+    aspect = src_w / src_h
+    new_h = size
+    new_w = max(1, int(new_h * aspect))
+    out = solid.resize((new_w, new_h), Image.LANCZOS)
+    _CHI_RHO_CACHE[cache_key] = out
+    return out
 
-    # Rho: vertical stem (goes through chi intersection up into the bowl)
-    draw.line([(cx, cy + half), (cx, stem_top)], fill=color, width=line_w)
 
-    # Rho: bowl — a "D" shape (right-half arc) attached to the stem.
-    # Draw a circle outline then mask the left half with the stem itself;
-    # easiest with an arc from -90 to 90 degrees.
-    bbox = [cx - bowl_r, bowl_cy - bowl_r, cx + bowl_r, bowl_cy + bowl_r]
-    draw.arc(bbox, start=-90, end=90, fill=color, width=line_w)
+def _draw_chi_rho(img: Image.Image, cx: int, cy: int, size: int, color=ACCENT_COLOR):
+    """Paste the chi-rho mark onto `img` centered at (cx, cy), `size` px tall."""
+    chi_rho = _get_chi_rho_image(size, color)
+    if chi_rho is None:
+        return  # asset missing; render the card without the mark
+    w, h = chi_rho.size
+    img.paste(chi_rho, (cx - w // 2, cy - h // 2), chi_rho)
 
 
 def render_verse(
@@ -162,11 +173,9 @@ def render_verse(
         ref_bbox = font_ref.getbbox(reference)
         y += (ref_bbox[3] - ref_bbox[1])
     # Branding block: gap + chi-rho + gap + church name + url + bottom pad.
-    # The chi-rho's bowl extends ~2/3 of bowl_r above its center, so we add
-    # extra headroom there.
-    chi_rho_size = 56
-    chi_rho_overhang = chi_rho_size // 4 + 6  # how far the bowl rises above center
-    y += 30 + (chi_rho_size + chi_rho_overhang) + 16 + 26 + 4 + 22 + 36
+    # Chi-rho's vertical extent equals chi_rho_size (full top-to-bottom stem).
+    chi_rho_size = 64
+    y += 28 + chi_rho_size + 18 + 26 + 4 + 22 + 38
 
     height = max(420, y)
 
@@ -235,7 +244,7 @@ def render_verse(
     chi_rho_cy = church_y - chi_rho_to_name_gap - chi_rho_size // 2
 
     # Chi-Rho
-    _draw_chi_rho(draw, center_x, chi_rho_cy, chi_rho_size)
+    _draw_chi_rho(img, center_x, chi_rho_cy, chi_rho_size)
 
     # Church name
     church_w = church_bbox[2] - church_bbox[0]

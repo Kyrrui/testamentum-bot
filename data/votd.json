@@ -1,25 +1,30 @@
 {
-  "book": "1 Thessalonians",
-  "chapter": "2",
-  "verse_start": "13",
-  "verse_end": "16",
+  "book": "Evangelicon",
+  "chapter": "9",
+  "verse_start": "32",
+  "verse_end": "36",
   "verses": [
     {
-      "verse": "13",
-      "text": "For this cause also thank we God without ceasing, because, when ye received the word of God which ye heard of us, ye received it not as the word of men, but as it is in truth, the word of God, which effectually worketh also in you that believe."
+      "verse": "32",
+      "text": "But he, willing to justify himself, said unto Jesus, And who is my neighbour?"
     },
     {
-      "verse": "14",
-      "text": "For ye, brethren, became followers of the churches of God which in Judaea are in Christ Jesus: for ye also have suffered like things of your own countrymen, even as they have of the Jews:"
+      "verse": "33",
+      "text": "And Jesus answering said, A certain man was going down from Jerusalem to Jericho, and fell among thieves, which stripped him of his raiment, and wounded him, and departed, leaving him half dead."
     },
     {
-      "verse": "15",
-      "text": "Who both killed the Lord Jesus, and their own prophets, and have persecuted us; and they please not God, and are contrary to all men:"
+      "verse": "34",
+      "text": "And by chance there came down a certain priest in that way: and when he saw him, he passed by on the other side."
     },
     {
-      "verse": "16",
-      "text": "Forbidding us to speak to the Gentiles that they might be saved, to fill up their sins alway: for the wrath is come upon them to the uttermost."
+      "verse": "35",
+      "text": "And likewise a Levite, when he was at the place, came and looked on him, and passed by on the other side."
+    },
+    {
+      "verse": "36",
+      "text": "But a certain Samaritan, as he journeyed, came where he was: and when he saw him, he had compassion on him,"
     }
   ],
-  "date": "2026-06-25"
+  "section": "The Good Samaritan",
+  "date": "2026-06-26"
 }

@@ -20,7 +20,7 @@ URL = "https://marcionitechurchofchrist.org/didascalicon/"
 OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "data", "didascalicon.json")
 
 Q_RE = re.compile(r"^(\d+)\.(\d+)\.\s+(.+\?)\s*$")
-LESSON_RE = re.compile(r"^Lesson\s+(\d+):\s*(.+)$")
+LESSON_RE = re.compile(r"^Lesson\s+(\d+):\s*(.+)$", re.IGNORECASE)
 
 # Minimum thresholds — if the scrape drops below these, we abort instead
 # of overwriting the cached file. Current site has 18 lessons / 235 Q&As.
@@ -91,7 +91,10 @@ def parse(soup: BeautifulSoup) -> dict:
             current_q = None
             answer_paras = []
             current_lesson_num = int(lm.group(1))
-            current_lesson_title = lm.group(2).strip()
+            raw_title = lm.group(2).strip()
+            # Source switched lesson headings to ALL CAPS; render as Title Case
+            # so embeds stay readable. Leave anything already mixed-case alone.
+            current_lesson_title = raw_title.title() if raw_title.isupper() else raw_title
             lessons[current_lesson_num] = {
                 "number": current_lesson_num,
                 "title": current_lesson_title,

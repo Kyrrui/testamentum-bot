@@ -39,7 +39,7 @@ BOOKS = {
     "Trallians": "https://marcionitechurchofchrist.org/trallians/",
     "mRomans": "https://marcionitechurchofchrist.org/mromans/",
     "Philadelphians": "https://marcionitechurchofchrist.org/philadelphians/",
-    "Smyrnaeans": "https://marcionitechurchofchrist.org/symrnaeans/",
+    "Smyrnaeans": "https://marcionitechurchofchrist.org/smyrnaeans/",
     "Metrodorus": "https://marcionitechurchofchrist.org/metrodorus/",
 }
 

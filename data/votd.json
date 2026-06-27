@@ -1,30 +1,30 @@
 {
-  "book": "Evangelicon",
-  "chapter": "9",
-  "verse_start": "32",
-  "verse_end": "36",
+  "book": "Alexandrians",
+  "chapter": "11",
+  "verse_start": "6",
+  "verse_end": "10",
   "verses": [
     {
-      "verse": "32",
-      "text": "But he, willing to justify himself, said unto Jesus, And who is my neighbour?"
+      "verse": "6",
+      "text": "Let us hold fast the profession of our faith without wavering; for he is faithful that promised;"
     },
     {
-      "verse": "33",
-      "text": "And Jesus answering said, A certain man was going down from Jerusalem to Jericho, and fell among thieves, which stripped him of his raiment, and wounded him, and departed, leaving him half dead."
+      "verse": "7",
+      "text": "And let us consider one another to provoke unto love and to good works:"
     },
     {
-      "verse": "34",
-      "text": "And by chance there came down a certain priest in that way: and when he saw him, he passed by on the other side."
+      "verse": "8",
+      "text": "Not forsaking the assembling of ourselves together, as the manner of some is; but exhorting one another: and so much the more, as ye see the day approaching."
     },
     {
-      "verse": "35",
-      "text": "And likewise a Levite, when he was at the place, came and looked on him, and passed by on the other side."
+      "verse": "9",
+      "text": "For if we sin wilfully after that we have received the knowledge of the truth, there remaineth no more sacrifice for sins,"
     },
     {
-      "verse": "36",
-      "text": "But a certain Samaritan, as he journeyed, came where he was: and when he saw him, he had compassion on him,"
+      "verse": "10",
+      "text": "But a certain fearful looking for of judgment and fiery indignation, which shall devour the adversaries."
     }
   ],
-  "section": "The Good Samaritan",
-  "date": "2026-06-26"
+  "section": "A New and Living Way",
+  "date": "2026-06-27"
 }

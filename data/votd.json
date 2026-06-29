@@ -1,30 +1,34 @@
 {
-  "book": "Evangelicon",
-  "chapter": "17",
-  "verse_start": "1",
-  "verse_end": "5",
+  "book": "2 Corinthians",
+  "chapter": "9",
+  "verse_start": "6",
+  "verse_end": "11",
   "verses": [
     {
-      "verse": "1",
-      "text": "And Jesus entered and passed through Jericho."
+      "verse": "6",
+      "text": "But this I say, He which soweth sparingly shall reap also sparingly; and he which soweth bountifully shall reap also bountifully."
     },
     {
-      "verse": "2",
-      "text": "And, behold, a man called by the name Zacchaeus, and he was a chief publican, and he was rich."
+      "verse": "7",
+      "text": "Every man according as he purposeth in his heart, so let him give; not grudgingly, or of necessity: for God loveth a cheerful giver."
     },
     {
-      "verse": "3",
-      "text": "And he sought to see Jesus who he was; and could not from the multitude, because he was little of stature."
+      "verse": "8",
+      "text": "And God is able to make all grace abound toward you; that ye, always having all sufficiency in all things, may abound to every good work:"
     },
     {
-      "verse": "4",
-      "text": "And he ran before, and climbed up into a sycomore tree to see him: for he was going to pass through that way."
+      "verse": "9",
+      "text": "As it is written, He hath dispersed abroad; he hath given to the poor: his righteousness remaineth for ever."
     },
     {
-      "verse": "5",
-      "text": "And when Jesus came to the place, he looked up, and saw him, and said unto him, Zacchaeus, make haste, and come down; for to day I must abide at thy house."
+      "verse": "10",
+      "text": "Now he that ministereth seed to the sower both minister bread for your food, and multiply your seed sown, and increase the fruits of your righteousness;"
+    },
+    {
+      "verse": "11",
+      "text": "Being enriched in every thing to all bountifulness, which causeth through us thanksgiving to God."
     }
   ],
-  "section": "Zacchaeus",
-  "date": "2026-06-28"
+  "section": "God Gives Most",
+  "date": "2026-06-29"
 }

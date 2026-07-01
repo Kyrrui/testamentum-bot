@@ -1,34 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "22",
-  "verse_start": "59",
-  "verse_end": "64",
+  "book": "Ephesians",
+  "chapter": "16",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "59",
-      "text": "And it was about the sixth hour, and darkness came over the whole land until the ninth hour."
+      "verse": "1",
+      "text": "It is better to keep silence and to be, than to talk and not to be."
     },
     {
-      "verse": "60",
-      "text": "And the sun was darkened, and the veil of the sanctuary was rent in the midst."
+      "verse": "2",
+      "text": "It is a fine thing to teach, if the speaker practise."
     },
     {
-      "verse": "61",
-      "text": "And when Jesus had cried with a loud voice, he said, Father, into thy hands I commend my spirit: and having said this, he expired."
+      "verse": "3",
+      "text": "Now there is one teacher, who spake and it came to pass:"
     },
     {
-      "verse": "62",
-      "text": "Now when the centurion saw what was done, he glorified God, saying, Certainly this man was righteous."
-    },
-    {
-      "verse": "63",
-      "text": "And all the multitude that came together to this sight, when they beheld the things which were done, returned smiting their breasts."
-    },
-    {
-      "verse": "64",
-      "text": "And all his acquaintance, and the women that followed him from Galilee, stood afar off, seeing these things."
+      "verse": "4",
+      "text": "Yea and even the things which He hath done in silence are worthy of the Father."
     }
   ],
-  "section": "The Death of Jesus",
-  "date": "2026-06-30"
+  "section": "Exhortation to Confess Christ by Silence as well as Speech",
+  "date": "2026-07-01"
 }

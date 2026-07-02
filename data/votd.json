@@ -1,26 +1,26 @@
 {
-  "book": "Ephesians",
-  "chapter": "16",
+  "book": "Evangelicon",
+  "chapter": "12",
   "verse_start": "1",
   "verse_end": "4",
   "verses": [
     {
       "verse": "1",
-      "text": "It is better to keep silence and to be, than to talk and not to be."
+      "text": "He spake also this parable; A certain man had a fig tree planted in his vineyard; and he came and sought fruit thereon, and found none."
     },
     {
       "verse": "2",
-      "text": "It is a fine thing to teach, if the speaker practise."
+      "text": "Then said he unto the dresser of his vineyard, Behold, these three years I come seeking fruit on this fig tree, and find none: cut it down: why cumbereth it the ground?"
     },
     {
       "verse": "3",
-      "text": "Now there is one teacher, who spake and it came to pass:"
+      "text": "And he answering said unto him, Lord, let it alone this year also, till I shall dig about it, and dung it:"
     },
     {
       "verse": "4",
-      "text": "Yea and even the things which He hath done in silence are worthy of the Father."
+      "text": "And if it bear fruit, well: and if not, then after that thou shalt cut it down."
     }
   ],
-  "section": "Exhortation to Confess Christ by Silence as well as Speech",
-  "date": "2026-07-01"
+  "section": "The Fig Tree",
+  "date": "2026-07-02"
 }

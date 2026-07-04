@@ -652,5 +652,12 @@
     "chapter": "42",
     "verse_start": "1",
     "verse_end": "4"
+  },
+  {
+    "date": "2026-07-04",
+    "book": "Evangelicon",
+    "chapter": "24",
+    "verse_start": "26",
+    "verse_end": "30"
   }
 ]

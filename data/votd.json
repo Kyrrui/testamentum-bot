@@ -1,26 +1,30 @@
 {
-  "book": "Psalmicon",
-  "chapter": "42",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "24",
+  "verse_start": "26",
+  "verse_end": "30",
   "verses": [
     {
-      "verse": "1",
-      "text": "I stretched forth my hands and approached my Lord;"
+      "verse": "26",
+      "text": "If the world hate you, ye know that it hated me before it hated you."
     },
     {
-      "verse": "2",
-      "text": "For the stretching forth of my hands is His sign."
+      "verse": "27",
+      "text": "If ye were of the world, the world would love his own: but because ye are not of the world, but I have chosen you out of the world, therefore the world hateth you."
     },
     {
-      "verse": "3",
-      "text": "Mine extension is the outspread tree which was set up in the way of the Righteous One."
+      "verse": "28",
+      "text": "Remember the word that I said unto you, The servant is not greater than his lord. If they have persecuted me, they will also persecute you; if they have kept my saying, they will keep yours also."
     },
     {
-      "verse": "4",
-      "text": "And I became of no account unto them that took not hold of me; but I shall be with them that love me."
+      "verse": "29",
+      "text": "But all these things will they do unto you for my name’s sake, because they know not him that sent me."
+    },
+    {
+      "verse": "30",
+      "text": "If I had not come and spoken unto them, they had not had sin: but now they have no cloak for their sin."
     }
   ],
-  "section": "And Death Cast Me Up",
-  "date": "2026-07-03"
+  "section": "The World’s Hatred",
+  "date": "2026-07-04"
 }

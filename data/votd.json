@@ -1,26 +1,30 @@
 {
-  "book": "Psalmicon",
-  "chapter": "7",
-  "verse_start": "20",
+  "book": "1 Corinthians",
+  "chapter": "9",
+  "verse_start": "19",
   "verse_end": "23",
   "verses": [
     {
+      "verse": "19",
+      "text": "For though I be free from all men, yet have I made myself servant unto all, that I might gain the more."
+    },
+    {
       "verse": "20",
-      "text": "They that see shall go before Him, and shall be seen before Him;"
+      "text": "And unto the Jews I became as a Jew, that I might gain the Jews; to them that are under the law, as under the law, that I might gain them that are under the law;"
     },
     {
       "verse": "21",
-      "text": "And they shall praise the Lord for His love: because He is near and beholdeth."
+      "text": "To them that are without law, as without law, being not without law to God, but under the law to Christ, that I might gain them that are without law."
     },
     {
       "verse": "22",
-      "text": "And hatred shall be taken from the earth, and along with jealousy it shall be drowned:"
+      "text": "To the weak became I as weak, that I might gain the weak: I am made all things to all men, that I might by all means save some."
     },
     {
       "verse": "23",
-      "text": "For ignorance hath been destroyed, because the knowledge of the Lord hath come."
+      "text": "And this I do for the gospel’s sake, that I might be partaker thereof with you."
     }
   ],
-  "section": "And So God Was Merciful to Me",
-  "date": "2026-07-05"
+  "section": "Paul’s Use of Liberty",
+  "date": "2026-07-06"
 }

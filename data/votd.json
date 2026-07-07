@@ -1,30 +1,22 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "9",
-  "verse_start": "19",
-  "verse_end": "23",
+  "book": "Evangelicon",
+  "chapter": "21",
+  "verse_start": "23",
+  "verse_end": "25",
   "verses": [
     {
-      "verse": "19",
-      "text": "For though I be free from all men, yet have I made myself servant unto all, that I might gain the more."
-    },
-    {
-      "verse": "20",
-      "text": "And unto the Jews I became as a Jew, that I might gain the Jews; to them that are under the law, as under the law, that I might gain them that are under the law;"
-    },
-    {
-      "verse": "21",
-      "text": "To them that are without law, as without law, being not without law to God, but under the law to Christ, that I might gain them that are without law."
-    },
-    {
-      "verse": "22",
-      "text": "To the weak became I as weak, that I might gain the weak: I am made all things to all men, that I might by all means save some."
-    },
-    {
       "verse": "23",
-      "text": "And this I do for the gospel’s sake, that I might be partaker thereof with you."
+      "text": "And the men that held Jesus mocked him, and smote him."
+    },
+    {
+      "verse": "24",
+      "text": "And when they had blindfolded him, they struck him on the face, and asked him, saying, Prophesy, who is it that smote thee?"
+    },
+    {
+      "verse": "25",
+      "text": "And many other things blasphemously spake they against him."
     }
   ],
-  "section": "Paul’s Use of Liberty",
-  "date": "2026-07-06"
+  "section": "Jesus Tortured and Interrogated",
+  "date": "2026-07-07"
 }

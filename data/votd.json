@@ -1,22 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "21",
-  "verse_start": "23",
-  "verse_end": "25",
+  "book": "Diognetus",
+  "chapter": "6",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "23",
-      "text": "And the men that held Jesus mocked him, and smote him."
+      "verse": "1",
+      "text": "In a word, what the soul is in the body, that are the Christians in the world."
     },
     {
-      "verse": "24",
-      "text": "And when they had blindfolded him, they struck him on the face, and asked him, saying, Prophesy, who is it that smote thee?"
+      "verse": "2",
+      "text": "The soul is spread throughout all the members of the body, and Christians throughout the divers cities of the world."
     },
     {
-      "verse": "25",
-      "text": "And many other things blasphemously spake they against him."
+      "verse": "3",
+      "text": "The soul hath its abode in the body, and yet is not of the body."
+    },
+    {
+      "verse": "4",
+      "text": "So Christians have their abode in the world, and yet are not of the world."
     }
   ],
-  "section": "Jesus Tortured and Interrogated",
-  "date": "2026-07-07"
+  "section": "The Relation of Christians to the World",
+  "date": "2026-07-08"
 }

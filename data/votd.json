@@ -1,26 +1,30 @@
 {
-  "book": "Psalmicon",
-  "chapter": "11",
-  "verse_start": "15",
-  "verse_end": "18",
+  "book": "Evangelicon",
+  "chapter": "8",
+  "verse_start": "23",
+  "verse_end": "27",
   "verses": [
     {
-      "verse": "15",
-      "text": "And I worshipped the Lord on account of His glory; and I said, Blessed, O Lord, are they who are planted in thy land and those who have a place in thy Paradise;"
+      "verse": "23",
+      "text": "And the apostles returned, and declared unto him all that they had done. And he took them, and went aside privately into a desert place of a city called Bethsaida."
     },
     {
-      "verse": "16",
-      "text": "And they grow by the fruits of the trees. And they have changed from darkness to light."
+      "verse": "24",
+      "text": "And the multitudes perceived it, and followed him: and he received them, and spake unto them of the kingdom of God, and healed them that had need of healing."
     },
     {
-      "verse": "17",
-      "text": "Behold, all thy servants are fair, who do good works, and turn from wickedness unto thy pleasantness."
+      "verse": "25",
+      "text": "And when the day began to decline, and the twelve came, and said unto him, Send the multitude away, that they may go into the towns and country round about, and lodge, and fetch victuals: for we are in a desert place."
     },
     {
-      "verse": "18",
-      "text": "And they have turned back the bitterness of the trees from them, when they were planted in thy land;"
+      "verse": "26",
+      "text": "But he said unto them, Give ye them to eat. And they said, We have no more but five loaves and two fishes; except we should go and buy food for all this people."
+    },
+    {
+      "verse": "27",
+      "text": "For they were about five thousand men. And he said to his disciples, Make them recline in companies by fifties."
     }
   ],
-  "section": "Like the Land That Flourishes",
-  "date": "2026-07-10"
+  "section": "Feeding of the Five-thousand",
+  "date": "2026-07-11"
 }

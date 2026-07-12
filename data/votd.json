@@ -1,30 +1,30 @@
 {
-  "book": "Evangelicon",
-  "chapter": "8",
-  "verse_start": "23",
-  "verse_end": "27",
+  "book": "2 Corinthians",
+  "chapter": "1",
+  "verse_start": "3",
+  "verse_end": "7",
   "verses": [
     {
-      "verse": "23",
-      "text": "And the apostles returned, and declared unto him all that they had done. And he took them, and went aside privately into a desert place of a city called Bethsaida."
+      "verse": "3",
+      "text": "Blessed be God, even the Father of our Lord Jesus Christ, the Father of mercies, and the God of all comfort;"
     },
     {
-      "verse": "24",
-      "text": "And the multitudes perceived it, and followed him: and he received them, and spake unto them of the kingdom of God, and healed them that had need of healing."
+      "verse": "4",
+      "text": "Who comforteth us in all our tribulation, that we may be able to comfort them which are in any trouble, by the comfort wherewith we ourselves are comforted of God."
     },
     {
-      "verse": "25",
-      "text": "And when the day began to decline, and the twelve came, and said unto him, Send the multitude away, that they may go into the towns and country round about, and lodge, and fetch victuals: for we are in a desert place."
+      "verse": "5",
+      "text": "For as the sufferings of Christ abound in us, so our consolation also aboundeth by Christ."
     },
     {
-      "verse": "26",
-      "text": "But he said unto them, Give ye them to eat. And they said, We have no more but five loaves and two fishes; except we should go and buy food for all this people."
+      "verse": "6",
+      "text": "And whether we be afflicted, it is for your consolation and salvation, which is effectual in the enduring of the same sufferings which we also suffer: or whether we be comforted, it is for your consolation and salvation."
     },
     {
-      "verse": "27",
-      "text": "For they were about five thousand men. And he said to his disciples, Make them recline in companies by fifties."
+      "verse": "7",
+      "text": "And our hope of you is stedfast, knowing, that as ye are partakers of the sufferings, so shall ye be also of the consolation."
     }
   ],
-  "section": "Feeding of the Five-thousand",
-  "date": "2026-07-11"
+  "section": "Introduction",
+  "date": "2026-07-12"
 }

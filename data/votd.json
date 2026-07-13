@@ -1,30 +1,26 @@
 {
-  "book": "2 Corinthians",
-  "chapter": "1",
-  "verse_start": "3",
-  "verse_end": "7",
+  "book": "Romans",
+  "chapter": "3",
+  "verse_start": "21",
+  "verse_end": "24",
   "verses": [
     {
-      "verse": "3",
-      "text": "Blessed be God, even the Father of our Lord Jesus Christ, the Father of mercies, and the God of all comfort;"
+      "verse": "21",
+      "text": "But now the righteousness of God without the law is manifested;"
     },
     {
-      "verse": "4",
-      "text": "Who comforteth us in all our tribulation, that we may be able to comfort them which are in any trouble, by the comfort wherewith we ourselves are comforted of God."
+      "verse": "22",
+      "text": "Even the righteousness of God which is by faith of Jesus Christ unto all and upon all them that believe: for there is no difference:"
     },
     {
-      "verse": "5",
-      "text": "For as the sufferings of Christ abound in us, so our consolation also aboundeth by Christ."
+      "verse": "23",
+      "text": "For all have sinned, and come short of the glory of God;"
     },
     {
-      "verse": "6",
-      "text": "And whether we be afflicted, it is for your consolation and salvation, which is effectual in the enduring of the same sufferings which we also suffer: or whether we be comforted, it is for your consolation and salvation."
-    },
-    {
-      "verse": "7",
-      "text": "And our hope of you is stedfast, knowing, that as ye are partakers of the sufferings, so shall ye be also of the consolation."
+      "verse": "24",
+      "text": "Being justified freely by his grace through the redemption that is in Christ Jesus:"
     }
   ],
-  "section": "Introduction",
-  "date": "2026-07-12"
+  "section": "Justification by Faith",
+  "date": "2026-07-13"
 }

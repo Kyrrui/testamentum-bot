@@ -1,26 +1,30 @@
 {
-  "book": "Romans",
-  "chapter": "3",
-  "verse_start": "21",
-  "verse_end": "24",
+  "book": "Evangelicon",
+  "chapter": "15",
+  "verse_start": "26",
+  "verse_end": "30",
   "verses": [
     {
-      "verse": "21",
-      "text": "But now the righteousness of God without the law is manifested;"
+      "verse": "26",
+      "text": "And it came to pass, as he went to Jerusalem, that he passed through the midst of Samaria and Galilee."
     },
     {
-      "verse": "22",
-      "text": "Even the righteousness of God which is by faith of Jesus Christ unto all and upon all them that believe: for there is no difference:"
+      "verse": "27",
+      "text": "And as he entered into a certain village, there met him ten men that were lepers, which stood afar off:"
     },
     {
-      "verse": "23",
-      "text": "For all have sinned, and come short of the glory of God;"
+      "verse": "28",
+      "text": "And they lifted up their voices, and said, Jesus, Master, have mercy on us."
     },
     {
-      "verse": "24",
-      "text": "Being justified freely by his grace through the redemption that is in Christ Jesus:"
+      "verse": "29",
+      "text": "And when he saw them, he said unto them, Go shew yourselves unto the priests. And it came to pass, that, as they went, they were cleansed."
+    },
+    {
+      "verse": "30",
+      "text": "And many lepers were in Israel in the days of Elisha the prophet, but none of them was cleansed, but Naaman the Syrian."
     }
   ],
-  "section": "Justification by Faith",
-  "date": "2026-07-13"
+  "section": "The Healing of the Ten Lepers",
+  "date": "2026-07-14"
 }

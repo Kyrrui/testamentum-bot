@@ -1,26 +1,34 @@
 {
-  "book": "Psalmicon",
-  "chapter": "25",
+  "book": "1 Corinthians",
+  "chapter": "8",
   "verse_start": "1",
-  "verse_end": "4",
+  "verse_end": "6",
   "verses": [
     {
       "verse": "1",
-      "text": "I was rescued from my bonds, and unto thee, my God, I fled;"
+      "text": "Now as touching things offered unto idols, we know that we all have knowledge. Knowledge puffeth up, but charity edifieth."
     },
     {
       "verse": "2",
-      "text": "For thou art the right hand of my salvation and my helper."
+      "text": "And if any man think that he knoweth any thing, he knoweth nothing yet as he ought to know."
     },
     {
       "verse": "3",
-      "text": "Thou hast restrained them that rise up against me, and they were no more to be seen,"
+      "text": "But if any man love God, the same is known of him."
     },
     {
       "verse": "4",
-      "text": "Because thy face was with me, which saved me by thy grace."
+      "text": "As concerning therefore the eating of those things that are offered in sacrifice unto idols, we know that an idol is nothing in the world, and that there is none other God but one."
+    },
+    {
+      "verse": "5",
+      "text": "For though there be that are called gods, whether in heaven or in earth, as there be gods many, and lords many,"
+    },
+    {
+      "verse": "6",
+      "text": "But to us there is but one God, the Father, of whom are all things, and we in him; and one Lord Jesus Christ, by whom are all things, and we by him."
     }
   ],
-  "section": "You Set a Lamp at My Right and at My Left",
-  "date": "2026-07-17"
+  "section": "Take Care with Your Liberty",
+  "date": "2026-07-18"
 }

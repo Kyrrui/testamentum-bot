@@ -1,14 +1,22 @@
 {
-  "book": "Evangelicon",
-  "chapter": "14",
-  "verse_start": "28",
-  "verse_end": "33",
+  "book": "1 Thessalonians",
+  "chapter": "5",
+  "verse_start": "16",
+  "verse_end": "18",
   "verses": [
     {
-      "verse": "28",
-      "text": "And desiring to be fed with the crumbs which fell from the rich man’s table: but even the dogs came and licked his sores."
+      "verse": "16",
+      "text": "Rejoice evermore."
+    },
+    {
+      "verse": "17",
+      "text": "Pray without ceasing."
+    },
+    {
+      "verse": "18",
+      "text": "In every thing give thanks: for this is the will of God in Christ Jesus concerning you."
     }
   ],
-  "section": "Lazarus in Abraham’s Bosom",
-  "date": "2026-07-20"
+  "section": "Christian Conduct",
+  "date": "2026-07-21"
 }

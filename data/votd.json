@@ -1,26 +1,18 @@
 {
-  "book": "Colossians",
-  "chapter": "1",
-  "verse_start": "13",
-  "verse_end": "17",
+  "book": "2 Timothy",
+  "chapter": "3",
+  "verse_start": "14",
+  "verse_end": "15",
   "verses": [
     {
-      "verse": "13",
-      "text": "Who hath delivered us from the power of darkness, and hath translated us into the kingdom of his dear Son:"
-    },
-    {
       "verse": "14",
-      "text": "In whom we have redemption through his blood, even the forgiveness of sins:"
+      "text": "All scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness:"
     },
     {
       "verse": "15",
-      "text": "Who is the image of the invisible God, the firstborn of every creature:"
-    },
-    {
-      "verse": "16",
-      "text": "For by him were all things created that are in heaven and invisible, whether they be thrones, or dominions, or principalities, or powers:"
+      "text": "That the man of God may be perfect, throughly furnished unto all good works."
     }
   ],
-  "section": "The Incomparable Christ",
-  "date": "2026-07-23"
+  "section": "“Perilous Times Shall Come”",
+  "date": "2026-07-24"
 }

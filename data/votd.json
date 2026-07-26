@@ -1,14 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "4",
-  "verse_start": "46",
-  "verse_end": "48",
+  "book": "Psalmicon",
+  "chapter": "29",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "46",
-      "text": "Beware of false prophets, which come to you in sheep’s clothing, but inwardly they are ravening wolves."
+      "verse": "1",
+      "text": "The Lord is my hope: in Him I shall not be confounded."
+    },
+    {
+      "verse": "2",
+      "text": "For according to His glory He made me, and according to His goodness He gave unto me;"
+    },
+    {
+      "verse": "3",
+      "text": "And according to His love He lifted me up, and according to His excellent beauty He set me on high;"
+    },
+    {
+      "verse": "4",
+      "text": "And He brought me up from the depths of Hell, and from the mouth of Death He drew me."
     }
   ],
-  "section": "Good Fruit, Evil Fruit",
-  "date": "2026-07-25"
+  "section": "And He Appeared to Me, the One Who Is the Lord",
+  "date": "2026-07-26"
 }

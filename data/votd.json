@@ -1,26 +1,30 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "6",
-  "verse_start": "12",
-  "verse_end": "15",
+  "book": "Philippians",
+  "chapter": "3",
+  "verse_start": "7",
+  "verse_end": "11",
   "verses": [
     {
-      "verse": "12",
-      "text": "All things are lawful unto me, but all things are not expedient: all things are lawful for me, but I will not be brought under the power of any."
+      "verse": "7",
+      "text": "But what things were gain to me, those I counted loss for Christ."
     },
     {
-      "verse": "13",
-      "text": "Meats for the belly, and the belly for meats: but God shall destroy both it and them. Now the body is not for fornication, but for the Lord; and the Lord for the body."
+      "verse": "8",
+      "text": "Yea doubtless, and I count all things but loss for the excellency of the knowledge of Christ Jesus my Lord: for whom I have suffered the loss of all things, and do count them but dung, that I may win Christ,"
     },
     {
-      "verse": "14",
-      "text": "And God hath both raised up the Lord, and will also raise up us by his own power."
+      "verse": "9",
+      "text": "And be found in him, not having mine own righteousness, which is of the law, but that which is through the faith of Christ, the righteousness which is of God by faith:"
     },
     {
-      "verse": "15",
-      "text": "Know ye not that your bodies are the members of Christ? shall I then take the members of Christ, and make them the members of an harlot? God forbid."
+      "verse": "10",
+      "text": "That I may know him, and the power of his resurrection, and the fellowship of his sufferings, being made conformable unto his death;"
+    },
+    {
+      "verse": "11",
+      "text": "If by any means I might attain unto the resurrection of the dead."
     }
   ],
-  "section": "The Body Is the Lord’s",
-  "date": "2026-07-29"
+  "section": "The Goal of Life",
+  "date": "2026-07-30"
 }

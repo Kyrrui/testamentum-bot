@@ -1,30 +1,34 @@
 {
-  "book": "Philippians",
-  "chapter": "3",
-  "verse_start": "7",
-  "verse_end": "11",
+  "book": "Evangelicon",
+  "chapter": "23",
+  "verse_start": "1",
+  "verse_end": "6",
   "verses": [
     {
-      "verse": "7",
-      "text": "But what things were gain to me, those I counted loss for Christ."
+      "verse": "1",
+      "text": "Now upon the first day of the week, very early in the morning, they came unto the sepulchre, bringing the spices which they had prepared, and certain others with them."
     },
     {
-      "verse": "8",
-      "text": "Yea doubtless, and I count all things but loss for the excellency of the knowledge of Christ Jesus my Lord: for whom I have suffered the loss of all things, and do count them but dung, that I may win Christ,"
+      "verse": "2",
+      "text": "And they found the stone rolled away from the sepulchre."
     },
     {
-      "verse": "9",
-      "text": "And be found in him, not having mine own righteousness, which is of the law, but that which is through the faith of Christ, the righteousness which is of God by faith:"
+      "verse": "3",
+      "text": "And they entered in, and found not the body of the Lord Jesus."
     },
     {
-      "verse": "10",
-      "text": "That I may know him, and the power of his resurrection, and the fellowship of his sufferings, being made conformable unto his death;"
+      "verse": "4",
+      "text": "And it came to pass, as they were much perplexed thereabout, behold, two men stood by them in shining garments:"
     },
     {
-      "verse": "11",
-      "text": "If by any means I might attain unto the resurrection of the dead."
+      "verse": "5",
+      "text": "And as they were afraid, and bowed down their faces to the earth, they said unto them, Why seek ye the living among the dead?"
+    },
+    {
+      "verse": "6",
+      "text": "He is not here, but is risen: remember how he spake unto you when he was yet in Galilee,"
     }
   ],
-  "section": "The Goal of Life",
-  "date": "2026-07-30"
+  "section": "The Empty Tomb",
+  "date": "2026-07-31"
 }

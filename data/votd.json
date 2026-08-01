@@ -1,34 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "23",
-  "verse_start": "1",
-  "verse_end": "6",
+  "book": "Galatians",
+  "chapter": "6",
+  "verse_start": "7",
+  "verse_end": "10",
   "verses": [
     {
-      "verse": "1",
-      "text": "Now upon the first day of the week, very early in the morning, they came unto the sepulchre, bringing the spices which they had prepared, and certain others with them."
+      "verse": "7",
+      "text": "Be not deceived; God is not mocked: for whatsoever a man soweth, that shall he also reap."
     },
     {
-      "verse": "2",
-      "text": "And they found the stone rolled away from the sepulchre."
+      "verse": "8",
+      "text": "For he that soweth to his flesh shall of the flesh reap corruption; but he that soweth to the Spirit shall of the Spirit reap life everlasting."
     },
     {
-      "verse": "3",
-      "text": "And they entered in, and found not the body of the Lord Jesus."
+      "verse": "9",
+      "text": "And let us not be weary in well doing: for in due season we shall reap, if we faint not."
     },
     {
-      "verse": "4",
-      "text": "And it came to pass, as they were much perplexed thereabout, behold, two men stood by them in shining garments:"
-    },
-    {
-      "verse": "5",
-      "text": "And as they were afraid, and bowed down their faces to the earth, they said unto them, Why seek ye the living among the dead?"
-    },
-    {
-      "verse": "6",
-      "text": "He is not here, but is risen: remember how he spake unto you when he was yet in Galilee,"
+      "verse": "10",
+      "text": "As we have therefore opportunity, let us do good unto all men, especially unto them who are of the household of faith."
     }
   ],
-  "section": "The Empty Tomb",
-  "date": "2026-07-31"
+  "section": "Bear One Another’s Burdens",
+  "date": "2026-08-01"
 }

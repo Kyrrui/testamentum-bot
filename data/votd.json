@@ -1,26 +1,22 @@
 {
-  "book": "Galatians",
-  "chapter": "6",
-  "verse_start": "7",
-  "verse_end": "10",
+  "book": "Alexandrians",
+  "chapter": "9",
+  "verse_start": "1",
+  "verse_end": "3",
   "verses": [
     {
-      "verse": "7",
-      "text": "Be not deceived; God is not mocked: for whatsoever a man soweth, that shall he also reap."
+      "verse": "1",
+      "text": "Now of the things which we have spoken this is the sum: We have such an high priest, who is set on the right hand of the throne of the Majesty in the heavens;"
     },
     {
-      "verse": "8",
-      "text": "For he that soweth to his flesh shall of the flesh reap corruption; but he that soweth to the Spirit shall of the Spirit reap life everlasting."
+      "verse": "2",
+      "text": "A minister of the sanctuary, and of the true tabernacle, which the Lord pitched, and not man."
     },
     {
-      "verse": "9",
-      "text": "And let us not be weary in well doing: for in due season we shall reap, if we faint not."
-    },
-    {
-      "verse": "10",
-      "text": "As we have therefore opportunity, let us do good unto all men, especially unto them who are of the household of faith."
+      "verse": "3",
+      "text": "Who serve unto the example and shadow of heavenly things, as Moses was admonished of God when he was about to make the tabernacle: for, See, saith he, that thou make all things according to the pattern shewed to thee in the mount."
     }
   ],
-  "section": "Bear One Another’s Burdens",
-  "date": "2026-08-01"
+  "section": "A Better Ministry",
+  "date": "2026-08-02"
 }

@@ -1,22 +1,26 @@
 {
-  "book": "Alexandrians",
-  "chapter": "9",
+  "book": "Psalmicon",
+  "chapter": "15",
   "verse_start": "1",
-  "verse_end": "3",
+  "verse_end": "4",
   "verses": [
     {
       "verse": "1",
-      "text": "Now of the things which we have spoken this is the sum: We have such an high priest, who is set on the right hand of the throne of the Majesty in the heavens;"
+      "text": "As the sun is the joy to them that seek for its daybreak, so is my joy the Lord;"
     },
     {
       "verse": "2",
-      "text": "A minister of the sanctuary, and of the true tabernacle, which the Lord pitched, and not man."
+      "text": "Because He is my Sun, and His rays have awakened me, and His light hath dispelled all darkness from my face."
     },
     {
       "verse": "3",
-      "text": "Who serve unto the example and shadow of heavenly things, as Moses was admonished of God when he was about to make the tabernacle: for, See, saith he, that thou make all things according to the pattern shewed to thee in the mount."
+      "text": "In Him I have acquired eyes and have seen His holy day:"
+    },
+    {
+      "verse": "4",
+      "text": "Ears have become mine, and I have heard His truth."
     }
   ],
-  "section": "A Better Ministry",
-  "date": "2026-08-02"
+  "section": "And I Received Salvation from God",
+  "date": "2026-08-03"
 }

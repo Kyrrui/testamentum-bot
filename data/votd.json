@@ -1,26 +1,30 @@
 {
-  "book": "Psalmicon",
-  "chapter": "15",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "2 Corinthians",
+  "chapter": "6",
+  "verse_start": "14",
+  "verse_end": "18",
   "verses": [
     {
-      "verse": "1",
-      "text": "As the sun is the joy to them that seek for its daybreak, so is my joy the Lord;"
+      "verse": "14",
+      "text": "Be ye not unequally yoked together with unbelievers: for what fellowship hath righteousness with unrighteousness? and what communion hath light with darkness?"
     },
     {
-      "verse": "2",
-      "text": "Because He is my Sun, and His rays have awakened me, and His light hath dispelled all darkness from my face."
+      "verse": "15",
+      "text": "And what concord hath Christ with Belial? or what part hath he that believeth with an infidel?"
     },
     {
-      "verse": "3",
-      "text": "In Him I have acquired eyes and have seen His holy day:"
+      "verse": "16",
+      "text": "And what agreement hath the temple of God with idols? for ye are the temple of the living God; as God hath said, I will dwell in them, and walk in them; and I will be their God, and they shall be my people."
     },
     {
-      "verse": "4",
-      "text": "Ears have become mine, and I have heard His truth."
+      "verse": "17",
+      "text": "Wherefore come out from among them, and be ye separate, saith the Lord, and touch not the unclean thing; and I will receive you,"
+    },
+    {
+      "verse": "18",
+      "text": "And will be a Father unto you, and ye shall be my sons and daughters, saith the Lord Almighty."
     }
   ],
-  "section": "And I Received Salvation from God",
-  "date": "2026-08-03"
+  "section": "Their Ministry Commended",
+  "date": "2026-08-04"
 }

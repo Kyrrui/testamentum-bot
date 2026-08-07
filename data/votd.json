@@ -1,14 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "8",
-  "verse_start": "43",
-  "verse_end": "46",
+  "book": "Psalmicon",
+  "chapter": "38",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "43",
-      "text": "Then Jesus went thence, and departed into the coasts of Tyre and Sidon."
+      "verse": "1",
+      "text": "I went up into the light of Truth as into a chariot;"
+    },
+    {
+      "verse": "2",
+      "text": "And Truth took me and led me, and carried me across pits and gullies, and preserved me from rocks and waves."
+    },
+    {
+      "verse": "3",
+      "text": "And He became unto me a haven of salvation, and set me upon the ladder of immortal life."
+    },
+    {
+      "verse": "4",
+      "text": "And He went with me and gave me rest, and suffered me not to wander, because He was Truth."
     }
   ],
-  "section": "The Syrophoenician Woman",
-  "date": "2026-08-06"
+  "section": "These Are Deceiver and Error",
+  "date": "2026-08-07"
 }

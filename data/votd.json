@@ -1,26 +1,30 @@
 {
-  "book": "2 Timothy",
-  "chapter": "2",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "3",
+  "verse_start": "16",
+  "verse_end": "20",
   "verses": [
     {
-      "verse": "1",
-      "text": "Thou therefore, my son, be strong in the grace that is in Christ Jesus."
+      "verse": "16",
+      "text": "Now when the sun was setting, all they that had any sick with divers diseases brought them unto him; and he laid his hands on every one of them, and healed them."
     },
     {
-      "verse": "2",
-      "text": "And the things that thou hast heard of me among many witnesses, the same commit thou to faithful men, who shall be able to teach others also."
+      "verse": "17",
+      "text": "And devils also came out of many, crying out, and saying, Thou art the Son of God. And he rebuking them suffered them not to speak:"
     },
     {
-      "verse": "3",
-      "text": "Thou therefore endure hardness, as a good soldier of Jesus Christ."
+      "verse": "18",
+      "text": "And when it was day, he departed and went into a desert place: and the people sought him, and came unto him, and stayed him, that he should not depart from them."
     },
     {
-      "verse": "4",
-      "text": "No man that warreth entangleth himself with the affairs of this life; that he may please him who hath chosen him to be a soldier."
+      "verse": "19",
+      "text": "And he said unto them, I must preach the kingdom of God to other cities also: for therefore am I sent."
+    },
+    {
+      "verse": "20",
+      "text": "And he preached in the synagogues of the Jews."
     }
   ],
-  "section": "Be Strong",
-  "date": "2026-08-09"
+  "section": "– Devils Cast Out",
+  "date": "2026-08-10"
 }

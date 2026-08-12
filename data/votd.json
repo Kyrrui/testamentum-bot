@@ -1,26 +1,30 @@
 {
-  "book": "Psalmicon",
-  "chapter": "31",
+  "book": "1 Corinthians",
+  "chapter": "4",
   "verse_start": "1",
-  "verse_end": "4",
+  "verse_end": "5",
   "verses": [
     {
       "verse": "1",
-      "text": "The abysses were dissolved before the Lord: and darkness was destroyed by His appearance:"
+      "text": "Let a man so account of us, as of the ministers of Christ, and stewards of the mysteries of God."
     },
     {
       "verse": "2",
-      "text": "Error went astray and perished at His hand; and contempt found no path to walk in, being submerged by the truth of the Lord."
+      "text": "Moreover it is required in stewards, that a man be found faithful."
     },
     {
       "verse": "3",
-      "text": "He opened His mouth and spake grace and joy, and recited a new song of praise unto His name."
+      "text": "But with me it is a very small thing that I should be judged of you, or of man’s judgment: yea, I judge not mine own self."
     },
     {
       "verse": "4",
-      "text": "And He lifted up His voice unto the Most High, and offered unto Him them that had become sons by His hands."
+      "text": "For I know nothing by myself; yet am I not hereby justified: but he that judgeth me is the Lord."
+    },
+    {
+      "verse": "5",
+      "text": "Therefore judge nothing before the time, until the Lord come, who both will bring to light the hidden things of darkness, and will make manifest the counsels of the hearts: and then shall every man have praise of God."
     }
   ],
-  "section": "And Take Immortal Life for Yourselves",
-  "date": "2026-08-11"
+  "section": "Servants of Christ",
+  "date": "2026-08-12"
 }

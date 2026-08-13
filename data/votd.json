@@ -1,30 +1,14 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "4",
-  "verse_start": "1",
-  "verse_end": "5",
+  "book": "Evangelicon",
+  "chapter": "6",
+  "verse_start": "19",
+  "verse_end": "23",
   "verses": [
     {
-      "verse": "1",
-      "text": "Let a man so account of us, as of the ministers of Christ, and stewards of the mysteries of God."
-    },
-    {
-      "verse": "2",
-      "text": "Moreover it is required in stewards, that a man be found faithful."
-    },
-    {
-      "verse": "3",
-      "text": "But with me it is a very small thing that I should be judged of you, or of man’s judgment: yea, I judge not mine own self."
-    },
-    {
-      "verse": "4",
-      "text": "For I know nothing by myself; yet am I not hereby justified: but he that judgeth me is the Lord."
-    },
-    {
-      "verse": "5",
-      "text": "Therefore judge nothing before the time, until the Lord come, who both will bring to light the hidden things of darkness, and will make manifest the counsels of the hearts: and then shall every man have praise of God."
+      "verse": "19",
+      "text": "To know whether he had been born, they laid a snare for him."
     }
   ],
-  "section": "Servants of Christ",
-  "date": "2026-08-12"
+  "section": "Thy Mother and Thy Brethren",
+  "date": "2026-08-13"
 }

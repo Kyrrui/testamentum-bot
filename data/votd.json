@@ -1,14 +1,30 @@
 {
   "book": "Evangelicon",
-  "chapter": "6",
-  "verse_start": "19",
-  "verse_end": "23",
+  "chapter": "24",
+  "verse_start": "1",
+  "verse_end": "5",
   "verses": [
     {
-      "verse": "19",
-      "text": "To know whether he had been born, they laid a snare for him."
+      "verse": "1",
+      "text": "If ye love me, keep my commandments."
+    },
+    {
+      "verse": "2",
+      "text": "And I will pray the Father, and he shall give you another Comforter, that he may abide with you for ever;"
+    },
+    {
+      "verse": "3",
+      "text": "Even the Spirit of truth; whom the world cannot receive, because it seeth him not, neither knoweth him: but ye know him; for he dwelleth with you, and shall be in you."
+    },
+    {
+      "verse": "4",
+      "text": "I will not leave you comfortless: I will come to you."
+    },
+    {
+      "verse": "5",
+      "text": "Yet a little while, and the world seeth me no more; but ye see me: because I live, ye shall live also."
     }
   ],
-  "section": "Thy Mother and Thy Brethren",
-  "date": "2026-08-13"
+  "section": "The Promise of the Paraclete",
+  "date": "2026-08-14"
 }

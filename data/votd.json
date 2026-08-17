@@ -1,26 +1,30 @@
 {
-  "book": "Diognetus",
-  "chapter": "7",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "15",
+  "verse_start": "36",
+  "verse_end": "40",
   "verses": [
     {
-      "verse": "1",
-      "text": "For it is no earthly discovery, as I said, which was committed unto them; neither do they care to guard so carefully any mortal invention, nor have they been entrusted with the dispensation of human mysteries."
+      "verse": "36",
+      "text": "And when he was questioned by the Pharisees, when the kingdom of God cometh, he answered them and said, The kingdom of God cometh not with observation:"
     },
     {
-      "verse": "2",
-      "text": "But truly the Almighty and Maker of all, even the invisible God Himself, hath established among men from heaven the truth and the holy and incomprehensible Word, and hath fixed Him firmly in their hearts; not, as any man might suppose, by sending unto men some servant, or angel, or ruler, or one of those that administer earthly things, or one of those that are entrusted with the orderings in heaven, but the very Artificer and Demiurge of all, through whom He made the heavens, through whom He enclosed the sea within its proper bounds, whose mysteries all the elements faithfully observe, from whom the sun hath received the measure of the courses of the day to keep them, whom the moon obeyeth when He commandeth her to shine by night, whom the stars obey as they follow the course of the moon; through whom all things are ordered, bounded, and subjected: the heavens and the things that are in the heavens, the earth and the things that are in the earth, the sea and the things that are in the sea, fire, air, the abyss, the things that are in the heights, the things that are in the depths, and the things that are between."
+      "verse": "37",
+      "text": "Neither shall they say, Lo here! or, lo there! for, behold, the kingdom of God is within you."
     },
     {
-      "verse": "3",
-      "text": "Him He sent unto them."
+      "verse": "38",
+      "text": "And he said unto the disciples, The days will come, when ye shall desire to see one of the days of the Son of man, and ye shall not see it."
     },
     {
-      "verse": "4",
-      "text": "Was He sent, thinkest thou, as any man might suppose, to establish a dominion, and to inspire fear and terror?"
+      "verse": "39",
+      "text": "And they shall say to you, Lo here!, or, lo there! go not away, nor follow after them."
+    },
+    {
+      "verse": "40",
+      "text": "For as the lightning, that lighteneth out of the one part under heaven, shineth unto the other part under heaven; so shall also the Son of man be."
     }
   ],
-  "section": "The Manifestation of Christ",
-  "date": "2026-08-16"
+  "section": "The Coming of the Kingdom and the Son of Man",
+  "date": "2026-08-17"
 }

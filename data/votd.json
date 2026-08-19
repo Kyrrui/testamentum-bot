@@ -1,30 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "11",
-  "verse_start": "21",
-  "verse_end": "25",
+  "book": "Psalmicon",
+  "chapter": "20",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "21",
-      "text": "And he said unto his disciples, Therefore I say unto you, Be not anxious for your life, what ye shall eat; neither for the body, what ye shall put on."
+      "verse": "1",
+      "text": "I am a priest of the Lord, and unto Him do I serve as a priest; and unto Him I offer the sacrifice of His thought."
     },
     {
-      "verse": "22",
-      "text": "The life is more than the food, and the body than the raiment."
+      "verse": "2",
+      "text": "For His thought is not like the thought of the age, nor the thought of the flesh, nor like them that serve according to the flesh."
     },
     {
-      "verse": "23",
-      "text": "Consider the ravens: for they neither sow nor reap; which neither have storehouse nor barn; and God feedeth them: how much more are ye better than the fowls?"
+      "verse": "3",
+      "text": "The sacrifice of the Lord is righteousness and purity of heart and lips."
     },
     {
-      "verse": "24",
-      "text": "And which of you with being anxious can add to his stature one cubit?"
-    },
-    {
-      "verse": "25",
-      "text": "If ye then be not able to do even a very little thing, why are ye anxious about the rest?"
+      "verse": "4",
+      "text": "Present thy mind before Him without blemish; and let not thy heart oppress another heart, nor thy soul another soul."
     }
   ],
-  "section": "Seek Ye the Kingdom of God",
-  "date": "2026-08-18"
+  "section": "Do Not Kill Your Own Soul",
+  "date": "2026-08-19"
 }

@@ -1,46 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "2",
-  "verse_start": "15",
+  "book": "1 Corinthians",
+  "chapter": "15",
+  "verse_start": "20",
   "verse_end": "23",
   "verses": [
     {
-      "verse": "15",
-      "text": "And found in the temple those that sold oxen and sheep and doves, and the changers of money sitting:"
-    },
-    {
-      "verse": "16",
-      "text": "And when he had made a scourge of small cords, he drove them all out of the temple, and the sheep, and the oxen; and poured out the changers’ money, and overthrew the tables;"
-    },
-    {
-      "verse": "17",
-      "text": "And said unto them that sold doves, Take these things hence;"
-    },
-    {
-      "verse": "18",
-      "text": "Be ye approved money-changers, rejecting some things, but holding fast that which is good."
-    },
-    {
-      "verse": "19",
-      "text": "Then answered the Jews and said unto him, What sign shewest thou unto us, seeing that thou doest these things?"
-    },
-    {
       "verse": "20",
-      "text": "Jesus answered and said unto them, I am come to abolish the sacrifices, if ye cease not from sacrificing, the wrath will not cease from you."
+      "text": "But now is Christ risen from the dead, and become the firstfruits of them that slept."
     },
     {
       "verse": "21",
-      "text": "Destroy this temple, and in three days I will raise it up."
+      "text": "For since by man came death, by man came also the resurrection of the dead."
     },
     {
       "verse": "22",
-      "text": "Then said the Jews, Forty and six years was this temple in building, and wilt thou rear it up in three days?"
+      "text": "For as in Adam all die, even so in Christ shall all be made alive."
     },
     {
       "verse": "23",
-      "text": "But he spake of the temple of his body."
+      "text": "But every man in his own order: Christ the firstfruits; afterward they that are Christ’s at his coming."
     }
   ],
-  "section": "The Cleansing of the Temple",
-  "date": "2026-08-21"
+  "section": "The Order of Resurrection",
+  "date": "2026-08-22"
 }

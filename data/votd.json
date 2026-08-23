@@ -1,26 +1,26 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "15",
-  "verse_start": "20",
-  "verse_end": "23",
+  "book": "Laodiceans",
+  "chapter": "6",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "20",
-      "text": "But now is Christ risen from the dead, and become the firstfruits of them that slept."
+      "verse": "1",
+      "text": "Children, obey your parents in the Lord: for this is right."
     },
     {
-      "verse": "21",
-      "text": "For since by man came death, by man came also the resurrection of the dead."
+      "verse": "2",
+      "text": "Honour thy father and mother;"
     },
     {
-      "verse": "22",
-      "text": "For as in Adam all die, even so in Christ shall all be made alive."
+      "verse": "3",
+      "text": "That it may be well with thee, and thou mayest live long on the earth."
     },
     {
-      "verse": "23",
-      "text": "But every man in his own order: Christ the firstfruits; afterward they that are Christ’s at his coming."
+      "verse": "4",
+      "text": "And, ye fathers, provoke not your children to wrath: but bring them up in the nurture and admonition of the Lord."
     }
   ],
-  "section": "The Order of Resurrection",
-  "date": "2026-08-22"
+  "section": "Family Relationships",
+  "date": "2026-08-23"
 }

@@ -1,26 +1,30 @@
 {
-  "book": "Laodiceans",
-  "chapter": "6",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "19",
+  "verse_start": "36",
+  "verse_end": "40",
   "verses": [
     {
-      "verse": "1",
-      "text": "Children, obey your parents in the Lord: for this is right."
+      "verse": "36",
+      "text": "And every man went unto his own house."
     },
     {
-      "verse": "2",
-      "text": "Honour thy father and mother;"
+      "verse": "37",
+      "text": "Jesus went unto the mount of Olives."
     },
     {
-      "verse": "3",
-      "text": "That it may be well with thee, and thou mayest live long on the earth."
+      "verse": "38",
+      "text": "And early in the morning he came again into the temple, and all the people came unto him; and he sat down, and taught them."
     },
     {
-      "verse": "4",
-      "text": "And, ye fathers, provoke not your children to wrath: but bring them up in the nurture and admonition of the Lord."
+      "verse": "39",
+      "text": "And the scribes and Pharisees brought unto him a woman taken in adultery; and when they had set her in the midst,"
+    },
+    {
+      "verse": "40",
+      "text": "They say unto him, Master, this woman was taken in adultery, in the very act."
     }
   ],
-  "section": "Family Relationships",
-  "date": "2026-08-23"
+  "section": "The Woman Caught in Adultery",
+  "date": "2026-08-24"
 }

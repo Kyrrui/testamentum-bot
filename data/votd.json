@@ -1,30 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "19",
-  "verse_start": "36",
-  "verse_end": "40",
+  "book": "2 Corinthians",
+  "chapter": "8",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "36",
-      "text": "And every man went unto his own house."
+      "verse": "1",
+      "text": "Moreover, brethren, we do you to wit of the grace of God bestowed on the churches of Macedonia;"
     },
     {
-      "verse": "37",
-      "text": "Jesus went unto the mount of Olives."
+      "verse": "2",
+      "text": "How that in a great trial of affliction the abundance of their joy and their deep poverty abounded unto the riches of their liberality."
     },
     {
-      "verse": "38",
-      "text": "And early in the morning he came again into the temple, and all the people came unto him; and he sat down, and taught them."
+      "verse": "3",
+      "text": "For to their power, I bear record, yea, and beyond their power they were willing of themselves;"
     },
     {
-      "verse": "39",
-      "text": "And the scribes and Pharisees brought unto him a woman taken in adultery; and when they had set her in the midst,"
-    },
-    {
-      "verse": "40",
-      "text": "They say unto him, Master, this woman was taken in adultery, in the very act."
+      "verse": "4",
+      "text": "Praying us with much intreaty that we would receive the gift, and take upon us the fellowship of the ministering to the saints."
     }
   ],
-  "section": "The Woman Caught in Adultery",
-  "date": "2026-08-24"
+  "section": "Great Generosity",
+  "date": "2026-08-25"
 }

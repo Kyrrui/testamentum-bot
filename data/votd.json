@@ -1,26 +1,34 @@
 {
   "book": "Evangelicon",
-  "chapter": "16",
-  "verse_start": "18",
-  "verse_end": "21",
+  "chapter": "20",
+  "verse_start": "7",
+  "verse_end": "12",
   "verses": [
     {
-      "verse": "18",
-      "text": "One said unto him, saying, Good Master, what shall I do to inherit eternal life?"
+      "verse": "7",
+      "text": "Now before the feast of the passover, when Jesus knew that his hour was come that he should depart out of this world unto the Father, having loved his own which were in the world, he loved them unto the end."
     },
     {
-      "verse": "19",
-      "text": "And Jesus said unto him, Why callest thou me good? none is good, save one, that is, God the Father."
+      "verse": "8",
+      "text": "And supper being ended, the devil having now put into the heart of Judas Iscariot, Simon’s son, to betray him;"
     },
     {
-      "verse": "20",
-      "text": "I know the commandments – Do not kill, Do not commit adultery, Do not steal, Do not bear false witness, Honour thy father and thy mother."
+      "verse": "9",
+      "text": "Jesus knowing that the Father had given all things into his hands, and that he was come from God, and went to God;"
     },
     {
-      "verse": "21",
-      "text": "All these have I kept from my youth up."
+      "verse": "10",
+      "text": "He riseth from supper, and laid aside his garments; and took a towel, and girded himself."
+    },
+    {
+      "verse": "11",
+      "text": "After that he poureth water into a bason, and began to wash the disciples’ feet, and to wipe them with the towel wherewith he was girded."
+    },
+    {
+      "verse": "12",
+      "text": "Then cometh he to Simon Peter: and Peter saith unto him, Lord, dost thou wash my feet?"
     }
   ],
-  "section": "To Inherit Eternal Life",
-  "date": "2026-08-26"
+  "section": "Washing the Disciples’ Feet",
+  "date": "2026-08-27"
 }

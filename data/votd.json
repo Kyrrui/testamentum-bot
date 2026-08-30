@@ -1,26 +1,26 @@
 {
-  "book": "Psalmicon",
-  "chapter": "14",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "8",
+  "verse_start": "70",
+  "verse_end": "73",
   "verses": [
     {
-      "verse": "1",
-      "text": "As the eyes of a son toward his father, so are mine eyes, O Lord, at all times toward thee."
+      "verse": "70",
+      "text": "Verily, verily, I say unto you, He that entereth not by the door into the sheepfold, but climbeth up some other way, the same is a thief and a robber."
     },
     {
-      "verse": "2",
-      "text": "For with thee are my consolations and my delight."
+      "verse": "71",
+      "text": "But he that entereth in by the door is the shepherd of the sheep."
     },
     {
-      "verse": "3",
-      "text": "Turn not away thy mercies from me, O Lord, and take not thy kindness from me."
+      "verse": "72",
+      "text": "To him the porter openeth; and the sheep hear his voice: and he calleth his own sheep by name, and leadeth them out."
     },
     {
-      "verse": "4",
-      "text": "Stretch forth unto me, O Lord, thy right hand at all times, and be my guide even unto the end, according to thy good pleasure."
+      "verse": "73",
+      "text": "And when he putteth forth his own sheep, he goeth before them, and the sheep follow him: for they know his voice."
     }
   ],
-  "section": "Because of Your Glory",
-  "date": "2026-08-29"
+  "section": "The Good Shepard",
+  "date": "2026-08-30"
 }

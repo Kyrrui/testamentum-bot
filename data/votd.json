@@ -1,26 +1,26 @@
 {
-  "book": "Psalmicon",
-  "chapter": "17",
+  "book": "1 Timothy",
+  "chapter": "2",
   "verse_start": "1",
   "verse_end": "4",
   "verses": [
     {
       "verse": "1",
-      "text": "I was crowned by my God; my crown is living."
+      "text": "I exhort therefore, that, first of all, supplications, prayers, intercessions, and giving of thanks, be made for all men;"
     },
     {
       "verse": "2",
-      "text": "And I was justified in my Lord; my salvation is incorruptible."
+      "text": "For kings, and for all that are in authority; that we may lead a quiet and peaceable life in all godliness and honesty."
     },
     {
       "verse": "3",
-      "text": "I was loosed from vanity, and I was not condemned:"
+      "text": "For this is good and acceptable in the sight of God our Saviour;"
     },
     {
       "verse": "4",
-      "text": "With her hands she cut off my bonds; I received the face and likeness of a new man, and I walked therein and was saved."
+      "text": "Who will have all men to be saved, and to come unto the knowledge of the truth."
     }
   ],
-  "section": "And I Opened the Gates That Were Closed",
-  "date": "2026-09-02"
+  "section": "A Call to Prayer",
+  "date": "2026-09-03"
 }

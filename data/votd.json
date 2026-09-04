@@ -1,26 +1,30 @@
 {
-  "book": "1 Timothy",
-  "chapter": "2",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "2 Thessalonians",
+  "chapter": "1",
+  "verse_start": "3",
+  "verse_end": "7",
   "verses": [
     {
-      "verse": "1",
-      "text": "I exhort therefore, that, first of all, supplications, prayers, intercessions, and giving of thanks, be made for all men;"
-    },
-    {
-      "verse": "2",
-      "text": "For kings, and for all that are in authority; that we may lead a quiet and peaceable life in all godliness and honesty."
-    },
-    {
       "verse": "3",
-      "text": "For this is good and acceptable in the sight of God our Saviour;"
+      "text": "We are bound to thank God always for you, brethren, as it is meet, because that your faith groweth exceedingly, and the charity of every one of you all toward each other aboundeth;"
     },
     {
       "verse": "4",
-      "text": "Who will have all men to be saved, and to come unto the knowledge of the truth."
+      "text": "So that we ourselves glory in you in the churches of God for your patience and faith in all your persecutions and tribulations that ye endure:"
+    },
+    {
+      "verse": "5",
+      "text": "Which is a manifest token of the righteous judgment of God, that ye may be counted worthy of the kingdom of God, for which ye also suffer:"
+    },
+    {
+      "verse": "6",
+      "text": "Seeing it is a righteous thing with God to recompense tribulation to them that trouble you;"
+    },
+    {
+      "verse": "7",
+      "text": "And to you who are troubled rest with us, when the Lord Jesus shall be revealed from heaven with his mighty angels,"
     }
   ],
-  "section": "A Call to Prayer",
-  "date": "2026-09-03"
+  "section": "Thanksgiving for Faith and Perseverance",
+  "date": "2026-09-04"
 }

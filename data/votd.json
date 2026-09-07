@@ -1,26 +1,30 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "10",
-  "verse_start": "23",
-  "verse_end": "26",
+  "book": "Evangelicon",
+  "chapter": "22",
+  "verse_start": "42",
+  "verse_end": "46",
   "verses": [
     {
-      "verse": "23",
-      "text": "All things are lawful for me, but all things are not expedient: all things are lawful for me, but all things edify not."
+      "verse": "42",
+      "text": "And there followed him a great company of the people, and of women, who also were bewailing and lamenting him."
     },
     {
-      "verse": "24",
-      "text": "Let no man seek his own, but every man another’s wealth."
+      "verse": "43",
+      "text": "But Jesus turning unto them said, Daughters of Jerusalem, weep not for me, but weep for yourselves, and for your children."
     },
     {
-      "verse": "25",
-      "text": "Whatsoever is sold in the shambles, that eat, asking no question for conscience sake:"
+      "verse": "44",
+      "text": "For, behold, the days are coming, in the which they shall say, Blessed are the barren, and the wombs that bare not, and the breasts that gave not suck."
     },
     {
-      "verse": "26",
-      "text": "For the earth is the Lord’s, and the fulness thereof."
+      "verse": "45",
+      "text": "Then shall they begin to say to the mountains, Fall on us; and to the hills, Cover us."
+    },
+    {
+      "verse": "46",
+      "text": "For if they do these things in the green tree, what shall be done in the dry?"
     }
   ],
-  "section": "Avoid Israel’s Mistakes",
-  "date": "2026-09-06"
+  "section": "Daughters of Jerusalem",
+  "date": "2026-09-07"
 }

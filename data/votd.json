@@ -1,30 +1,22 @@
 {
-  "book": "Philippians",
-  "chapter": "1",
-  "verse_start": "12",
-  "verse_end": "16",
+  "book": "Romans",
+  "chapter": "4",
+  "verse_start": "16",
+  "verse_end": "18",
   "verses": [
     {
-      "verse": "12",
-      "text": "But I would ye should understand, brethren, that the things which happened unto me have fallen out rather unto the furtherance of the gospel;"
-    },
-    {
-      "verse": "13",
-      "text": "So that my bonds in Christ are manifest in all the palace, and in all other places;"
-    },
-    {
-      "verse": "14",
-      "text": "And many of the brethren in the Lord, waxing confident by my bonds, are much more bold to speak the word without fear."
-    },
-    {
-      "verse": "15",
-      "text": "Some indeed preach Christ even of envy and strife; and some also of good will:"
-    },
-    {
       "verse": "16",
-      "text": "The one preach Christ of contention, not sincerely, supposing to add affliction to my bonds:"
+      "text": "And not as it was by one that sinned, so is the gift: for the judgment was by one to condemnation, but the free gift is of many offences unto justification."
+    },
+    {
+      "verse": "17",
+      "text": "For if by one man’s offence death reigned by one; much more they which receive abundance of grace and of the gift of righteousness shall reign in life by one, Jesus Christ."
+    },
+    {
+      "verse": "18",
+      "text": "Therefore as by the offence of one judgment came upon all men to condemnation; even so by the righteousness of one the free gift came upon all men unto justification of life."
     }
   ],
-  "section": "The Gospel Is Preached",
-  "date": "2026-09-08"
+  "section": "Results of Justification",
+  "date": "2026-09-09"
 }

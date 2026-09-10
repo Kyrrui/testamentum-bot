@@ -1,22 +1,26 @@
 {
-  "book": "Romans",
-  "chapter": "4",
-  "verse_start": "16",
-  "verse_end": "18",
+  "book": "Psalmicon",
+  "chapter": "39",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "16",
-      "text": "And not as it was by one that sinned, so is the gift: for the judgment was by one to condemnation, but the free gift is of many offences unto justification."
+      "verse": "1",
+      "text": "Raging rivers are the power of the Lord;"
     },
     {
-      "verse": "17",
-      "text": "For if by one man’s offence death reigned by one; much more they which receive abundance of grace and of the gift of righteousness shall reign in life by one, Jesus Christ."
+      "verse": "2",
+      "text": "And they overturn them that despise Him, and entangle their paths;"
     },
     {
-      "verse": "18",
-      "text": "Therefore as by the offence of one judgment came upon all men to condemnation; even so by the righteousness of one the free gift came upon all men unto justification of life."
+      "verse": "3",
+      "text": "And they sweep away their crossings, and seize their bodies, and destroy their souls."
+    },
+    {
+      "verse": "4",
+      "text": "For they are more sudden than lightning and swifter; but they who cross them firmly shall not be moved,"
     }
   ],
-  "section": "Results of Justification",
-  "date": "2026-09-09"
+  "section": "Then You Will Cross Without Danger",
+  "date": "2026-09-10"
 }

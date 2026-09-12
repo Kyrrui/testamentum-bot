@@ -1,26 +1,34 @@
 {
-  "book": "Laodiceans",
-  "chapter": "2",
-  "verse_start": "8",
-  "verse_end": "11",
+  "book": "Evangelicon",
+  "chapter": "7",
+  "verse_start": "1",
+  "verse_end": "6",
   "verses": [
     {
-      "verse": "8",
-      "text": "For by grace are ye saved through faith; and that not of yourselves: it is the gift of God:"
+      "verse": "1",
+      "text": "Then he called his twelve disciples together, and gave them power and authority over all the devils, and to cure diseases."
     },
     {
-      "verse": "9",
-      "text": "Not of works, lest any man should boast."
+      "verse": "2",
+      "text": "And he sent them to preach the kingdom of God, and to heal the sick."
     },
     {
-      "verse": "10",
-      "text": "For we are his workmanship, created in Christ Jesus unto good works, which God hath before ordained that we should walk in them."
+      "verse": "3",
+      "text": "And he said unto them, Take nothing for your journey, neither staves, nor scrip, neither bread, neither money, nor brass in your purses, neither shoes; neither have two coats apiece, for the workman is worthy of his hire."
     },
     {
-      "verse": "11",
-      "text": "Wherefore remember, that ye being in time past Gentiles in the flesh, who are called Uncircumcision by that which is called the Circumcision in the flesh made by hands;"
+      "verse": "4",
+      "text": "And whatsoever house ye enter into, there abide, and thence depart."
+    },
+    {
+      "verse": "5",
+      "text": "And whosoever will not receive you, when ye go out of that city, shake off the very dust from your feet for a testimony against them."
+    },
+    {
+      "verse": "6",
+      "text": "And they departed, and went through the villages in order, announcing the glad tidings, and healing every where."
     }
   ],
-  "section": "Made Alive in Christ",
-  "date": "2026-09-11"
+  "section": "Concerning the Sending Forth of the Twelve",
+  "date": "2026-09-12"
 }

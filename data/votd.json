@@ -1,34 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "7",
-  "verse_start": "1",
-  "verse_end": "6",
+  "book": "Smyrnaeans",
+  "chapter": "8",
+  "verse_start": "5",
+  "verse_end": "8",
   "verses": [
     {
-      "verse": "1",
-      "text": "Then he called his twelve disciples together, and gave them power and authority over all the devils, and to cure diseases."
-    },
-    {
-      "verse": "2",
-      "text": "And he sent them to preach the kingdom of God, and to heal the sick."
-    },
-    {
-      "verse": "3",
-      "text": "And he said unto them, Take nothing for your journey, neither staves, nor scrip, neither bread, neither money, nor brass in your purses, neither shoes; neither have two coats apiece, for the workman is worthy of his hire."
-    },
-    {
-      "verse": "4",
-      "text": "And whatsoever house ye enter into, there abide, and thence depart."
-    },
-    {
       "verse": "5",
-      "text": "And whosoever will not receive you, when ye go out of that city, shake off the very dust from your feet for a testimony against them."
+      "text": "Let that be held a valid eucharist which is under the bishop or one to whom he shall have committed it."
     },
     {
       "verse": "6",
-      "text": "And they departed, and went through the villages in order, announcing the glad tidings, and healing every where."
+      "text": "Wheresoever the bishop shall appear, there let the people be;"
+    },
+    {
+      "verse": "7",
+      "text": "Even as where Jesus may be, there is the universal Church."
+    },
+    {
+      "verse": "8",
+      "text": "It is not lawful apart from the bishop either to baptize or to hold a love-feast;"
     }
   ],
-  "section": "Concerning the Sending Forth of the Twelve",
-  "date": "2026-09-12"
+  "section": "Let Nothing Be Done Without the Bishop",
+  "date": "2026-09-13"
 }

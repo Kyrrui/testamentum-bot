@@ -1,26 +1,30 @@
 {
-  "book": "Smyrnaeans",
-  "chapter": "8",
-  "verse_start": "5",
-  "verse_end": "8",
+  "book": "Colossians",
+  "chapter": "2",
+  "verse_start": "6",
+  "verse_end": "10",
   "verses": [
     {
-      "verse": "5",
-      "text": "Let that be held a valid eucharist which is under the bishop or one to whom he shall have committed it."
-    },
-    {
       "verse": "6",
-      "text": "Wheresoever the bishop shall appear, there let the people be;"
+      "text": "As ye have therefore received Christ Jesus the Lord, so walk ye in him:"
     },
     {
       "verse": "7",
-      "text": "Even as where Jesus may be, there is the universal Church."
+      "text": "Rooted and built up in him, and stablished in the faith, as ye have been taught, abounding therein with thanksgiving."
     },
     {
       "verse": "8",
-      "text": "It is not lawful apart from the bishop either to baptize or to hold a love-feast;"
+      "text": "Beware lest any man spoil you through philosophy and vain deceit, after the tradition of men, after the rudiments of the world, and not after Christ."
+    },
+    {
+      "verse": "9",
+      "text": "For in him dwelleth all the fulness of the Godhead bodily."
+    },
+    {
+      "verse": "10",
+      "text": "And ye are complete in him, which is the head of all principality and power:"
     }
   ],
-  "section": "Let Nothing Be Done Without the Bishop",
-  "date": "2026-09-13"
+  "section": "",
+  "date": "2026-09-14"
 }

@@ -9,8 +9,8 @@
           "verses": {
             "1": "In the beginning was the Word, and the Word was with God, and the Word was God.",
             "2": "The same was in the beginning with God.",
-            "3": "All things were made by him; and without him was not any thing made that was made.",
-            "4": "In him was life; and the life was the light of men.",
+            "3": "All things were made by him; and without him was nothing made, of those things which are in the world and in the creation.",
+            "4": "That which was made in him is life; and the life was the light of men.",
             "5": "And the light shineth in darkness; and the darkness comprehended it not.",
             "6": "There was a man sent from God, whose name was John.",
             "7": "The same came for a witness, to bear witness of the Light, that all men through him might believe.",
@@ -24,7 +24,7 @@
             "15": "John bare witness of him, and cried, saying, This was he of whom I spake, He that cometh after me is preferred before me: for he was before me.",
             "16": "And of his fulness have all we received, and grace for grace.",
             "17": "For the law was given by Moses, but grace and truth came by Jesus Christ.",
-            "18": "No man hath seen God at any time, the only begotten Son, which is in the bosom of the Father, he hath declared him."
+            "18": "No man hath seen God at any time; the only begotten God, which is in the bosom of the Father, he hath declared him."
           }
         },
         "2": {
@@ -180,19 +180,29 @@
             "55": "Concerning the Palsied Man",
             "56": "Concerning the Palsied Man",
             "57": "Concerning the Palsied Man",
-            "58": "Concerning Levi the Publican",
-            "59": "Concerning Levi the Publican",
-            "60": "Concerning Levi the Publican",
-            "61": "Concerning Levi the Publican",
-            "62": "Concerning Levi the Publican",
-            "63": "Concerning Levi the Publican",
-            "64": "Concerning Levi the Publican",
-            "65": "Concerning Levi the Publican",
-            "66": "Concerning Levi the Publican",
-            "67": "Concerning Levi the Publican",
+            "58": "Concerning the Palsied Man",
+            "59": "Concerning the Palsied Man",
+            "60": "Concerning the Palsied Man",
+            "61": "Concerning the Palsied Man",
+            "62": "Concerning the Palsied Man",
+            "63": "Concerning the Palsied Man",
+            "64": "Concerning the Palsied Man",
+            "65": "Concerning the Palsied Man",
+            "66": "Concerning the Palsied Man",
+            "67": "Concerning the Palsied Man",
             "68": "Concerning Levi the Publican",
             "69": "Concerning Levi the Publican",
-            "70": "Concerning Levi the Publican"
+            "70": "Concerning Levi the Publican",
+            "71": "Concerning Levi the Publican",
+            "72": "Concerning Levi the Publican",
+            "73": "Concerning Levi the Publican",
+            "74": "Concerning Levi the Publican",
+            "75": "Concerning Levi the Publican",
+            "76": "Concerning Levi the Publican",
+            "77": "Concerning Levi the Publican",
+            "78": "Concerning Levi the Publican",
+            "79": "Concerning Levi the Publican",
+            "80": "Concerning Levi the Publican"
           },
           "verses": {
             "1": "And Jesus returned in the power of the Spirit into Galilee: and there went out a fame of him through all the region round about.",
@@ -236,7 +246,7 @@
             "39": "And when they could not find by what way they might bring him in because of the multitude, they went upon the housetop, and let him down through the tiling with his couch into the midst before Jesus.",
             "40": "And when he saw their faith, he said unto him, Man, thy sins are forgiven thee.",
             "41": "And the scribes and the Pharisees began to reason, saying, Who is this which speaketh blasphemies? Who can forgive sins, but God alone?",
-            "42": "But when Jesus perceived their thoughts, he answering said unto them, What reason ye in your hearts?",
+            "42": "But when Jesus perceived their thoughts, he answering said unto them, Why reason ye evil in your hearts?",
             "43": "Whether is easier, to say, Thy sins be forgiven thee; or to say, Rise up and walk?",
             "44": "But that ye may know that the Son of man hath power upon earth to forgive sins, he said unto the sick of the palsy, I say unto thee, Arise, and take up thy couch, and go into thine house.",
             "45": "And immediately he rose up before them, and took up that whereon he lay, and departed to his own house, glorifying God.",
@@ -252,27 +262,33 @@
             "55": "And hath given him authority to execute judgment also, because he is the Son of man.",
             "56": "Marvel not at this: for the hour is coming, in the which all that are in the graves shall hear his voice,",
             "57": "And shall come forth; they that have done good, unto the resurrection of life; and they that have done evil, unto the resurrection of damnation.",
-            "58": "And after these things he went forth, and saw a publican, named Levi, sitting at the receipt of custom: and he said unto him, Follow me.",
-            "59": "And he left all, rose up, and followed him.",
-            "60": "And Levi made him a great feast in his own house: and there was a great company of publicans and of others that sat down with them.",
-            "61": "But their scribes and Pharisees murmured against his disciples, saying, Why do ye eat and drink with publicans and sinners?",
-            "62": "And Jesus answering said unto them, They that are whole need not a physician; but they that are sick.",
-            "63": "I came not to call the righteous, but sinners to repentance.",
-            "64": "And they said unto him, Why do the disciples of John fast often, and make prayers, and likewise the disciples of the Pharisees; but thine eat and drink?",
-            "65": "And he said unto them, Can ye make the children of the bridechamber fast, while the bridegroom is with them?",
-            "66": "But the days will come, when the bridegroom shall be taken away from them, and then shall they fast in those days.",
-            "67": "And he spake also a parable unto them;",
-            "68": "And no man putteth new wine into old bottles; else the new wine will burst the bottles, and be spilled, and the bottles shall perish.",
-            "69": "But new wine must be put into new bottles; and both are preserved.",
-            "70": "And no man putteth a piece of a new garment upon an old; if otherwise, then both the new maketh a rent, and the piece that was taken out of the new agreeth not with the old."
+            "58": "If I bear witness of myself, my witness is not true.",
+            "59": "There is another that beareth witness of me; and ye know that the witness which he witnesseth of me is true.",
+            "60": "Ye sent unto John, and he bare witness unto the truth.",
+            "61": "But I receive not testimony from man: but these things I say, that ye might be saved.",
+            "62": "He was a burning and a shining light: and ye were willing for a season to rejoice in his light.",
+            "63": "But I have greater witness than that of John: for the works which the Father hath given me to finish, the same works that I do bear witness of me, that the Father hath sent me.",
+            "64": "And the Father himself, which hath sent me, hath borne witness of me. Ye have neither heard his voice at any time, nor seen his shape.",
+            "65": "And ye have not his word abiding in you: for whom he hath sent, him ye believe not.",
+            "66": "Search the scriptures; for ye think to have in them eternal life: and they are they which err concerning me.",
+            "67": "And ye will not come to me, that ye might have life.",
+            "68": "And after these things he went forth, and saw a publican, named Levi, sitting at the receipt of custom: and he said unto him, Follow me.",
+            "69": "And he left all, rose up, and followed him.",
+            "70": "And Levi made him a great feast in his own house: and there was a great company of publicans and of others that sat down with them.",
+            "71": "But their scribes and Pharisees murmured against his disciples, saying, Why do ye eat and drink with publicans and sinners?",
+            "72": "And Jesus answering said unto them, They that are whole need not a physician; but they that are sick.",
+            "73": "I came not to call the righteous, but sinners to repentance.",
+            "74": "And they said unto him, Why do the disciples of John fast often, and make prayers, and likewise the disciples of the Pharisees; but thine eat and drink?",
+            "75": "And he said unto them, Can ye make the children of the bridechamber fast, while the bridegroom is with them?",
+            "76": "But the days will come, when the bridegroom shall be taken away from them, and then shall they fast in those days.",
+            "77": "And he spake also a parable unto them;",
+            "78": "And no man putteth new wine into old bottles; else the new wine will burst the bottles, and be spilled, and the bottles shall perish.",
+            "79": "But new wine must be put into new bottles; and both are preserved.",
+            "80": "And no man putteth a piece of a new garment upon an old; if otherwise, then both the new maketh a rent, and the piece that was taken out of the new agreeth not with the old."
           }
         },
         "4": {
           "sections": {
-            "1": "Concerning the Sabbath",
-            "2": "Concerning the Sabbath",
-            "3": "Concerning the Sabbath",
-            "4": "Concerning the Sabbath",
             "5": "Concerning the Man Which Had the Withered Hand",
             "6": "Concerning the Man Which Had the Withered Hand",
             "7": "Concerning the Man Which Had the Withered Hand",
@@ -302,8 +318,8 @@
             "5": "And it came to pass also on another sabbath, that he entered into the synagogue and taught: and there was a man whose right hand was withered.",
             "6": "And the scribes and Pharisees watched him, whether he would heal on the sabbath day; that they might find an accusation against him.",
             "7": "But he knew their reasonings, and said to the man which had the withered hand, Rise up, and stand forth in the midst. And he arose and stood forth.",
-            "8": "Then said Jesus unto them, I will ask you one thing; Is it lawful on the sabbath days to do good, or to do evil? to save life, or to destroy it?",
-            "12": "And they were filled with madness; and communed one with another what they might do to Jesus.",
+            "8": "Then said Jesus unto them, I will ask you one thing; Is it lawful on the sabbath days to do good, or to do evil? to save life, or to destroy it? And they held their peace.",
+            "12": "And they were filled with madness; and took counsel one with another how they might destroy Jesus.",
             "18": "And he came down among them, and stood in the plain, and the company of his disciples, and a great multitude of people out of all Judaea and Jerusalem, and from the sea coast of Tyre and Sidon, which came to hear him, and to be healed of their diseases;",
             "22": "Blessed are the meek in spirit: for they shall inherit the earth.",
             "30": "Ye have heard that it was said of them of old time, Thou shalt not kill; and whosoever shall kill shall be in danger of the judgment:",
@@ -440,8 +456,20 @@
             "55": "Concerning the Transgression of the Commandment of God",
             "56": "Concerning the Transgression of the Commandment of God",
             "57": "Concerning the Transgression of the Commandment of God",
-            "58": "Concerning the Woman of Canaan",
-            "61": "Concerning the Woman of Canaan"
+            "58": "Concerning the Transgression of the Commandment of God",
+            "59": "Concerning the Transgression of the Commandment of God",
+            "60": "Concerning the Transgression of the Commandment of God",
+            "61": "Concerning the Transgression of the Commandment of God",
+            "62": "Concerning the Transgression of the Commandment of God",
+            "63": "Concerning the Transgression of the Commandment of God",
+            "64": "Concerning the Transgression of the Commandment of God",
+            "65": "Concerning the Transgression of the Commandment of God",
+            "66": "Concerning the Transgression of the Commandment of God",
+            "67": "Concerning the Transgression of the Commandment of God",
+            "68": "Concerning the Transgression of the Commandment of God",
+            "69": "Concerning the Transgression of the Commandment of God",
+            "70": "Concerning the Woman of Canaan",
+            "73": "Concerning the Woman of Canaan"
           },
           "verses": {
             "1": "Then he called his twelve disciples together, and gave them power and authority over all the devils, and to cure diseases.",
@@ -478,19 +506,31 @@
             "32": "The Jews therefore strove among themselves, saying, How can this man give us his flesh to eat?",
             "33": "Then Jesus said unto them, Verily, verily, I say unto you, Except ye eat the flesh of the Son of man, and drink his blood, ye have no life in you.",
             "36": "He that eateth my flesh, and drinketh my blood, dwelleth in me, and I in him.",
-            "47": "And he called the multitude, and said unto them, Hear, and understand:",
-            "48": "Not that which goeth into the mouth defileth a man; but that which cometh out of the mouth, this defileth a man.",
-            "49": "Then came his disciples, and said unto him, Knowest thou that the Pharisees were offended, after they heard this saying?",
-            "50": "But he answered and said, Every plant, which my heavenly Father hath not planted, shall be rooted up.",
-            "51": "Let them alone: they be blind leaders of the blind. And if the blind lead the blind, both shall fall into the ditch.",
-            "52": "Then answered Peter and said unto him, Declare unto us this parable.",
-            "53": "And Jesus said, Are ye also yet without understanding?",
-            "54": "Do not ye yet understand, that whatsoever entereth in at the mouth goeth into the belly, and is cast out into the draught?",
-            "55": "But those things which proceed out of the mouth come forth from the heart; and they defile the man.",
-            "56": "For out of the heart proceed evil thoughts, murders, adulteries, fornications, thefts, false witness, blasphemies:",
-            "57": "These are the things which defile a man: but to eat with unwashen hands defileth not a man.",
-            "58": "Then Jesus went thence, and departed into the coasts of Tyre and Sidon.",
-            "61": "But he answered and said, I am not sent but unto the lost sheep of the house of Israel."
+            "47": "Then came together unto him the Pharisees, and certain of the scribes, which came from Jerusalem.",
+            "48": "And when they saw some of his disciples eat bread with defiled, that is to say, with unwashen, hands, they found fault.",
+            "49": "For the Pharisees, and all the Jews, except they wash their hands oft, eat not, holding the tradition of the elders.",
+            "50": "And when they come from the market, except they wash, they eat not. And many other things there be, which they have received to hold, as the washing of cups, and pots, and brasen vessels.",
+            "51": "Then the Pharisees and scribes asked him, Why walk not thy disciples according to the tradition of the elders, but eat bread with unwashen hands?",
+            "52": "He answered and said unto them, Well hath Esaias prophesied of you hypocrites, as it is written, This people loveth me with their lips, but their heart is far from me.",
+            "53": "Howbeit in vain do they worship me, teaching for doctrines the commandments of men.",
+            "54": "For laying aside the commandment of God, ye hold the tradition of men.",
+            "55": "And he said unto them, Full well ye reject the commandment of God, that ye may establish your own tradition.",
+            "56": "For Moses said, Honour thy father and thy mother; and, Whoso curseth father or mother, let him die the death:",
+            "57": "But ye say, If a man shall say to his father or mother, It is Corban, that is to say, a gift, by whatsoever thou mightest be profited by me; he shall be free.",
+            "58": "And ye suffer him no more to do ought for his father or his mother;",
+            "59": "Making the word of God of none effect through your foolish tradition, which ye have delivered: and many such like things do ye.",
+            "60": "And when he had called the multitude again, he said unto them, Hearken unto me every one of you, and understand:",
+            "61": "There is nothing from without a man, that entering into him can defile him: but the things which come out of him, those are they that defile the man.",
+            "62": "If any man have ears to hear, let him hear.",
+            "63": "And when he was entered into the house from the multitude, his disciples asked him concerning the parable.",
+            "64": "And he saith unto them, Are ye so without understanding also? Do ye not perceive, that whatsoever thing from without entereth into the man, it cannot defile him;",
+            "65": "Because it entereth not into his heart, but into the belly, and goeth out into the draught, purging all meats?",
+            "66": "And he said, That which cometh out of the man, that defileth the man.",
+            "67": "For from within, out of the heart of men, proceed evil thoughts, adulteries, fornications, murders,",
+            "68": "Thefts, covetousness, wickedness, deceit, lasciviousness, an evil eye, blasphemy, pride, foolishness:",
+            "69": "All these evil things come from within, and defile the man.",
+            "70": "Then Jesus went thence, and departed into the coasts of Tyre and Sidon.",
+            "73": "But he answered and said, I am not sent but unto the lost sheep of the house of Israel."
           }
         },
         "8": {
@@ -727,8 +767,8 @@
             "33": "Look therefore that the light which is in thee be not darkness.",
             "34": "If therefore thy whole body be full of light, having no part dark, it shall be wholly full of light, as when the lamp with its gleam doth give thee light.",
             "35": "And as he spake, a certain Pharisee besought him to dine with him: and he went in, and sat down to meat.",
-            "36": "And when the Pharisee saw it, he marvelled that he had not first washed before dinner.",
-            "37": "And the Lord said unto him, Now do ye Pharisees make clean the outside of the cup and the platter; but your inward part is full of ravening and wickedness.",
+            "36": "And when the Pharisee saw it, he began to reason within himself, saying, Why washed he not first before dinner?",
+            "37": "And the Lord said unto him, Now do ye Pharisees, hypocrites, make clean the outside of the cup and the platter; but your inward part is full of ravening and wickedness.",
             "38": "Foolish ones, did not he that made the outside make the inside also?",
             "39": "But give as alms the things in your power; and, behold, all things are clean unto you.",
             "40": "But woe unto you, Pharisees! for ye tithe mint and rue and every herb, and pass over the calling and the love of God: but these ought ye to have done, and not to leave the other undone.",
@@ -1524,7 +1564,7 @@
             "11": "And they watched him, and sent forth spies, feigning themselves to be righteous men, that they might take hold of his speech, in order to deliver him up unto the rule and authority of the governor.",
             "12": "And they asked him, saying, Master, we know that thou sayest and teachest rightly, neither acceptest thou the person of any, but teachest the way of God truly.",
             "13": "Is it lawful for us to give tribute unto Caesar, or not?",
-            "14": "But he perceived their craftiness, and said unto them, Why tempt ye me?",
+            "14": "But he knew their malice, and said unto them, Why tempt ye me?",
             "15": "Shew me a penny. Whose image and superscription hath it? They answered and said, Caesar’s.",
             "16": "And he said unto them, Render therefore unto Caesar the things of Caesar, and unto God the things of God.",
             "17": "And they were not able to take hold of his saying before the people: and they marvelled at his answer, and held their peace.",
@@ -1837,10 +1877,6 @@
         },
         "22": {
           "sections": {
-            "7": "Set at Nought by Herod",
-            "8": "Set at Nought by Herod",
-            "9": "Set at Nought by Herod",
-            "10": "Set at Nought by Herod",
             "11": "Set at Nought by Herod",
             "12": "Set at Nought by Herod",
             "13": "Set at Nought by Herod",
@@ -1956,43 +1992,7 @@
           }
         },
         "23": {
-          "sections": {
-            "13": "Concerning Cleopas",
-            "14": "Concerning Cleopas",
-            "15": "Concerning Cleopas",
-            "16": "Concerning Cleopas",
-            "17": "Concerning Cleopas",
-            "18": "Concerning Cleopas",
-            "19": "Concerning Cleopas",
-            "20": "Concerning Cleopas",
-            "21": "Concerning Cleopas",
-            "22": "Concerning Cleopas",
-            "23": "Concerning Cleopas",
-            "24": "Concerning Cleopas",
-            "25": "Concerning Cleopas",
-            "26": "Concerning Cleopas",
-            "27": "Concerning Cleopas",
-            "28": "Concerning Cleopas",
-            "29": "Concerning Cleopas",
-            "30": "Concerning Cleopas",
-            "31": "Concerning Cleopas",
-            "32": "Concerning Cleopas",
-            "33": "Concerning Cleopas",
-            "34": "Concerning Cleopas",
-            "35": "Concerning Cleopas",
-            "36": "Concerning Cleopas",
-            "37": "Concerning Cleopas",
-            "38": "Concerning Cleopas",
-            "39": "Concerning Cleopas",
-            "40": "Concerning Cleopas",
-            "41": "Concerning Cleopas",
-            "42": "Concerning Cleopas",
-            "43": "Concerning Cleopas",
-            "44": "Concerning Cleopas",
-            "45": "Concerning Cleopas",
-            "46": "Concerning Cleopas",
-            "47": "Concerning Cleopas"
-          },
+          "sections": {},
           "verses": {
             "1": "Now upon the first day of the week, very early in the morning, they came unto the sepulchre, bringing the spices which they had prepared, and certain others with them.",
             "2": "And they found the stone rolled away from the sepulchre.",
@@ -2132,7 +2132,7 @@
             "13": "Peace I leave with you, my peace I give unto you: not as the world giveth, give I unto you. Let not your heart be troubled, neither let it be afraid.",
             "14": "Ye have heard how I said unto you, I go away, and come again unto you. If ye loved me, ye would rejoice, because I said, I go unto the Father: for my Father is greater than I.",
             "15": "And now I have told you before it come to pass, that, when it is come to pass, ye might believe.",
-            "16": "Hereafter I will not talk much with you: for the prince of this world cometh, and hath nothing in me.",
+            "16": "Hereafter I will not talk much with you: for the prince of this world cometh, and in me he shall find nothing.",
             "17": "But that the world may know that I love the Father; and as the Father gave me commandment, even so I do. Arise, let us go hence.",
             "18": "I am the true vine, and my Father is the husbandman.",
             "19": "Every branch in me that beareth not fruit he taketh away: and every branch that beareth fruit, he purgeth it, that it may bring forth more fruit.",
@@ -2470,7 +2470,7 @@
             "13": "For neither they themselves who are circumcised keep the law; but desire to have you circumcised, that they may glory in your flesh.",
             "14": "But God forbid that I should glory, save in the cross of our Lord Jesus Christ, by whom the world is crucified unto me, and I unto the world.",
             "15": "For in Christ Jesus neither circumcision availeth anything, nor uncircumcision, but a new creature.",
-            "16": "And as many as walk according to this rule, peace be on them, and mercy, and upon the Israel of God.",
+            "16": "And as many as walk according to this rule, peace be on them, and mercy, and upon the Israel of the Lord.",
             "17": "From henceforth let no man trouble me: for I bear in my body the marks of the Lord Jesus.",
             "18": "Brethren, the grace of our Lord Jesus Christ be with your spirit. Amen."
           }
@@ -5683,7 +5683,7 @@
           "verses": {
             "1": "Put them in mind to be subject to principalities and powers, to obey magistrates, to be ready to every good work,",
             "2": "To speak evil of no man, to be no brawlers, but gentle, shewing all meekness unto all men.",
-            "3": "For we ourselves also were sometimes foolish, disobedient, deceived, serving divers lusts and pleasures, living in malice and envy, hateful, and hating one another.",
+            "3": "For we ourselves also were sometimes foolish, disobedient, deceived, serving divers pleasures and lusts, living in malice and envy, hateful, and hating one another.",
             "4": "But after that the kindness and love of God our Saviour toward man appeared,",
             "5": "Not by works of righteousness which we have done, but according to his mercy he saved us, by the washing of regeneration, and renewing of the Holy Ghost;",
             "6": "Which he shed on us abundantly through Jesus Christ our Saviour;",
@@ -5702,26 +5702,22 @@
       "chapters": {
         "1": {
           "sections": {
-            "1": "Misleadings in Doctrine and Living",
-            "2": "Misleadings in Doctrine and Living",
-            "3": "Misleadings in Doctrine and Living",
-            "4": "Misleadings in Doctrine and Living",
-            "5": "Misleadings in Doctrine and Living",
-            "6": "Misleadings in Doctrine and Living",
-            "7": "Misleadings in Doctrine and Living",
-            "8": "Misleadings in Doctrine and Living",
-            "9": "Misleadings in Doctrine and Living",
-            "10": "Misleadings in Doctrine and Living",
-            "11": "Misleadings in Doctrine and Living",
-            "12": "Misleadings in Doctrine and Living",
-            "13": "Misleadings in Doctrine and Living",
-            "14": "Misleadings in Doctrine and Living",
-            "15": "Misleadings in Doctrine and Living",
-            "16": "Misleadings in Doctrine and Living",
-            "17": "Misleadings in Doctrine and Living",
-            "18": "Misleadings in Doctrine and Living",
-            "19": "Misleadings in Doctrine and Living",
-            "20": "Misleadings in Doctrine and Living"
+            "5": "Concerning Charity, Which Is the End of the Commandment, and the Contrary Doctrine of the Teachers of the Law",
+            "6": "Concerning Charity, Which Is the End of the Commandment, and the Contrary Doctrine of the Teachers of the Law",
+            "7": "Concerning Charity, Which Is the End of the Commandment, and the Contrary Doctrine of the Teachers of the Law",
+            "8": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "9": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "10": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "11": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "12": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "13": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "14": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "15": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "16": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "17": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "18": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "19": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided",
+            "20": "Concerning the Law, How It Is Good If a Man Use It Lawfully, and the Questions Which Are to Be Avoided"
           },
           "verses": {
             "1": "Paul, an apostle of Jesus Christ by the commandment of God our Saviour, and Lord Jesus Christ, which is our hope;",
@@ -5740,7 +5736,7 @@
             "14": "And the grace of our Lord was exceeding abundant with faith and love which is in Christ Jesus.",
             "15": "This is a faithful saying, and worthy of all acceptation, that Christ Jesus came into the world to save sinners; of whom I am chief.",
             "16": "Howbeit for this cause I obtained mercy, that in me first Jesus Christ might shew forth all longsuffering, for a pattern to them which should hereafter believe on him to life everlasting.",
-            "17": "Now unto the King eternal, immortal, invisible, the only wise God, be honour and glory for ever and ever. Amen.",
+            "17": "Now unto the King eternal, immortal, invisible, the only God, be honour and glory for ever and ever. Amen.",
             "18": "This charge I commit unto thee, son Timothy, according to the prophecies which went before on thee, that thou by them mightest war a good warfare;",
             "19": "Holding faith, and a good conscience; which some having put away concerning faith have made shipwreck:",
             "20": "Of whom is Hymenaeus and Alexander; whom I have delivered unto Satan, that they may learn not to blaspheme."
@@ -5748,18 +5744,20 @@
         },
         "2": {
           "sections": {
-            "1": "A Call to Prayer",
-            "2": "A Call to Prayer",
-            "3": "A Call to Prayer",
-            "4": "A Call to Prayer",
-            "5": "A Call to Prayer",
-            "6": "A Call to Prayer",
-            "7": "A Call to Prayer",
-            "8": "A Call to Prayer",
-            "9": "Women Instructed",
-            "10": "Women Instructed",
-            "11": "Women Instructed",
-            "12": "Women Instructed"
+            "1": "Concerning the Form of Prayer and Supplication",
+            "2": "Concerning the Form of Prayer and Supplication",
+            "3": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "4": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "5": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "6": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "7": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "8": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "9": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "10": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "11": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "12": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "13": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men",
+            "14": "Concerning God, Who Will Have All Men to Be Saved, and the One Mediator between God and Men"
           },
           "verses": {
             "1": "I exhort therefore, that, first of all, supplications, prayers, intercessions, and giving of thanks, be made for all men;",
@@ -5773,22 +5771,24 @@
             "9": "In like manner also, that women adorn themselves in modest apparel, with shamefacedness and sobriety; not with broided hair, or gold, or pearls, or costly array;",
             "10": "But which becometh women professing godliness with good works.",
             "11": "Let the woman learn in silence with all subjection.",
-            "12": "Notwithstanding she shall be saved in childbearing, if they continue in faith and charity and holiness with sobriety."
+            "12": "But I suffer not a woman to teach, nor to usurp authority over the man, but to be in silence.",
+            "13": "But the woman being beguiled was in the transgression.",
+            "14": "Notwithstanding she shall be saved in childbearing, if they continue in faith and charity and holiness with sobriety."
           }
         },
         "3": {
           "sections": {
-            "1": "Bishops and Deacons",
-            "2": "Bishops and Deacons",
-            "3": "Bishops and Deacons",
-            "4": "Bishops and Deacons",
-            "5": "Bishops and Deacons",
-            "6": "Bishops and Deacons",
-            "7": "Bishops and Deacons",
-            "8": "Bishops and Deacons",
-            "9": "Bishops and Deacons",
-            "10": "Bishops and Deacons",
-            "11": "Bishops and Deacons"
+            "1": "Concerning the Ordination of Bishops, and What Manner of Men They Ought to Be",
+            "2": "Concerning the Ordination of Bishops, and What Manner of Men They Ought to Be",
+            "3": "Concerning the Ordination of Bishops, and What Manner of Men They Ought to Be",
+            "4": "Concerning the Ordination of Bishops, and What Manner of Men They Ought to Be",
+            "5": "Concerning the Ordination of Bishops, and What Manner of Men They Ought to Be",
+            "6": "Concerning the Ordination of Bishops, and What Manner of Men They Ought to Be",
+            "7": "Concerning Deacons, What Manner of Men They Ought to Be",
+            "8": "Concerning Deacons, What Manner of Men They Ought to Be",
+            "9": "Concerning Deacons, What Manner of Men They Ought to Be",
+            "10": "Concerning Deacons, What Manner of Men They Ought to Be",
+            "11": "Concerning the Mystery of Godliness"
           },
           "verses": {
             "1": "This is a true saying, if a man desire the office of a bishop, he desireth a good work.",
@@ -5801,24 +5801,24 @@
             "8": "And let these also first be proved; then let them use the office of a deacon, being found blameless.",
             "9": "Let the deacons be the husbands of one wife, ruling their children and their own houses well.",
             "10": "But if I tarry long, that thou mayest know how thou oughtest to behave thyself in the house of God, which is the church of the living God, the pillar and ground of the truth.",
-            "11": "And without controversy great is the mystery of godliness: God was manifest in the flesh, justified in the Spirit, seen of angels, preached unto the Gentiles, believed on in the world, received up into glory."
+            "11": "And without controversy great is the mystery of godliness: Who was manifest in the flesh, justified in the Spirit, seen of angels, preached unto the Gentiles, believed on in the world, received up into glory."
           }
         },
         "4": {
           "sections": {
-            "1": "Apostasy",
-            "2": "Apostasy",
-            "3": "Apostasy",
-            "4": "Apostasy",
-            "5": "Apostasy",
-            "6": "A Good Minister’s Discipline",
-            "7": "A Good Minister’s Discipline",
-            "8": "A Good Minister’s Discipline",
-            "9": "A Good Minister’s Discipline",
-            "10": "A Good Minister’s Discipline",
-            "11": "A Good Minister’s Discipline",
-            "12": "A Good Minister’s Discipline",
-            "13": "A Good Minister’s Discipline"
+            "1": "Concerning the Manifest Apostasy and Them Which Forbid Marriage and Meats",
+            "2": "Concerning the Manifest Apostasy and Them Which Forbid Marriage and Meats",
+            "3": "Concerning the Manifest Apostasy and Them Which Forbid Marriage and Meats",
+            "4": "Concerning the Manifest Apostasy and Them Which Forbid Marriage and Meats",
+            "5": "Concerning the Manifest Apostasy and Them Which Forbid Marriage and Meats",
+            "6": "Concerning the Manifest Apostasy and Them Which Forbid Marriage and Meats",
+            "7": "Concerning the Reproof of Profane Fables and Exercise unto Godliness",
+            "8": "Concerning the Reproof of Profane Fables and Exercise unto Godliness",
+            "9": "Concerning the Reproof of Profane Fables and Exercise unto Godliness",
+            "10": "Concerning the Reproof of Profane Fables and Exercise unto Godliness",
+            "11": "Concerning the Reproof of Profane Fables and Exercise unto Godliness",
+            "12": "Concerning the Reproof of Profane Fables and Exercise unto Godliness",
+            "13": "Concerning the Reproof of Profane Fables and Exercise unto Godliness"
           },
           "verses": {
             "1": "Now the Spirit speaketh expressly, that in the latter times some shall depart from the faith, giving heed to seducing spirits, and doctrines of devils;",
@@ -5830,7 +5830,7 @@
             "7": "But refuse profane and old wives’ fables, and exercise thyself rather unto godliness.",
             "8": "For bodily exercise profiteth little: but godliness is profitable unto all things, having promise of the life that now is, and of that which is to come.",
             "9": "For therefore we both labour and suffer reproach, because we trust in the living God, who is the Saviour of all men, specially of those that believe.",
-            "10": "Let no man despise thy youth; but be thou an example of the believers, in word, in conversation, in charity, in spirit, in faith, in purity.",
+            "10": "Let no man despise thy youth; but be thou an example of the believers, in word, in conversation, in charity, in faith, in purity.",
             "11": "Till I come, give attendance to reading, to exhortation, to doctrine.",
             "12": "Meditate upon these things; give thyself wholly to them; that thy profiting may appear to all.",
             "13": "Take heed unto thyself, and unto the doctrine; continue in them: for in doing this thou shalt both save thyself, and them that hear thee."
@@ -5838,24 +5838,23 @@
         },
         "5": {
           "sections": {
-            "1": "Honor Widows",
-            "2": "Honor Widows",
-            "3": "Honor Widows",
-            "4": "Honor Widows",
-            "5": "Honor Widows",
-            "6": "Honor Widows",
-            "7": "Honor Widows",
-            "8": "Honor Widows",
-            "9": "Honor Widows",
-            "10": "Honor Widows",
-            "11": "Honor Widows",
-            "12": "Concerning Elders",
-            "13": "Concerning Elders",
-            "14": "Concerning Elders",
-            "15": "Concerning Elders",
-            "16": "Concerning Elders",
-            "17": "Concerning Elders",
-            "18": "Concerning Elders"
+            "2": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "3": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "4": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "5": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "6": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "7": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "8": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "9": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "10": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "11": "Concerning Widows, Which Are to Be Honoured and Chosen",
+            "12": "Concerning Elders, and the Honour Which Is Due unto Them",
+            "13": "Concerning Elders, and the Honour Which Is Due unto Them",
+            "14": "Concerning Elders, and the Honour Which Is Due unto Them",
+            "15": "Concerning Elders, and the Honour Which Is Due unto Them",
+            "16": "Concerning Elders, and the Honour Which Is Due unto Them",
+            "17": "Concerning Elders, and the Honour Which Is Due unto Them",
+            "18": "Concerning Elders, and the Honour Which Is Due unto Them"
           },
           "verses": {
             "1": "The elder women as mothers; the younger as sisters, with all purity.",
@@ -5880,24 +5879,25 @@
         },
         "6": {
           "sections": {
-            "1": "Instructions to Those Who Minister",
-            "2": "Instructions to Those Who Minister",
-            "3": "Instructions to Those Who Minister",
-            "4": "Instructions to Those Who Minister",
-            "5": "Instructions to Those Who Minister",
-            "6": "Instructions to Those Who Minister",
-            "7": "Instructions to Those Who Minister",
-            "8": "Instructions to Those Who Minister",
-            "9": "Instructions to Those Who Minister",
-            "10": "Instructions to Those Who Minister",
-            "11": "Instructions to Those Who Minister",
-            "12": "Instructions to Those Who Minister",
-            "13": "Instructions to Those Who Minister",
-            "14": "Instructions to Those Who Minister",
-            "15": "Instructions to Those Who Minister",
-            "16": "Instructions to Those Who Minister",
-            "17": "Instructions to Those Who Minister",
-            "18": "Instructions to Those Who Minister"
+            "1": "Concerning Servants and Their Masters, and the Doctrine of Godliness",
+            "2": "Concerning Servants and Their Masters, and the Doctrine of Godliness",
+            "3": "Concerning Servants and Their Masters, and the Doctrine of Godliness",
+            "4": "Concerning Servants and Their Masters, and the Doctrine of Godliness",
+            "5": "Concerning Servants and Their Masters, and the Doctrine of Godliness",
+            "6": "Concerning Servants and Their Masters, and the Doctrine of Godliness",
+            "7": "Concerning Servants and Their Masters, and the Doctrine of Godliness",
+            "8": "Concerning Servants and Their Masters, and the Doctrine of Godliness",
+            "9": "Concerning Them That Desire to Be Rich",
+            "10": "Concerning Them That Desire to Be Rich",
+            "11": "Concerning Them That Desire to Be Rich",
+            "12": "Concerning Them That Desire to Be Rich",
+            "13": "Concerning Them That Desire to Be Rich",
+            "14": "Concerning Them That Desire to Be Rich",
+            "15": "Concerning Them That Desire to Be Rich",
+            "16": "Concerning the Uncertainty of Riches, and Hope in the Living God",
+            "17": "Concerning the Uncertainty of Riches, and Hope in the Living God",
+            "18": "Concerning the Uncertainty of Riches, and Hope in the Living God",
+            "19": "Concerning the Uncertainty of Riches, and Hope in the Living God"
           },
           "verses": {
             "1": "Let as many servants as are under the yoke count their own masters worthy of all honour, that the name of God and his doctrine be not blasphemed.",
@@ -5906,18 +5906,19 @@
             "4": "He is proud, knowing nothing, but doting about questions and strifes of words, whereof cometh envy, strife, railings, evil surmisings,",
             "5": "Perverse disputings of men of corrupt minds, and destitute of the truth, supposing that gain is godliness: from such withdraw thyself.",
             "6": "But godliness with contentment is great gain.",
-            "7": "For we brought nothing into this world, and it is certain we can carry nothing out.",
+            "7": "For we brought nothing into this world, and we can carry nothing out.",
             "8": "And having food and raiment let us be therewith content.",
             "9": "But they that will be rich fall into temptation and a snare, and into many foolish and hurtful lusts, which drown men in destruction and perdition.",
             "10": "For the love of money is the root of all evil: which while some coveted after, they have erred from the faith, and pierced themselves through with many sorrows.",
             "11": "But thou, O man of God, flee these things; and follow after righteousness, godliness, faith, love, patience, meekness.",
             "12": "I give thee charge in the sight of God, who quickeneth all things, and before Christ Jesus, who before Pontius Pilate witnessed a good confession;",
             "13": "That thou keep this commandment without spot, unrebukable, until the appearing of our Lord Jesus Christ:",
-            "14": "Who only hath immortality, dwelling in the light which no man can approach unto; whom no man hath seen, nor can see: to whom be honour and power everlasting. Amen.",
-            "15": "Charge them that are rich in this world, that they be not highminded, nor trust in uncertain riches, but in the living God, who giveth us richly all things to enjoy;",
-            "16": "Laying up in store for themselves a good foundation against the time to come, that they may lay hold on eternal life.",
-            "17": "O Timothy, keep that which is committed to thy trust, avoiding profane and vain babblings, and oppositions of science falsely so called:",
-            "18": "Which some professing have erred concerning the faith. Grace be with thee. Amen."
+            "14": "Which in his times he shall shew, who is the blessed and only Potentate, the King of kings, and Lord of lords;",
+            "15": "Who only hath immortality, dwelling in the light which no man can approach unto; whom no man hath seen, nor can see: to whom be honour and power everlasting. Amen.",
+            "16": "Charge them that are rich in this world, that they be not highminded, nor trust in uncertain riches, but in the living God, who giveth us richly all things to enjoy;",
+            "17": "Laying up in store for themselves a good foundation against the time to come, that they may lay hold on eternal life.",
+            "18": "O Timothy, keep that which is committed to thy trust, avoiding profane and vain babblings, and oppositions of science falsely so called:",
+            "19": "Which some professing have erred concerning the faith. Grace be with thee. Amen."
           }
         }
       }
@@ -5928,19 +5929,18 @@
       "chapters": {
         "1": {
           "sections": {
-            "1": "Timothy Charged to Guard His Trust",
-            "2": "Timothy Charged to Guard His Trust",
-            "3": "Timothy Charged to Guard His Trust",
-            "4": "Timothy Charged to Guard His Trust",
-            "5": "Timothy Charged to Guard His Trust",
-            "6": "Timothy Charged to Guard His Trust",
-            "7": "Timothy Charged to Guard His Trust",
-            "8": "Timothy Charged to Guard His Trust",
-            "9": "Timothy Charged to Guard His Trust",
-            "10": "Timothy Charged to Guard His Trust",
-            "11": "Timothy Charged to Guard His Trust",
-            "12": "Timothy Charged to Guard His Trust",
-            "13": "Timothy Charged to Guard His Trust"
+            "3": "Concerning the Tears of Timothy and the Remembrance of the Apostle",
+            "4": "Concerning the Tears of Timothy and the Remembrance of the Apostle",
+            "5": "Concerning the Tears of Timothy and the Remembrance of the Apostle",
+            "6": "Concerning the Tears of Timothy and the Remembrance of the Apostle",
+            "7": "Concerning the Tears of Timothy and the Remembrance of the Apostle",
+            "8": "Concerning the Tears of Timothy and the Remembrance of the Apostle",
+            "9": "Concerning the Liberality and Ministry of Holy Grace",
+            "10": "Concerning the Liberality and Ministry of Holy Grace",
+            "11": "Concerning the Liberality and Ministry of Holy Grace",
+            "12": "Concerning the Liberality and Ministry of Holy Grace",
+            "13": "Concerning Onesiphorus and His Services Which He Shewed unto the Saints",
+            "14": "Concerning Onesiphorus and His Services Which He Shewed unto the Saints"
           },
           "verses": {
             "1": "Paul, an apostle of Jesus Christ by the will of God, according to the promise of life which is in Christ Jesus,",
@@ -5949,38 +5949,37 @@
             "4": "Greatly desiring to see thee, being mindful of thy tears, that I may be filled with joy;",
             "5": "When I call to remembrance the unfeigned faith that is in thee, which dwelt first in thy grandmother Lois, and thy mother Eunice; and I am persuaded that in thee also.",
             "6": "Wherefore I put thee in remembrance that thou stir up the gift of God, which is in thee by the putting on of my hands.",
-            "7": "For God hath not given us the spirit of fear; but of power, and of love, and of a sound mind.",
+            "7": "For God hath not given us the spirit of bondage again unto fear; but of power, and of love, and of a sound mind.",
             "8": "Be not thou therefore ashamed of the testimony of our Lord, nor of me his prisoner: but be thou partaker of the afflictions of the gospel according to the power of God;",
-            "9": "But is now made manifest by the appearing of our Saviour Jesus Christ, who hath abolished death, and hath brought life and immortality to light through the gospel:",
-            "10": "That good thing which was committed unto thee keep by the Holy Ghost which dwelleth in us.",
-            "11": "This thou knowest, that all they which are in Asia be turned away from me; of whom are Phygellus and Hermogenes.",
-            "12": "The Lord give mercy unto the house of Onesiphorus; for he oft refreshed me, and was not ashamed of my chain:",
-            "13": "The Lord grant unto him that he may find mercy of the Lord in that day: and in how many things he ministered unto me at Ephesus, thou knowest very well."
+            "9": "Who hath saved us, and called us with an holy calling, not according to our works, but according to his own purpose and grace, which was given us in Christ Jesus before times eternal,",
+            "10": "But is now made manifest by the appearing of our Saviour Jesus Christ, who hath abolished death, and hath brought life and immortality to light through the gospel:",
+            "11": "That good thing which was committed unto thee keep by the Holy Ghost which dwelleth in us.",
+            "12": "This thou knowest, that all they which are in Asia be turned away from me; of whom are Phygellus and Hermogenes.",
+            "13": "The Lord give mercy unto the house of Onesiphorus; for he oft refreshed me, and was not ashamed of my chain:",
+            "14": "The Lord grant unto him that he may find mercy of the Lord in that day: and in how many things he ministered unto me at Ephesus, thou knowest very well."
           }
         },
         "2": {
           "sections": {
-            "1": "Be Strong",
-            "2": "Be Strong",
-            "3": "Be Strong",
-            "4": "Be Strong",
-            "5": "Be Strong",
-            "6": "Be Strong",
-            "7": "Be Strong",
-            "8": "Be Strong",
-            "9": "An Unashamed Workman",
-            "10": "An Unashamed Workman",
-            "11": "An Unashamed Workman",
-            "12": "An Unashamed Workman",
-            "13": "An Unashamed Workman",
-            "14": "An Unashamed Workman",
-            "15": "An Unashamed Workman",
-            "16": "An Unashamed Workman",
-            "17": "An Unashamed Workman",
-            "18": "An Unashamed Workman",
-            "19": "An Unashamed Workman",
-            "20": "An Unashamed Workman",
-            "21": "An Unashamed Workman"
+            "3": "Concerning Labour, and Warfare, and the Contest",
+            "4": "Concerning Labour, and Warfare, and the Contest",
+            "5": "Concerning Labour, and Warfare, and the Contest",
+            "6": "Concerning Labour, and Warfare, and the Contest",
+            "7": "Concerning Labour, and Warfare, and the Contest",
+            "8": "Concerning Labour, and Warfare, and the Contest",
+            "9": "Concerning Workmen That Rightly Handle the Word of Truth, and the Subversions of Faith",
+            "10": "Concerning Workmen That Rightly Handle the Word of Truth, and the Subversions of Faith",
+            "11": "Concerning Workmen That Rightly Handle the Word of Truth, and the Subversions of Faith",
+            "12": "Concerning Workmen That Rightly Handle the Word of Truth, and the Subversions of Faith",
+            "13": "Concerning Workmen That Rightly Handle the Word of Truth, and the Subversions of Faith",
+            "14": "Concerning Workmen That Rightly Handle the Word of Truth, and the Subversions of Faith",
+            "15": "Concerning the Variety of a Great House, and the Vessels Thereof, and the Unprofitable Vessels to Be Avoided",
+            "16": "Concerning the Variety of a Great House, and the Vessels Thereof, and the Unprofitable Vessels to Be Avoided",
+            "17": "Concerning the Variety of a Great House, and the Vessels Thereof, and the Unprofitable Vessels to Be Avoided",
+            "18": "Concerning the Variety of a Great House, and the Vessels Thereof, and the Unprofitable Vessels to Be Avoided",
+            "19": "Concerning the Variety of a Great House, and the Vessels Thereof, and the Unprofitable Vessels to Be Avoided",
+            "20": "Concerning the Variety of a Great House, and the Vessels Thereof, and the Unprofitable Vessels to Be Avoided",
+            "21": "Concerning the Variety of a Great House, and the Vessels Thereof, and the Unprofitable Vessels to Be Avoided"
           },
           "verses": {
             "1": "Thou therefore, my son, be strong in the grace that is in Christ Jesus.",
@@ -5996,7 +5995,7 @@
             "11": "But shun profane and vain babblings: for they will increase unto more ungodliness.",
             "12": "And their word will eat as doth a canker: of whom is Hymenaeus and Philetus;",
             "13": "Who concerning the truth have erred, saying that the resurrection is past already; and overthrow the faith of some.",
-            "14": "Nevertheless the foundation of God standeth sure, having this seal, The Lord knoweth them that are his. And, let every one that nameth the name of Christ depart from iniquity.",
+            "14": "Of these things put them in remembrance, charging them before God that they strive not about words to no profit, but to the subverting of the hearers.",
             "15": "But in a great house there are not only vessels of gold and of silver, but also of wood and of earth; and some to honour, and some to dishonour.",
             "16": "If a man therefore purge himself from these, he shall be a vessel unto honour, sanctified, and meet for the master’s use, and prepared unto every good work.",
             "17": "Flee also youthful lusts: but follow righteousness, faith, charity, peace, with them that call on the Lord out of a pure heart.",
@@ -6008,21 +6007,21 @@
         },
         "3": {
           "sections": {
-            "1": "“Perilous Times Shall Come”",
-            "2": "“Perilous Times Shall Come”",
-            "3": "“Perilous Times Shall Come”",
-            "4": "“Perilous Times Shall Come”",
-            "5": "“Perilous Times Shall Come”",
-            "6": "“Perilous Times Shall Come”",
-            "7": "“Perilous Times Shall Come”",
-            "8": "“Perilous Times Shall Come”",
-            "9": "“Perilous Times Shall Come”",
-            "10": "“Perilous Times Shall Come”",
-            "11": "“Perilous Times Shall Come”",
-            "12": "“Perilous Times Shall Come”",
-            "13": "“Perilous Times Shall Come”",
-            "14": "“Perilous Times Shall Come”",
-            "15": "“Perilous Times Shall Come”"
+            "1": "Concerning Perilous Times and the Sins of Men",
+            "2": "Concerning Perilous Times and the Sins of Men",
+            "3": "Concerning Perilous Times and the Sins of Men",
+            "4": "Concerning Perilous Times and the Sins of Men",
+            "5": "Concerning Perilous Times and the Sins of Men",
+            "6": "Concerning Perilous Times and the Sins of Men",
+            "7": "Concerning Perilous Times and the Sins of Men",
+            "8": "Concerning Perilous Times and the Sins of Men",
+            "9": "Concerning the Persecutions Which They That Live Godly and Chastely Must Needs Suffer",
+            "10": "Concerning the Persecutions Which They That Live Godly and Chastely Must Needs Suffer",
+            "11": "Concerning the Persecutions Which They That Live Godly and Chastely Must Needs Suffer",
+            "12": "Concerning the Persecutions Which They That Live Godly and Chastely Must Needs Suffer",
+            "13": "Concerning the Persecutions Which They That Live Godly and Chastely Must Needs Suffer",
+            "14": "Concerning the Persecutions Which They That Live Godly and Chastely Must Needs Suffer",
+            "15": "Concerning the Persecutions Which They That Live Godly and Chastely Must Needs Suffer"
           },
           "verses": {
             "1": "This know also, that in the last days perilous times shall come.",
@@ -6038,42 +6037,40 @@
             "11": "But evil men and seducers shall wax worse and worse, deceiving, and being deceived.",
             "12": "But continue thou in the things which thou hast learned and hast been assured of, knowing of whom thou hast learned them;",
             "13": "And that from a child thou hast known the holy scriptures, which are able to make thee wise unto salvation through faith which is in Christ Jesus.",
-            "14": "All scripture is given by inspiration of God, and is profitable for doctrine, for reproof, for correction, for instruction in righteousness:",
+            "14": "Every scripture inspired of God is also profitable for doctrine, for reproof, for correction, for instruction in righteousness:",
             "15": "That the man of God may be perfect, throughly furnished unto all good works."
           }
         },
         "4": {
           "sections": {
-            "1": "“Preach the Word”",
-            "2": "“Preach the Word”",
-            "3": "“Preach the Word”",
-            "4": "“Preach the Word”",
-            "5": "“Preach the Word”",
-            "6": "“Preach the Word”",
-            "7": "Personal Concerns",
-            "8": "Personal Concerns",
-            "9": "Personal Concerns",
-            "10": "Personal Concerns",
-            "11": "Personal Concerns",
-            "12": "Personal Concerns",
-            "13": "Personal Concerns",
-            "14": "Personal Concerns"
+            "3": "Concerning the Time When Sound Doctrine Shall Not Be Endured, and the Works of the Saints",
+            "5": "Concerning the Time When Sound Doctrine Shall Not Be Endured, and the Works of the Saints",
+            "6": "Concerning the Time When Sound Doctrine Shall Not Be Endured, and the Works of the Saints",
+            "7": "Concerning the Time When Sound Doctrine Shall Not Be Endured, and the Works of the Saints",
+            "8": "Concerning the Time When Sound Doctrine Shall Not Be Endured, and the Works of the Saints",
+            "9": "Concerning the Time When Sound Doctrine Shall Not Be Endured, and the Works of the Saints",
+            "10": "Concerning Alexander the Coppersmith",
+            "11": "Concerning Alexander the Coppersmith",
+            "12": "Concerning Alexander the Coppersmith",
+            "13": "Concerning Alexander the Coppersmith",
+            "14": "Concerning Alexander the Coppersmith",
+            "15": "Concerning Alexander the Coppersmith"
           },
           "verses": {
-            "1": "I charge thee therefore before God, and the Lord Jesus Christ, who shall judge the quick and the dead at his appearing and his kingdom;",
-            "2": "For the time will come when they will not endure sound doctrine; but after their own lusts shall they heap to themselves teachers, having itching ears;",
-            "3": "And they shall turn away their ears from the truth, and shall be turned unto fables.",
-            "4": "For I am now ready to be offered, and the time of my departure is at hand.",
-            "5": "I have fought a good fight, I have finished my course, I have kept the faith:",
-            "6": "Henceforth there is laid up for me a crown of righteousness, which the Lord, the righteous judge, shall give me at that day: and not to me only, but unto all them also that love his appearing.",
-            "7": "For Demas hath forsaken me, having loved this present world, and is departed unto Thessalonica; Crescens to Galatia, Titus unto Dalmatia.",
-            "8": "The cloke that I left at Troas with Carpus, when thou comest, bring with thee, and the books, but especially the parchments.",
-            "9": "Alexander the coppersmith did me much evil: the Lord reward him according to his works:",
-            "10": "And the Lord shall deliver me from every evil work, and will preserve me unto his heavenly kingdom: to whom be glory for ever and ever. Amen.",
-            "11": "Salute Prisca and Aquila, and the household of Onesiphorus.",
-            "12": "Erastus abode at Corinth: but Trophimus have I left at Miletum sick.",
-            "13": "Do thy diligence to come before winter. Eubulus greeteth thee, and Pudens, and Linus, and Claudia, and all the brethren.",
-            "14": "The Lord Jesus Christ be with thy spirit. Grace be with you. Amen."
+            "1": "I charge thee before God, and Christ Jesus, who shall judge the quick and the dead, and by his appearing and his kingdom;",
+            "2": "Preach the word; be instant in season, out of season; reprove, rebuke, exhort with all longsuffering and doctrine.",
+            "3": "For the time will come when they will not endure sound doctrine; but after their own lusts shall they heap to themselves teachers, having itching ears;",
+            "5": "For I am now ready to be offered, and the time of my departure is at hand.",
+            "6": "I have fought a good fight, I have finished my course, I have kept the faith:",
+            "7": "Henceforth there is laid up for me a crown of righteousness, which the Lord, the righteous judge, shall give me at that day: and not to me only, but unto all them also that love his appearing.",
+            "8": "For Demas hath forsaken me, having loved this present world, and is departed unto Thessalonica; Crescens to Galatia, Titus unto Dalmatia.",
+            "9": "The cloke that I left at Troas with Carpus, when thou comest, bring with thee, and the books, but especially the parchments.",
+            "10": "Alexander the coppersmith did me much evil: the Lord reward him according to his works:",
+            "11": "And the Lord shall deliver me from every evil work, and will preserve me unto his heavenly kingdom: to whom be glory for ever and ever. Amen.",
+            "12": "Salute Prisca and Aquila, and the household of Onesiphorus.",
+            "13": "Erastus abode at Corinth: but Trophimus have I left at Miletum sick.",
+            "14": "Do thy diligence to come before winter. Eubulus greeteth thee, and Pudens, and Linus, and Claudia, and all the brethren.",
+            "15": "The Lord be with thy spirit. Grace be with you. Amen."
           }
         }
       }
@@ -6084,36 +6081,36 @@
       "chapters": {
         "1": {
           "sections": {
-            "1": "Greetings and Love Expressed",
-            "2": "Greetings and Love Expressed",
-            "3": "Greetings and Love Expressed",
-            "4": "Greetings and Love Expressed",
-            "5": "Greetings and Love Expressed",
-            "6": "Greetings and Love Expressed",
-            "7": "Greetings and Love Expressed",
-            "8": "Greetings and Love Expressed",
-            "9": "Greetings and Love Expressed",
-            "10": "Greetings and Love Expressed",
-            "11": "Greetings and Love Expressed",
-            "12": "Greetings and Love Expressed",
-            "13": "Greetings and Love Expressed",
-            "14": "Greetings and Love Expressed",
-            "15": "Greetings and Love Expressed",
-            "16": "Greetings and Love Expressed",
-            "17": "Greetings and Love Expressed",
-            "18": "Greetings and Love Expressed",
-            "19": "Greetings and Love Expressed",
-            "20": "Greetings and Love Expressed",
-            "21": "Greetings and Love Expressed",
-            "22": "Greetings and Love Expressed",
-            "23": "Greetings and Love Expressed"
+            "1": "Concerning the Commendation and Salutation",
+            "2": "Concerning the Commendation and Salutation",
+            "3": "Concerning the Commendation and Salutation",
+            "4": "Concerning the Commendation and Salutation",
+            "5": "Concerning the Commendation and Salutation",
+            "6": "Concerning the Commendation and Salutation",
+            "7": "Concerning the Commendation and Salutation",
+            "8": "Concerning the Commendation and Salutation",
+            "9": "Concerning the Commendation and Salutation",
+            "10": "Concerning the Commendation and Salutation",
+            "11": "Concerning the Commendation and Salutation",
+            "12": "Concerning the Commendation and Salutation",
+            "13": "Concerning the Commendation and Salutation",
+            "14": "Concerning the Commendation and Salutation",
+            "15": "Concerning the Commendation and Salutation",
+            "16": "Concerning the Commendation and Salutation",
+            "17": "Concerning Them Which Cause Divisions and Offences",
+            "18": "Concerning Them Which Cause Divisions and Offences",
+            "19": "Concerning Them Which Cause Divisions and Offences",
+            "20": "Concerning Them Which Cause Divisions and Offences",
+            "21": "Concerning Them Which Cause Divisions and Offences",
+            "22": "Concerning Them Which Cause Divisions and Offences",
+            "23": "Concerning Them Which Cause Divisions and Offences"
           },
           "verses": {
             "1": "I commend unto you Phebe our sister, which is a servant of the church which is at Cenchrea:",
             "2": "That ye receive her in the Lord, as becometh saints, and that ye assist her in whatsoever business she hath need of you: for she hath been a succourer of many, and of myself also.",
             "3": "Greet Priscilla and Aquila my helpers in Christ Jesus:",
             "4": "Who have for my life laid down their own necks: unto whom not only I give thanks, but also all the churches of the Gentiles.",
-            "5": "Likewise greet the church that is in their house. Salute my well-beloved Epaenetus, who is the firstfruits of Achaia unto Christ.",
+            "5": "Likewise greet the church that is in their house. Salute my well-beloved Epaenetus, who is the firstfruits of Asia unto Christ.",
             "6": "Greet Mary, who bestowed much labour on us.",
             "7": "Salute Andronicus and Junia, my kinsmen, and my fellow-prisoners, who are of note among the apostles, who also were in Christ before me.",
             "8": "Greet Amplias my beloved in the Lord.",
@@ -6135,16 +6132,7 @@
           }
         },
         "2": {
-          "sections": {
-            "1": "God’s Final Word in His Son",
-            "2": "God’s Final Word in His Son",
-            "3": "God’s Final Word in His Son",
-            "4": "God’s Final Word in His Son",
-            "5": "God’s Final Word in His Son",
-            "6": "God’s Final Word in His Son",
-            "7": "God’s Final Word in His Son",
-            "8": "God’s Final Word in His Son"
-          },
+          "sections": {},
           "verses": {
             "1": "God, who at sundry times and in divers manners spake in time past,",
             "2": "Hath in these last days spoken unto us by his Son, whom he hath appointed heir of all things, by whom also he made the worlds;",
@@ -6158,18 +6146,18 @@
         },
         "3": {
           "sections": {
-            "1": "Give Heed",
-            "2": "Give Heed",
-            "3": "Give Heed",
-            "4": "Earth Subject to Man",
-            "5": "Earth Subject to Man",
-            "6": "Jesus Briefly Humbled",
-            "7": "Jesus Briefly Humbled",
-            "8": "Jesus Briefly Humbled",
-            "9": "Jesus Briefly Humbled",
-            "10": "Jesus Briefly Humbled",
-            "11": "Jesus Briefly Humbled",
-            "12": "Jesus Briefly Humbled"
+            "1": "Concerning the Punishments Which the Despisers of Christ Cannot Escape",
+            "2": "Concerning the Punishments Which the Despisers of Christ Cannot Escape",
+            "3": "Concerning the Punishments Which the Despisers of Christ Cannot Escape",
+            "4": "Concerning the Saviour, unto Whom All Things Are Subject",
+            "5": "Concerning the Saviour, unto Whom All Things Are Subject",
+            "6": "Concerning the Passion, Whereby the Devil Is Destroyed, and They Are Called Brethren",
+            "7": "Concerning the Passion, Whereby the Devil Is Destroyed, and They Are Called Brethren",
+            "8": "Concerning the Passion, Whereby the Devil Is Destroyed, and They Are Called Brethren",
+            "9": "Concerning the Passion, Whereby the Devil Is Destroyed, and They Are Called Brethren",
+            "10": "Concerning the Passion, Whereby the Devil Is Destroyed, and They Are Called Brethren",
+            "11": "Concerning the Passion, Whereby the Devil Is Destroyed, and They Are Called Brethren",
+            "12": "Concerning the Passion, Whereby the Devil Is Destroyed, and They Are Called Brethren"
           },
           "verses": {
             "1": "Therefore we ought to give the more earnest heed to the things which we have heard, lest at any time we should let them slip.",
@@ -6177,35 +6165,22 @@
             "3": "How shall we escape, if we neglect so great salvation; which at the first began to be spoken by the Lord, and was confirmed unto us by them that heard him;",
             "4": "For unto the angels hath he not put in subjection the world to come, whereof we speak.",
             "5": "But one in a certain place testified, saying, What is man, that thou art mindful of him? or the son of man that thou visitest him?",
-            "6": "But we see Jesus, who was made a little lower than the angels for the suffering of death, crowned with glory and honour; that he by the grace of God should taste death for every man.",
+            "6": "But we see Jesus, who was made a little lower than the angels for the suffering of death, crowned with glory and honour; that he apart from God should taste death for every man.",
             "7": "For it became him, for whom are all things, and by whom are all things, in bringing many sons unto glory, to make the captain of their salvation perfect through sufferings.",
             "8": "For both he that sanctifieth and they who are sanctified are all of one: for which cause he is not ashamed to call them brethren,",
             "9": "Saying, I will declare thy name unto my brethren, in the midst of the church will I sing praise unto thee.",
             "10": "Forasmuch then as the children are partakers of flesh and blood, he also himself likewise took part of the same; that through death he might destroy him that had the power of death, that is, the devil;",
-            "11": "For verily he took not on him the nature of angels;",
+            "11": "For verily he taketh not hold of angels;",
             "12": "Wherefore in all things it behoved him to be made like unto his brethren, that he might be a merciful and faithful high priest in things pertaining to God, to make reconciliation for the sins of the people."
           }
         },
         "4": {
-          "sections": {
-            "1": "Jesus Our High Priest",
-            "2": "Jesus Our High Priest",
-            "3": "Jesus Our High Priest",
-            "4": "Jesus Our High Priest",
-            "5": "Jesus Our High Priest",
-            "6": "Jesus Our High Priest",
-            "7": "Jesus Our High Priest",
-            "8": "Jesus Our High Priest",
-            "9": "Jesus Our High Priest",
-            "10": "The Peril of Unbelief",
-            "11": "The Peril of Unbelief",
-            "12": "The Peril of Unbelief"
-          },
+          "sections": {},
           "verses": {
             "1": "Who was faithful to him that appointed him, as also Moses was faithful in all his house.",
             "2": "For this man was counted worthy of more glory than Moses, inasmuch as he who hath builded the house hath more honour than the house.",
             "3": "And Moses verily was faithful in all his house, as a servant, for a testimony of those things which were to be spoken after;",
-            "4": "But Christ as a son over his own house; whose house are we, if we hold fast the confidence and the rejoicing of the hope firm unto the end.",
+            "4": "But Christ as a son over his own house; whose house are we, if we hold fast the confidence and the rejoicing of the hope.",
             "5": "Wherefore as the Holy Ghost saith, To day if ye will hear his voice,",
             "6": "Harden not your hearts, as in the provocation, in the day of temptation in the wilderness:",
             "7": "When your fathers tempted me, proved me, and saw my works forty years.",
@@ -6218,13 +6193,13 @@
         },
         "5": {
           "sections": {
-            "1": "The Believer’s Rest",
-            "2": "The Believer’s Rest",
-            "3": "The Believer’s Rest",
-            "4": "The Believer’s Rest",
-            "5": "The Believer’s Rest",
-            "6": "The Believer’s Rest",
-            "7": "The Believer’s Rest"
+            "1": "Concerning Entering the Land of Promise through Faith",
+            "2": "Concerning Entering the Land of Promise through Faith",
+            "3": "Concerning Entering the Land of Promise through Faith",
+            "4": "Concerning the Divine Word, Which Alone Can Purge the Sins of Believers",
+            "5": "Concerning the Divine Word, Which Alone Can Purge the Sins of Believers",
+            "6": "Concerning the Divine Word, Which Alone Can Purge the Sins of Believers",
+            "7": "Concerning the Divine Word, Which Alone Can Purge the Sins of Believers"
           },
           "verses": {
             "1": "Seeing therefore it remaineth that some must enter therein, and they to whom it was first preached entered not in because of unbelief:",
@@ -6237,17 +6212,7 @@
           }
         },
         "6": {
-          "sections": {
-            "1": "The Perfect High Priest",
-            "2": "The Perfect High Priest",
-            "3": "The Perfect High Priest",
-            "4": "The Perfect High Priest",
-            "5": "The Perfect High Priest",
-            "6": "The Perfect High Priest",
-            "7": "The Perfect High Priest",
-            "8": "The Perfect High Priest",
-            "9": "The Perfect High Priest"
-          },
+          "sections": {},
           "verses": {
             "1": "For every high priest taken from among men is ordained for men in things pertaining to God, that he may offer both gifts and sacrifices for sins:",
             "2": "And no man taketh this honour unto himself, but he that is called of God, as was Aaron.",
@@ -6261,17 +6226,7 @@
           }
         },
         "7": {
-          "sections": {
-            "1": "The Peril of Falling Away",
-            "2": "The Peril of Falling Away",
-            "3": "The Peril of Falling Away",
-            "4": "The Peril of Falling Away",
-            "5": "The Peril of Falling Away",
-            "6": "The Peril of Falling Away",
-            "7": "Better Things for You",
-            "8": "Better Things for You",
-            "9": "Better Things for You"
-          },
+          "sections": {},
           "verses": {
             "1": "Therefore leaving the principles of the doctrine of Christ, let us go on unto perfection; not laying again the foundation of repentance from dead works, and of faith toward God,",
             "2": "Of the doctrine of baptisms, and of laying on of hands, and of resurrection of the dead, and of eternal judgment.",
@@ -6286,12 +6241,13 @@
         },
         "8": {
           "sections": {
-            "1": "Melchisedec’s Priesthood Like Christ’s",
-            "2": "Melchisedec’s Priesthood Like Christ’s",
-            "3": "Melchisedec’s Priesthood Like Christ’s",
-            "4": "Melchisedec’s Priesthood Like Christ’s",
-            "5": "Melchisedec’s Priesthood Like Christ’s",
-            "6": "Melchisedec’s Priesthood Like Christ’s"
+            "1": "Concerning the Son of God, Who Is Compared unto Melchisedec",
+            "2": "Concerning the Son of God, Who Is Compared unto Melchisedec",
+            "3": "Concerning the Son of God, Who Is Compared unto Melchisedec",
+            "4": "Concerning the Unprofitableness of the Old Law and Priesthood",
+            "5": "Concerning the Promise of a Better Priesthood",
+            "6": "Concerning the Promise of a Better Priesthood",
+            "7": "Concerning Christ the High Priest without Sin"
           },
           "verses": {
             "1": "For this Melchisedec, king of Salem, priest of the most high God, who met Abraham returning from the slaughter of the kings, and blessed him;",
@@ -6299,19 +6255,20 @@
             "3": "Without father, without mother, without descent, having neither beginning of days, nor end of life; but made like unto the Son of God; abideth a priest continually.",
             "4": "For the law made nothing perfect, but the bringing in of a better hope did; by the which we draw nigh unto God.",
             "5": "For those priests were made without an oath; but this with an oath by him that said unto him, The Lord sware and will not repent, Thou art a priest for ever after the order of Melchisedec:",
-            "6": "For such an high priest became us, who is holy, harmless, undefiled, separate from sinners, and made higher than the heavens."
+            "6": "Wherefore he is able also to save them to the uttermost that come unto God by him, seeing he ever liveth to make intercession for them.",
+            "7": "For such an high priest became us, who is holy, harmless, undefiled, separate from sinners, and made higher than the heavens."
           }
         },
         "9": {
           "sections": {
-            "1": "A Better Ministry",
-            "2": "A Better Ministry",
-            "3": "A Better Ministry",
-            "4": "A New Covenant",
-            "5": "A New Covenant",
-            "6": "A New Covenant",
-            "7": "A New Covenant",
-            "8": "A New Covenant"
+            "1": "Concerning Christ the High Priest in the Heavenly Sanctuary",
+            "2": "Concerning Christ the High Priest in the Heavenly Sanctuary",
+            "3": "Concerning Christ the High Priest in the Heavenly Sanctuary",
+            "4": "Concerning Christ the High Priest in the Heavenly Sanctuary",
+            "5": "Concerning Christ the High Priest in the Heavenly Sanctuary",
+            "6": "Concerning Christ the High Priest in the Heavenly Sanctuary",
+            "7": "Concerning Christ the High Priest in the Heavenly Sanctuary",
+            "8": "Concerning Christ the High Priest in the Heavenly Sanctuary"
           },
           "verses": {
             "1": "Now of the things which we have spoken this is the sum: We have such an high priest, who is set on the right hand of the throne of the Majesty in the heavens;",
@@ -6319,26 +6276,26 @@
             "3": "Who serve unto the example and shadow of heavenly things, as Moses was admonished of God when he was about to make the tabernacle: for, See, saith he, that thou make all things according to the pattern shewed to thee in the mount.",
             "4": "For finding fault with them, he saith, Behold, the days come, saith the Lord, when I will make a new covenant with the house of Israel and with the house of Judah:",
             "5": "For this is the covenant that I will make with the house of Israel after those days, saith the Lord; I will put my laws into their mind, and write them in their hearts: and I will be to them a God, and they shall be to me a people:",
-            "6": "And they shall not teach every man his neighbour, and every man his brother, saying, Know the Lord: for all shall know me, from the least to the greatest.",
-            "7": "For I will be merciful to their unrighteousness, and their sins and their iniquities will I remember no more.",
+            "6": "And they shall not teach every man his fellow-citizen, and every man his brother, saying, Know the Lord: for all shall know me, from the least to the greatest.",
+            "7": "For I will be merciful to their unrighteousness, and their sins will I remember no more.",
             "8": "In that he saith, A new covenant, he hath made the first old. Now that which decayeth and waxeth old is ready to vanish away."
           }
         },
         "10": {
           "sections": {
-            "1": "The Old and the New",
-            "2": "The Old and the New",
-            "3": "The Old and the New",
-            "4": "The Old and the New",
-            "5": "The Old and the New",
-            "6": "The Old and the New",
-            "7": "The Old and the New",
-            "8": "The Old and the New",
-            "9": "The Old and the New",
-            "10": "The Old and the New",
-            "11": "The Old and the New",
-            "12": "The Old and the New",
-            "13": "The Old and the New"
+            "1": "Concerning the Tabernacle and Tables of the Old Testament",
+            "2": "Concerning the Tabernacle and Tables of the Old Testament",
+            "3": "Concerning the Yearly Sacrifice of the High Priest",
+            "4": "Concerning the Yearly Sacrifice of the High Priest",
+            "5": "Concerning the Yearly Sacrifice of the High Priest",
+            "6": "Concerning the Yearly Sacrifice of the High Priest",
+            "7": "Concerning the Saving Blood Which Purgeth Sins",
+            "8": "Concerning Purification by Divine Blood",
+            "9": "Concerning Purification by Divine Blood",
+            "10": "Concerning Christ’s Offering and His Appearing before God",
+            "11": "Concerning the Sacrifice of Christ Once Offered",
+            "12": "Concerning the Sacrifice of Christ Once Offered",
+            "13": "Concerning Death and Judgment"
           },
           "verses": {
             "1": "And after the second veil, the tabernacle which is called the Holiest of all;",
@@ -6346,7 +6303,7 @@
             "3": "But into the second went the high priest alone once every year, not without blood, which he offered for himself, and for the errors of the people:",
             "4": "The Holy Ghost this signifying, that the way into the holiest of all was not yet made manifest, while as the first tabernacle was yet standing:",
             "5": "Which stood only in meats and drinks, and divers washings, and carnal ordinances, imposed on them until the time of reformation.",
-            "6": "But Christ being come an high priest of good things to come, by a greater and more perfect tabernacle, not made with hands, that is to say, not of this building;",
+            "6": "But Christ being come an high priest of the good things that have come, by a greater and more perfect tabernacle, not made with hands, that is to say, not of this building;",
             "7": "For if the blood of bulls and of goats, and the ashes of an heifer sprinkling the unclean, sanctifieth to the purifying of the flesh:",
             "8": "How much more shall the blood of Christ, who through the eternal Spirit offered himself without spot to God, purge your conscience from dead works to serve the living God?",
             "9": "For when Moses had spoken every precept to all the people according to the law, he took the blood of calves and of goats, with water, and scarlet wool, and hyssop, and sprinkled both the book, and all the people,",
@@ -6358,32 +6315,32 @@
         },
         "11": {
           "sections": {
-            "1": "One Sacrifice of Christ Is Sufficient",
-            "2": "One Sacrifice of Christ Is Sufficient",
-            "3": "One Sacrifice of Christ Is Sufficient",
-            "4": "One Sacrifice of Christ Is Sufficient",
-            "5": "One Sacrifice of Christ Is Sufficient",
-            "6": "A New and Living Way",
-            "7": "A New and Living Way",
-            "8": "A New and Living Way",
-            "9": "Christ or Judgment",
-            "10": "Christ or Judgment",
-            "11": "Christ or Judgment",
-            "12": "Christ or Judgment",
-            "13": "Christ or Judgment",
-            "14": "Christ or Judgment",
-            "15": "Christ or Judgment",
-            "16": "Christ or Judgment",
-            "17": "Christ or Judgment",
-            "18": "Christ or Judgment",
-            "19": "Christ or Judgment",
-            "20": "Christ or Judgment"
+            "1": "Concerning the Sacrifices of the Old Law, Which Could Not Make Perfect",
+            "2": "Concerning Christ Doing the Will of God and Taking Away the First",
+            "3": "Concerning the One Sacrifice of Christ",
+            "4": "Concerning Sins Remembered No More",
+            "5": "Concerning Drawing Near with a True Heart and Full Assurance of Faith",
+            "6": "Concerning Holding Fast the Profession of Faith",
+            "7": "Concerning Provoking One Another unto Love and Good Works",
+            "8": "Concerning Provoking One Another unto Love and Good Works",
+            "9": "Concerning Them That Sin Wilfully after Receiving the Knowledge of the Truth",
+            "10": "Concerning Them That Sin Wilfully after Receiving the Knowledge of the Truth",
+            "11": "Concerning Them That Sin Wilfully after Receiving the Knowledge of the Truth",
+            "12": "Concerning Them That Sin Wilfully after Receiving the Knowledge of the Truth",
+            "13": "Concerning the Former Sufferings Endured after Enlightenment",
+            "14": "Concerning the Former Sufferings Endured after Enlightenment",
+            "15": "Concerning the Former Sufferings Endured after Enlightenment",
+            "16": "Concerning Confidence and Patience unto the Receiving of the Promise",
+            "17": "Concerning Confidence and Patience unto the Receiving of the Promise",
+            "18": "Concerning Him That Shall Come and the Just That Liveth by Faith",
+            "19": "Concerning Him That Shall Come and the Just That Liveth by Faith",
+            "20": "Concerning Him That Shall Come and the Just That Liveth by Faith"
           },
           "verses": {
             "1": "For the law having a shadow of good things to come, and not the very image of the things, can never with those sacrifices which they offered year by year continually make the comers thereunto perfect.",
-            "2": "Then said he, Lo, I come to do thy will, O God. He taketh away the first, that he may establish the second.",
+            "2": "Then said he, Lo, I come to do thy will. He taketh away the first, that he may establish the second.",
             "3": "But this man, after he had offered one sacrifice for sins for ever, sat down on the right hand of God;",
-            "4": "And their sins and iniquities will I remember no more.",
+            "4": "And their sins will I remember no more.",
             "5": "Let us draw near with a true heart in full assurance of faith, having our hearts sprinkled from an evil conscience, and our bodies washed with pure water.",
             "6": "Let us hold fast the profession of our faith without wavering; for he is faithful that promised;",
             "7": "And let us consider one another to provoke unto love and to good works:",
@@ -6394,7 +6351,7 @@
             "12": "For we know him that hath said, Vengeance belongeth unto me, I will recompense, saith the Lord. And again, The Lord shall judge his people.",
             "13": "But call to remembrance the former days, in which, after ye were illuminated, ye endured a great fight of afflictions;",
             "14": "Partly, whilst ye were made a gazingstock both by reproaches and afflictions; and partly, whilst ye became companions of them that were so used.",
-            "15": "For ye had compassion of me in my bonds, and took joyfully the spoiling of your goods, knowing in yourselves that ye have in heaven a better and an enduring substance.",
+            "15": "For ye had compassion on them that were in bonds, and took joyfully the spoiling of your goods, knowing that ye yourselves have a better and an enduring substance.",
             "16": "Cast not away therefore your confidence, which hath great recompence of reward.",
             "17": "For ye have need of patience, that, after ye have done the will of God, ye might receive the promise.",
             "18": "For yet a little while, and he that shall come will come, and will not tarry.",
@@ -6404,27 +6361,27 @@
         },
         "12": {
           "sections": {
-            "1": "The Triumphs of Faith",
-            "2": "The Triumphs of Faith",
-            "3": "The Triumphs of Faith",
-            "4": "The Triumphs of Faith",
-            "5": "The Triumphs of Faith",
-            "6": "The Triumphs of Faith",
-            "7": "The Triumphs of Faith",
-            "8": "The Triumphs of Faith",
-            "9": "The Triumphs of Faith",
-            "10": "The Triumphs of Faith",
-            "11": "The Triumphs of Faith",
-            "12": "The Triumphs of Faith",
-            "13": "The Triumphs of Faith",
-            "14": "The Triumphs of Faith",
-            "15": "The Triumphs of Faith",
-            "16": "The Triumphs of Faith",
-            "19": "The Triumphs of Faith",
-            "21": "The Triumphs of Faith",
-            "23": "The Triumphs of Faith",
-            "24": "The Triumphs of Faith",
-            "25": "The Triumphs of Faith"
+            "1": "Concerning Faith and the Things Hoped For",
+            "2": "Concerning Faith and the Things Hoped For",
+            "3": "Concerning Faith and the Things Hoped For",
+            "4": "Concerning the Saints Who Pleased God by Faith",
+            "5": "Concerning the Saints Who Pleased God by Faith",
+            "6": "Concerning the Saints Who Pleased God by Faith",
+            "7": "Concerning the Saints Who Pleased God by Faith",
+            "8": "Concerning the Saints Who Pleased God by Faith",
+            "9": "Concerning the Saints Who Pleased God by Faith",
+            "10": "Concerning the Saints Who Pleased God by Faith",
+            "11": "Concerning the Saints Who Pleased God by Faith",
+            "12": "Concerning the Saints Who Pleased God by Faith",
+            "13": "Concerning the Saints Who Pleased God by Faith",
+            "14": "Concerning the Saints Who Pleased God by Faith",
+            "15": "Concerning the Saints Who Pleased God by Faith",
+            "16": "Concerning the Saints Who Pleased God by Faith",
+            "19": "Concerning the Saints Who Pleased God by Faith",
+            "21": "Concerning the Sufferings of the Faithful",
+            "23": "Concerning the Sufferings of the Faithful",
+            "24": "Concerning the Sufferings of the Faithful",
+            "25": "Concerning the Sufferings of the Faithful"
           },
           "verses": {
             "1": "Now faith is the substance of things hoped for, the evidence of things not seen.",
@@ -6446,28 +6403,12 @@
             "19": "And what shall I more say? for the time would fail me to tell of Gedeon, and of Barak, and of Samson, and of Jephthae; of David also, and Samuel, and of the prophets:",
             "21": "And others had trial of cruel mockings and scourgings, yea, moreover of bonds and imprisonment:",
             "23": "Of whom the world was not worthy: they wandered in deserts, and in mountains, and in dens and caves of the earth.",
-            "24": "And these all, having obtained a good report through faith, received not the promise:",
+            "24": "And all, having obtained a good report through faith, received not the promise of God:",
             "25": "God having provided some better thing for us, that they without us should not be made perfect."
           }
         },
         "13": {
-          "sections": {
-            "1": "Jesus, the Example",
-            "2": "Jesus, the Example",
-            "3": "A Father’s Discipline",
-            "4": "A Father’s Discipline",
-            "5": "A Father’s Discipline",
-            "6": "A Father’s Discipline",
-            "7": "A Father’s Discipline",
-            "8": "A Father’s Discipline",
-            "9": "A Father’s Discipline",
-            "10": "Contrast of Sinai and Zion",
-            "11": "Contrast of Sinai and Zion",
-            "12": "Contrast of Sinai and Zion",
-            "13": "Contrast of Sinai and Zion",
-            "14": "The Unshaken Kingdom",
-            "15": "The Unshaken Kingdom"
-          },
+          "sections": {},
           "verses": {
             "1": "Wherefore seeing we also are compassed about with so great a cloud of witnesses, let us lay aside every weight, and the sin which doth so easily beset us, and let us run with patience the race that is set before us,",
             "2": "Looking unto Jesus the author and finisher of our faith; who for the joy that was set before him endured the cross, despising the shame, and is set down at the right hand of the throne of God.",
@@ -6487,33 +6428,19 @@
           }
         },
         "14": {
-          "sections": {
-            "1": "The Changeless Christ",
-            "2": "The Changeless Christ",
-            "3": "The Changeless Christ",
-            "4": "The Changeless Christ",
-            "6": "The Changeless Christ",
-            "7": "The Changeless Christ",
-            "8": "The Changeless Christ",
-            "9": "The Changeless Christ",
-            "10": "The Changeless Christ",
-            "11": "The Changeless Christ",
-            "12": "The Changeless Christ",
-            "13": "The Changeless Christ",
-            "14": "The Changeless Christ",
-            "15": "The Changeless Christ"
-          },
+          "sections": {},
           "verses": {
             "1": "Be not forgetful to entertain strangers: for thereby some have entertained angels unawares.",
             "2": "Marriage is honourable in all, and the bed undefiled: but whoremongers and adulterers God will judge.",
             "3": "Let your conversation be without covetousness; and be content with such things as ye have: for he hath said, I will never leave thee, nor forsake thee.",
             "4": "Remember them which have the rule over you, who have spoken unto you the word of God: whose faith follow, considering the end of their conversation.",
+            "5": "Jesus Christ the same yesterday, and to day, and for ever.",
             "6": "We have an altar, whereof they have no right to eat which serve the tabernacle.",
             "7": "Wherefore Jesus also, that he might sanctify the people with his own blood, suffered without the gate.",
             "8": "For here have we no continuing city, but we seek one to come.",
             "9": "By him therefore let us offer the sacrifice of praise to God continually, that is, the fruit of our lips giving thanks to his name.",
             "10": "Obey them that have the rule over you, and submit yourselves: for they watch for your souls, as they that must give account, that they may do it with joy, and not with grief: for that is unprofitable for you.",
-            "11": "Make you perfect in every good work to do his will, working in you that which is wellpleasing in his sight, through Jesus Christ; to whom be glory for ever and ever. Amen.",
+            "11": "Make you perfect in every good thing to do his will, working in you that which is wellpleasing in his sight, through Jesus Christ; to whom be glory for ever and ever. Amen.",
             "12": "And I beseech you, brethren, suffer the word of exhortation: for I have written a letter unto you in few words.",
             "13": "Know ye that our brother Timothy is set at liberty; with whom, if he come shortly, I will see you.",
             "14": "Salute all them that have the rule over you, and all the saints. They of Italy salute you.",
@@ -6527,12 +6454,7 @@
       "url": "https://marcionitechurchofchrist.org/psalmicon/",
       "chapters": {
         "1": {
-          "sections": {
-            "1": "For It Is Not Like a Dry Wreath",
-            "2": "For It Is Not Like a Dry Wreath",
-            "3": "For It Is Not Like a Dry Wreath",
-            "4": "For It Is Not Like a Dry Wreath"
-          },
+          "sections": {},
           "verses": {
             "1": "The Lord is upon my head like a crown, and I shall not be removed.",
             "2": "They wove for me a crown of truth, and it caused thy branches to blossom within me.",
@@ -6541,12 +6463,7 @@
           }
         },
         "2": {
-          "sections": {
-            "1": "Immortal Land",
-            "2": "Immortal Land",
-            "3": "Immortal Land",
-            "4": "Immortal Land"
-          },
+          "sections": {},
           "verses": {
             "1": "I saw trees beautiful and fruitful, and self-grown was their crown.",
             "2": "Their timber flourisheth, and their fruits rejoice; their roots are from an immortal land.",
@@ -6555,21 +6472,7 @@
           }
         },
         "3": {
-          "sections": {
-            "1": "And God’s Limbs Are With Me",
-            "2": "And God’s Limbs Are With Me",
-            "3": "And God’s Limbs Are With Me",
-            "4": "And God’s Limbs Are With Me",
-            "5": "And God’s Limbs Are With Me",
-            "6": "And God’s Limbs Are With Me",
-            "7": "And God’s Limbs Are With Me",
-            "8": "And God’s Limbs Are With Me",
-            "9": "And God’s Limbs Are With Me",
-            "10": "And God’s Limbs Are With Me",
-            "11": "And God’s Limbs Are With Me",
-            "12": "And God’s Limbs Are With Me",
-            "13": "And God’s Limbs Are With Me"
-          },
+          "sections": {},
           "verses": {
             "1": "My limbs with light I clothe.",
             "2": "And His members are with me; unto them do I cleave, and He loveth me.",
@@ -6587,22 +6490,7 @@
           }
         },
         "4": {
-          "sections": {
-            "1": "And the Elect Archangels Are Clothed With Your Seal",
-            "2": "And the Elect Archangels Are Clothed With Your Seal",
-            "3": "And the Elect Archangels Are Clothed With Your Seal",
-            "4": "And the Elect Archangels Are Clothed With Your Seal",
-            "5": "And the Elect Archangels Are Clothed With Your Seal",
-            "6": "And the Elect Archangels Are Clothed With Your Seal",
-            "7": "And the Elect Archangels Are Clothed With Your Seal",
-            "8": "And the Elect Archangels Are Clothed With Your Seal",
-            "9": "And the Elect Archangels Are Clothed With Your Seal",
-            "10": "And the Elect Archangels Are Clothed With Your Seal",
-            "11": "And the Elect Archangels Are Clothed With Your Seal",
-            "12": "And the Elect Archangels Are Clothed With Your Seal",
-            "13": "And the Elect Archangels Are Clothed With Your Seal",
-            "14": "And the Elect Archangels Are Clothed With Your Seal"
-          },
+          "sections": {},
           "verses": {
             "1": "No man, O my God, changeth thy holy place;",
             "2": "And it is not possible that he should change it and put it in another place, because he hath no power over it;",
@@ -6621,19 +6509,7 @@
           }
         },
         "5": {
-          "sections": {
-            "1": "For They Have Devised a Scheme",
-            "2": "For They Have Devised a Scheme",
-            "3": "For They Have Devised a Scheme",
-            "4": "For They Have Devised a Scheme",
-            "5": "For They Have Devised a Scheme",
-            "6": "For They Have Devised a Scheme",
-            "7": "For They Have Devised a Scheme",
-            "8": "For They Have Devised a Scheme",
-            "9": "For They Have Devised a Scheme",
-            "10": "For They Have Devised a Scheme",
-            "11": "For They Have Devised a Scheme"
-          },
+          "sections": {},
           "verses": {
             "1": "I will give thanks unto thee, O Lord, because I love thee;",
             "2": "O Most High, thou wilt not forsake me, for thou art my hope:",
@@ -6643,31 +6519,16 @@
             "6": "And they shall have no light to see, that they may not take hold upon me.",
             "7": "Let their counsel become thick darkness, and what they have cunningly devised, let it return upon their own heads:",
             "8": "For they devised a counsel, and it succeeded not.",
-            "9": "For my hope is upon the Lord and I will not fear, and because the Lord is my salvation, I will not fear:",
-            "10": "And He is as a crown upon my head, and I shall not be moved; though all things be shaken, I shall stand firm.",
-            "11": "And though all things visible should perish, I shall not die; for the Lord is with me, and I am with Him. Amen."
+            "9": "And they were overcome, though they were mighty.",
+            "10": "They prepared themselves wickedly, but they were found vain.",
+            "11": "For my hope is upon the Lord, and I will not fear,",
+            "12": "And because the Lord is my salvation, I will not fear:",
+            "13": "And He is as a crown upon my head, and I shall not be moved; though all things be shaken, I shall stand firm.",
+            "14": "And though all things visible should perish, I shall not die; for the Lord is with me, and I am with Him. Amen."
           }
         },
         "6": {
-          "sections": {
-            "1": "And the Restrainers Could Not Restrain It",
-            "2": "And the Restrainers Could Not Restrain It",
-            "3": "And the Restrainers Could Not Restrain It",
-            "4": "And the Restrainers Could Not Restrain It",
-            "5": "And the Restrainers Could Not Restrain It",
-            "6": "And the Restrainers Could Not Restrain It",
-            "7": "And the Restrainers Could Not Restrain It",
-            "8": "And the Restrainers Could Not Restrain It",
-            "9": "And the Restrainers Could Not Restrain It",
-            "10": "And the Restrainers Could Not Restrain It",
-            "11": "And the Restrainers Could Not Restrain It",
-            "12": "And the Restrainers Could Not Restrain It",
-            "13": "And the Restrainers Could Not Restrain It",
-            "14": "And the Restrainers Could Not Restrain It",
-            "15": "And the Restrainers Could Not Restrain It",
-            "16": "And the Restrainers Could Not Restrain It",
-            "17": "And the Restrainers Could Not Restrain It"
-          },
+          "sections": {},
           "verses": {
             "1": "As the wind moveth over the harp, and the strings speak,",
             "2": "So speaketh the Spirit of the Lord in my members, and I speak by His love.",
@@ -6689,36 +6550,7 @@
           }
         },
         "7": {
-          "sections": {
-            "1": "And So God Was Merciful to Me",
-            "2": "And So God Was Merciful to Me",
-            "3": "And So God Was Merciful to Me",
-            "4": "And So God Was Merciful to Me",
-            "5": "And So God Was Merciful to Me",
-            "6": "And So God Was Merciful to Me",
-            "7": "And So God Was Merciful to Me",
-            "8": "And So God Was Merciful to Me",
-            "9": "And So God Was Merciful to Me",
-            "10": "And So God Was Merciful to Me",
-            "11": "And So God Was Merciful to Me",
-            "12": "And So God Was Merciful to Me",
-            "13": "And So God Was Merciful to Me",
-            "14": "And So God Was Merciful to Me",
-            "15": "And So God Was Merciful to Me",
-            "16": "And So God Was Merciful to Me",
-            "17": "And So God Was Merciful to Me",
-            "18": "And So God Was Merciful to Me",
-            "19": "And So God Was Merciful to Me",
-            "20": "And So God Was Merciful to Me",
-            "21": "And So God Was Merciful to Me",
-            "22": "And So God Was Merciful to Me",
-            "23": "And So God Was Merciful to Me",
-            "24": "And So God Was Merciful to Me",
-            "25": "And So God Was Merciful to Me",
-            "26": "And So God Was Merciful to Me",
-            "27": "And So God Was Merciful to Me",
-            "28": "And So God Was Merciful to Me"
-          },
+          "sections": {},
           "verses": {
             "1": "As the impulse of love toward infancy, so is the impulse of joy toward the Beloved, which bringeth forth its fruits without restraint.",
             "2": "My joy is the Lord and my impulse is toward Him: this path of mine is excellent:",
@@ -6751,34 +6583,7 @@
           }
         },
         "8": {
-          "sections": {
-            "1": "For I Do Not Turn Away My Face from My Own",
-            "2": "For I Do Not Turn Away My Face from My Own",
-            "3": "For I Do Not Turn Away My Face from My Own",
-            "4": "For I Do Not Turn Away My Face from My Own",
-            "5": "For I Do Not Turn Away My Face from My Own",
-            "6": "For I Do Not Turn Away My Face from My Own",
-            "7": "For I Do Not Turn Away My Face from My Own",
-            "8": "For I Do Not Turn Away My Face from My Own",
-            "9": "For I Do Not Turn Away My Face from My Own",
-            "10": "For I Do Not Turn Away My Face from My Own",
-            "11": "For I Do Not Turn Away My Face from My Own",
-            "12": "For I Do Not Turn Away My Face from My Own",
-            "13": "For I Do Not Turn Away My Face from My Own",
-            "14": "For I Do Not Turn Away My Face from My Own",
-            "15": "For I Do Not Turn Away My Face from My Own",
-            "16": "For I Do Not Turn Away My Face from My Own",
-            "17": "For I Do Not Turn Away My Face from My Own",
-            "18": "For I Do Not Turn Away My Face from My Own",
-            "19": "For I Do Not Turn Away My Face from My Own",
-            "20": "For I Do Not Turn Away My Face from My Own",
-            "21": "For I Do Not Turn Away My Face from My Own",
-            "22": "For I Do Not Turn Away My Face from My Own",
-            "23": "For I Do Not Turn Away My Face from My Own",
-            "24": "For I Do Not Turn Away My Face from My Own",
-            "25": "For I Do Not Turn Away My Face from My Own",
-            "26": "For I Do Not Turn Away My Face from My Own"
-          },
+          "sections": {},
           "verses": {
             "1": "Open ye, open ye your hearts to the exultation of the Lord:",
             "2": "And let your love be multiplied from the heart and even to the lips,",
@@ -6809,21 +6614,7 @@
           }
         },
         "9": {
-          "sections": {
-            "1": "That Those Who Have Known God May Not Perish",
-            "2": "That Those Who Have Known God May Not Perish",
-            "3": "That Those Who Have Known God May Not Perish",
-            "4": "That Those Who Have Known God May Not Perish",
-            "5": "That Those Who Have Known God May Not Perish",
-            "6": "That Those Who Have Known God May Not Perish",
-            "7": "That Those Who Have Known God May Not Perish",
-            "8": "That Those Who Have Known God May Not Perish",
-            "9": "That Those Who Have Known God May Not Perish",
-            "10": "That Those Who Have Known God May Not Perish",
-            "11": "That Those Who Have Known God May Not Perish",
-            "12": "That Those Who Have Known God May Not Perish",
-            "13": "That Those Who Have Known God May Not Perish"
-          },
+          "sections": {},
           "verses": {
             "1": "Open ye your ears, and I will speak unto you; give me your souls, that I also may give you my soul.",
             "2": "The Word of the Lord and His good pleasure are the holy thought which He hath devised concerning His Christ.",
@@ -6841,16 +6632,7 @@
           }
         },
         "10": {
-          "sections": {
-            "1": "And I Took the World Captive",
-            "2": "And I Took the World Captive",
-            "3": "And I Took the World Captive",
-            "4": "And I Took the World Captive",
-            "5": "And I Took the World Captive",
-            "6": "And I Took the World Captive",
-            "7": "And I Took the World Captive",
-            "8": "And I Took the World Captive"
-          },
+          "sections": {},
           "verses": {
             "1": "The Lord hath directed my mouth by His word: and He hath opened my heart by His light: and He hath caused to dwell in me His deathless life;",
             "2": "And He gave me to speak the fruit of peace;",
@@ -6863,29 +6645,7 @@
           }
         },
         "11": {
-          "sections": {
-            "1": "Like the Land That Flourishes",
-            "2": "Like the Land That Flourishes",
-            "3": "Like the Land That Flourishes",
-            "4": "Like the Land That Flourishes",
-            "5": "Like the Land That Flourishes",
-            "6": "Like the Land That Flourishes",
-            "7": "Like the Land That Flourishes",
-            "8": "Like the Land That Flourishes",
-            "9": "Like the Land That Flourishes",
-            "10": "Like the Land That Flourishes",
-            "11": "Like the Land That Flourishes",
-            "12": "Like the Land That Flourishes",
-            "13": "Like the Land That Flourishes",
-            "14": "Like the Land That Flourishes",
-            "15": "Like the Land That Flourishes",
-            "16": "Like the Land That Flourishes",
-            "17": "Like the Land That Flourishes",
-            "18": "Like the Land That Flourishes",
-            "19": "Like the Land That Flourishes",
-            "20": "Like the Land That Flourishes",
-            "21": "Like the Land That Flourishes"
-          },
+          "sections": {},
           "verses": {
             "1": "My heart was cloven and its flower appeared; and grace sprang up in it: and it brought forth fruit to the Lord,",
             "2": "For the Most High clave my heart by His Holy Spirit, searched my affection toward Him, and filled me with His love.",
@@ -6911,20 +6671,7 @@
           }
         },
         "12": {
-          "sections": {
-            "1": "And It Knows Neither Its Descent nor Its Way",
-            "2": "And It Knows Neither Its Descent nor Its Way",
-            "3": "And It Knows Neither Its Descent nor Its Way",
-            "4": "And It Knows Neither Its Descent nor Its Way",
-            "5": "And It Knows Neither Its Descent nor Its Way",
-            "6": "And It Knows Neither Its Descent nor Its Way",
-            "7": "And It Knows Neither Its Descent nor Its Way",
-            "8": "And It Knows Neither Its Descent nor Its Way",
-            "9": "And It Knows Neither Its Descent nor Its Way",
-            "10": "And It Knows Neither Its Descent nor Its Way",
-            "11": "And It Knows Neither Its Descent nor Its Way",
-            "12": "And It Knows Neither Its Descent nor Its Way"
-          },
+          "sections": {},
           "verses": {
             "1": "He hath filled me with words of truth, that I may speak the same;",
             "2": "And like the flow of waters floweth truth from my mouth, and my lips shew forth His fruit.",
@@ -6941,11 +6688,7 @@
           }
         },
         "13": {
-          "sections": {
-            "1": "And Declare Praise unto His Spirit",
-            "2": "And Declare Praise unto His Spirit",
-            "3": "And Declare Praise unto His Spirit"
-          },
+          "sections": {},
           "verses": {
             "1": "Behold, the Lord is our mirror: open ye your eyes and behold yourselves in Him, and learn the manner of your face.",
             "2": "And declare praise unto His Spirit; wipe the filth from your face, love His holiness, and clothe yourselves therewith.",
@@ -6953,17 +6696,7 @@
           }
         },
         "14": {
-          "sections": {
-            "1": "Because of Your Glory",
-            "2": "Because of Your Glory",
-            "3": "Because of Your Glory",
-            "4": "Because of Your Glory",
-            "5": "Because of Your Glory",
-            "6": "Because of Your Glory",
-            "7": "Because of Your Glory",
-            "8": "Because of Your Glory",
-            "9": "Because of Your Glory"
-          },
+          "sections": {},
           "verses": {
             "1": "As the eyes of a son toward his father, so are mine eyes, O Lord, at all times toward thee.",
             "2": "For with thee are my consolations and my delight.",
@@ -6977,19 +6710,7 @@
           }
         },
         "15": {
-          "sections": {
-            "1": "And I Received Salvation from God",
-            "2": "And I Received Salvation from God",
-            "3": "And I Received Salvation from God",
-            "4": "And I Received Salvation from God",
-            "5": "And I Received Salvation from God",
-            "6": "And I Received Salvation from God",
-            "7": "And I Received Salvation from God",
-            "8": "And I Received Salvation from God",
-            "9": "And I Received Salvation from God",
-            "10": "And I Received Salvation from God",
-            "11": "And I Received Salvation from God"
-          },
+          "sections": {},
           "verses": {
             "1": "As the sun is the joy to them that seek for its daybreak, so is my joy the Lord;",
             "2": "Because He is my Sun, and His rays have awakened me, and His light hath dispelled all darkness from my face.",
@@ -7005,27 +6726,7 @@
           }
         },
         "16": {
-          "sections": {
-            "1": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "2": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "3": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "4": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "5": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "6": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "7": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "8": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "9": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "10": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "11": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "12": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "13": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "14": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "15": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "16": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "17": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "18": "God Spread Out the Earth and Settled the Waters in the Sea",
-            "19": "God Spread Out the Earth and Settled the Waters in the Sea"
-          },
+          "sections": {},
           "verses": {
             "1": "As the work of the husbandman is the ploughshare, and the work of the steersman is the guidance of the ship,",
             "2": "So also is my work the psalm of the Lord; my craft is in His praises.",
@@ -7049,22 +6750,7 @@
           }
         },
         "17": {
-          "sections": {
-            "1": "And I Opened the Gates That Were Closed",
-            "2": "And I Opened the Gates That Were Closed",
-            "3": "And I Opened the Gates That Were Closed",
-            "4": "And I Opened the Gates That Were Closed",
-            "5": "And I Opened the Gates That Were Closed",
-            "6": "And I Opened the Gates That Were Closed",
-            "7": "And I Opened the Gates That Were Closed",
-            "8": "And I Opened the Gates That Were Closed",
-            "9": "And I Opened the Gates That Were Closed",
-            "10": "And I Opened the Gates That Were Closed",
-            "11": "And I Opened the Gates That Were Closed",
-            "12": "And I Opened the Gates That Were Closed",
-            "13": "And I Opened the Gates That Were Closed",
-            "14": "And I Opened the Gates That Were Closed"
-          },
+          "sections": {},
           "verses": {
             "1": "I was crowned by my God; my crown is living.",
             "2": "And I was justified in my Lord; my salvation is incorruptible.",
@@ -7083,26 +6769,7 @@
           }
         },
         "18": {
-          "sections": {
-            "1": "For Your Will Is Perfection",
-            "2": "For Your Will Is Perfection",
-            "3": "For Your Will Is Perfection",
-            "4": "For Your Will Is Perfection",
-            "5": "For Your Will Is Perfection",
-            "6": "For Your Will Is Perfection",
-            "7": "For Your Will Is Perfection",
-            "8": "For Your Will Is Perfection",
-            "9": "For Your Will Is Perfection",
-            "10": "For Your Will Is Perfection",
-            "11": "For Your Will Is Perfection",
-            "12": "For Your Will Is Perfection",
-            "13": "For Your Will Is Perfection",
-            "14": "For Your Will Is Perfection",
-            "15": "For Your Will Is Perfection",
-            "16": "For Your Will Is Perfection",
-            "17": "For Your Will Is Perfection",
-            "18": "For Your Will Is Perfection"
-          },
+          "sections": {},
           "verses": {
             "1": "My heart was lifted up in the love of the Most High and was enlarged, that I might praise Him for His name’s sake.",
             "2": "My members were strengthened, that they might not fall from His power.",
@@ -7125,13 +6792,7 @@
           }
         },
         "19": {
-          "sections": {
-            "1": "Those Who Receive Are of the Right Hand of God",
-            "2": "Those Who Receive Are of the Right Hand of God",
-            "3": "Those Who Receive Are of the Right Hand of God",
-            "4": "Those Who Receive Are of the Right Hand of God",
-            "5": "Those Who Receive Are of the Right Hand of God"
-          },
+          "sections": {},
           "verses": {
             "1": "A cup of milk was offered unto me, and I drank it in the sweetness of the delight of the Lord.",
             "2": "The Son is the cup, and He who was milked is the Father, and the Holy Spirit milked Him;",
@@ -7141,17 +6802,7 @@
           }
         },
         "20": {
-          "sections": {
-            "1": "Do Not Kill Your Own Soul",
-            "2": "Do Not Kill Your Own Soul",
-            "3": "Do Not Kill Your Own Soul",
-            "4": "Do Not Kill Your Own Soul",
-            "5": "Do Not Kill Your Own Soul",
-            "6": "Do Not Kill Your Own Soul",
-            "7": "Do Not Kill Your Own Soul",
-            "8": "Do Not Kill Your Own Soul",
-            "9": "Do Not Kill Your Own Soul"
-          },
+          "sections": {},
           "verses": {
             "1": "I am a priest of the Lord, and unto Him do I serve as a priest; and unto Him I offer the sacrifice of His thought.",
             "2": "For His thought is not like the thought of the age, nor the thought of the flesh, nor like them that serve according to the flesh.",
@@ -7165,15 +6816,7 @@
           }
         },
         "21": {
-          "sections": {
-            "1": "And Increasingly Helpful unto Me Was the Thought of the Lord",
-            "2": "And Increasingly Helpful unto Me Was the Thought of the Lord",
-            "3": "And Increasingly Helpful unto Me Was the Thought of the Lord",
-            "4": "And Increasingly Helpful unto Me Was the Thought of the Lord",
-            "5": "And Increasingly Helpful unto Me Was the Thought of the Lord",
-            "6": "And Increasingly Helpful unto Me Was the Thought of the Lord",
-            "7": "And Increasingly Helpful unto Me Was the Thought of the Lord"
-          },
+          "sections": {},
           "verses": {
             "1": "My arms I lifted up unto the Most High because of the grace of the Lord; for He had cast off my bonds from me, and my Helper had lifted me up according to His grace and His salvation.",
             "2": "And I put off darkness and clothed myself with light,",
@@ -7185,20 +6828,7 @@
           }
         },
         "22": {
-          "sections": {
-            "1": "Your Name Surrounded Me",
-            "2": "Your Name Surrounded Me",
-            "3": "Your Name Surrounded Me",
-            "4": "Your Name Surrounded Me",
-            "5": "Your Name Surrounded Me",
-            "6": "Your Name Surrounded Me",
-            "7": "Your Name Surrounded Me",
-            "8": "Your Name Surrounded Me",
-            "9": "Your Name Surrounded Me",
-            "10": "Your Name Surrounded Me",
-            "11": "Your Name Surrounded Me",
-            "12": "Your Name Surrounded Me"
-          },
+          "sections": {},
           "verses": {
             "1": "He who brought me down from on high also brought me up from the depths below;",
             "2": "And He who gathered them that were in the midst also taught me concerning them.",
@@ -7215,28 +6845,7 @@
           }
         },
         "23": {
-          "sections": {
-            "1": "And Who Would Hear It",
-            "2": "And Who Would Hear It",
-            "3": "And Who Would Hear It",
-            "4": "And Who Would Hear It",
-            "5": "And Who Would Hear It",
-            "6": "And Who Would Hear It",
-            "7": "And Who Would Hear It",
-            "8": "And Who Would Hear It",
-            "9": "And Who Would Hear It",
-            "10": "And Who Would Hear It",
-            "11": "And Who Would Hear It",
-            "12": "And Who Would Hear It",
-            "13": "And Who Would Hear It",
-            "14": "And Who Would Hear It",
-            "15": "And Who Would Hear It",
-            "16": "And Who Would Hear It",
-            "17": "And Who Would Hear It",
-            "18": "And Who Would Hear It",
-            "19": "And Who Would Hear It",
-            "20": "And Who Would Hear It"
-          },
+          "sections": {},
           "verses": {
             "1": "Joy belongeth unto the saints; and who shall put it on but they alone?",
             "2": "Grace belongeth unto the elect; and who shall receive it except them that have trusted in it from the beginning?",
@@ -7261,18 +6870,7 @@
           }
         },
         "24": {
-          "sections": {
-            "1": "The Thought Which Made Them from of Old",
-            "2": "The Thought Which Made Them from of Old",
-            "3": "The Thought Which Made Them from of Old",
-            "4": "The Thought Which Made Them from of Old",
-            "5": "The Thought Which Made Them from of Old",
-            "6": "The Thought Which Made Them from of Old",
-            "7": "The Thought Which Made Them from of Old",
-            "8": "The Thought Which Made Them from of Old",
-            "9": "The Thought Which Made Them from of Old",
-            "10": "The Thought Which Made Them from of Old"
-          },
+          "sections": {},
           "verses": {
             "1": "The Dove fluttered over the Christ, because He was her Head; and she sang over Him, and her voice was heard.",
             "2": "And the inhabitants were afraid and the sojourners were moved:",
@@ -7287,19 +6885,7 @@
           }
         },
         "25": {
-          "sections": {
-            "1": "You Set a Lamp at My Right and at My Left",
-            "2": "You Set a Lamp at My Right and at My Left",
-            "3": "You Set a Lamp at My Right and at My Left",
-            "4": "You Set a Lamp at My Right and at My Left",
-            "5": "You Set a Lamp at My Right and at My Left",
-            "6": "You Set a Lamp at My Right and at My Left",
-            "7": "You Set a Lamp at My Right and at My Left",
-            "8": "You Set a Lamp at My Right and at My Left",
-            "9": "You Set a Lamp at My Right and at My Left",
-            "10": "You Set a Lamp at My Right and at My Left",
-            "11": "You Set a Lamp at My Right and at My Left"
-          },
+          "sections": {},
           "verses": {
             "1": "I was rescued from my bonds, and unto thee, my God, I fled;",
             "2": "For thou art the right hand of my salvation and my helper.",
@@ -7315,22 +6901,7 @@
           }
         },
         "26": {
-          "sections": {
-            "1": "Who Can Compose the Psalms of the Lord?",
-            "2": "Who Can Compose the Psalms of the Lord?",
-            "3": "Who Can Compose the Psalms of the Lord?",
-            "4": "Who Can Compose the Psalms of the Lord?",
-            "5": "Who Can Compose the Psalms of the Lord?",
-            "6": "Who Can Compose the Psalms of the Lord?",
-            "7": "Who Can Compose the Psalms of the Lord?",
-            "8": "Who Can Compose the Psalms of the Lord?",
-            "9": "Who Can Compose the Psalms of the Lord?",
-            "10": "Who Can Compose the Psalms of the Lord?",
-            "11": "Who Can Compose the Psalms of the Lord?",
-            "12": "Who Can Compose the Psalms of the Lord?",
-            "13": "Who Can Compose the Psalms of the Lord?",
-            "14": "Who Can Compose the Psalms of the Lord?"
-          },
+          "sections": {},
           "verses": {
             "1": "I poured out praise to the Lord, for I am His:",
             "2": "And I will recite His holy psalm, for my heart is with Him.",
@@ -7349,11 +6920,7 @@
           }
         },
         "27": {
-          "sections": {
-            "1": "The Extension of My Hands",
-            "2": "The Extension of My Hands",
-            "3": "The Extension of My Hands"
-          },
+          "sections": {},
           "verses": {
             "1": "I stretched forth my hands and sanctified my Lord;",
             "2": "For the stretching forth of my hands is His sign,",
@@ -7361,26 +6928,7 @@
           }
         },
         "28": {
-          "sections": {
-            "1": "I Seemed to Them Like One of the Lost",
-            "2": "I Seemed to Them Like One of the Lost",
-            "3": "I Seemed to Them Like One of the Lost",
-            "4": "I Seemed to Them Like One of the Lost",
-            "5": "I Seemed to Them Like One of the Lost",
-            "6": "I Seemed to Them Like One of the Lost",
-            "7": "I Seemed to Them Like One of the Lost",
-            "8": "I Seemed to Them Like One of the Lost",
-            "9": "I Seemed to Them Like One of the Lost",
-            "10": "I Seemed to Them Like One of the Lost",
-            "11": "I Seemed to Them Like One of the Lost",
-            "12": "I Seemed to Them Like One of the Lost",
-            "13": "I Seemed to Them Like One of the Lost",
-            "14": "I Seemed to Them Like One of the Lost",
-            "15": "I Seemed to Them Like One of the Lost",
-            "16": "I Seemed to Them Like One of the Lost",
-            "17": "I Seemed to Them Like One of the Lost",
-            "18": "I Seemed to Them Like One of the Lost"
-          },
+          "sections": {},
           "verses": {
             "1": "As the wings of doves are over their nestlings, and the mouths of their nestlings are toward their mouths,",
             "2": "So also are the wings of the Spirit over my heart.",
@@ -7403,19 +6951,7 @@
           }
         },
         "29": {
-          "sections": {
-            "1": "And He Appeared to Me, the One Who Is the Lord",
-            "2": "And He Appeared to Me, the One Who Is the Lord",
-            "3": "And He Appeared to Me, the One Who Is the Lord",
-            "4": "And He Appeared to Me, the One Who Is the Lord",
-            "5": "And He Appeared to Me, the One Who Is the Lord",
-            "6": "And He Appeared to Me, the One Who Is the Lord",
-            "7": "And He Appeared to Me, the One Who Is the Lord",
-            "8": "And He Appeared to Me, the One Who Is the Lord",
-            "9": "And He Appeared to Me, the One Who Is the Lord",
-            "10": "And He Appeared to Me, the One Who Is the Lord",
-            "11": "And He Appeared to Me, the One Who Is the Lord"
-          },
+          "sections": {},
           "verses": {
             "1": "The Lord is my hope: in Him I shall not be confounded.",
             "2": "For according to His glory He made me, and according to His goodness He gave unto me;",
@@ -7431,15 +6967,7 @@
           }
         },
         "30": {
-          "sections": {
-            "1": "And the Honeycomb of Bees",
-            "2": "And the Honeycomb of Bees",
-            "3": "And the Honeycomb of Bees",
-            "4": "And the Honeycomb of Bees",
-            "5": "And the Honeycomb of Bees",
-            "6": "And the Honeycomb of Bees",
-            "7": "And the Honeycomb of Bees"
-          },
+          "sections": {},
           "verses": {
             "1": "Draw ye water for yourselves from the living fountain of the Lord, for it is opened unto you.",
             "2": "And come, all ye thirsty, and take the draught; and rest beside the fountain of the Lord.",
@@ -7451,19 +6979,7 @@
           }
         },
         "31": {
-          "sections": {
-            "1": "And Take Immortal Life for Yourselves",
-            "2": "And Take Immortal Life for Yourselves",
-            "3": "And Take Immortal Life for Yourselves",
-            "4": "And Take Immortal Life for Yourselves",
-            "5": "And Take Immortal Life for Yourselves",
-            "6": "And Take Immortal Life for Yourselves",
-            "7": "And Take Immortal Life for Yourselves",
-            "8": "And Take Immortal Life for Yourselves",
-            "9": "And Take Immortal Life for Yourselves",
-            "10": "And Take Immortal Life for Yourselves",
-            "11": "And Take Immortal Life for Yourselves"
-          },
+          "sections": {},
           "verses": {
             "1": "The abysses were dissolved before the Lord: and darkness was destroyed by His appearance:",
             "2": "Error went astray and perished at His hand; and contempt found no path to walk in, being submerged by the truth of the Lord.",
@@ -7479,29 +6995,14 @@
           }
         },
         "32": {
-          "sections": {
-            "1": "The Truth Who Is Self-Existent",
-            "2": "The Truth Who Is Self-Existent"
-          },
+          "sections": {},
           "verses": {
             "1": "Unto the blessed is joy from their hearts, and light from Him who dwelleth in them;",
             "2": "Even the Word which is from the self-existent Truth; for He is strengthened by the holy power of the Most High, and is unshaken for ever and ever. Amen."
           }
         },
         "33": {
-          "sections": {
-            "1": "And Forsake the Ways of This Destruction",
-            "2": "And Forsake the Ways of This Destruction",
-            "3": "And Forsake the Ways of This Destruction",
-            "4": "And Forsake the Ways of This Destruction",
-            "5": "And Forsake the Ways of This Destruction",
-            "6": "And Forsake the Ways of This Destruction",
-            "7": "And Forsake the Ways of This Destruction",
-            "8": "And Forsake the Ways of This Destruction",
-            "9": "And Forsake the Ways of This Destruction",
-            "10": "And Forsake the Ways of This Destruction",
-            "11": "And Forsake the Ways of This Destruction"
-          },
+          "sections": {},
           "verses": {
             "1": "Again Grace ran, returning to release corruption, and descended into it to bring it to nought;",
             "2": "And He destroyed perdition from before Him, and caused all its works to perish.",
@@ -7517,14 +7018,7 @@
           }
         },
         "34": {
-          "sections": {
-            "1": "Nothing Within the Good Person Is Divided",
-            "2": "Nothing Within the Good Person Is Divided",
-            "3": "Nothing Within the Good Person Is Divided",
-            "4": "Nothing Within the Good Person Is Divided",
-            "5": "Nothing Within the Good Person Is Divided",
-            "6": "Nothing Within the Good Person Is Divided"
-          },
+          "sections": {},
           "verses": {
             "1": "No way is hard where the heart is single,",
             "2": "Neither is there any wound where the thoughts are upright;",
@@ -7535,16 +7029,7 @@
           }
         },
         "35": {
-          "sections": {
-            "1": "And It Was More Than a Shelter to Me",
-            "2": "And It Was More Than a Shelter to Me",
-            "3": "And It Was More Than a Shelter to Me",
-            "4": "And It Was More Than a Shelter to Me",
-            "5": "And It Was More Than a Shelter to Me",
-            "6": "And It Was More Than a Shelter to Me",
-            "7": "And It Was More Than a Shelter to Me",
-            "8": "And It Was More Than a Shelter to Me"
-          },
+          "sections": {},
           "verses": {
             "1": "The fine rain of the Lord overshadowed me in quietness;",
             "2": "And He caused a cloud of peace to rise over my head, which guarded me continually.",
@@ -7557,16 +7042,7 @@
           }
         },
         "36": {
-          "sections": {
-            "1": "I Was Great Among the Great Ones",
-            "2": "I Was Great Among the Great Ones",
-            "3": "I Was Great Among the Great Ones",
-            "4": "I Was Great Among the Great Ones",
-            "5": "I Was Great Among the Great Ones",
-            "6": "I Was Great Among the Great Ones",
-            "7": "I Was Great Among the Great Ones",
-            "8": "I Was Great Among the Great Ones"
-          },
+          "sections": {},
           "verses": {
             "1": "The Spirit of the Lord rested upon me, and the Spirit raised me on high,",
             "2": "And made me stand upon my feet in the height of the Lord, before His fulness and His glory, while I praised Him by the composition of His psalms.",
@@ -7579,12 +7055,7 @@
           }
         },
         "37": {
-          "sections": {
-            "1": "When My Voice Reached God",
-            "2": "When My Voice Reached God",
-            "3": "When My Voice Reached God",
-            "4": "When My Voice Reached God"
-          },
+          "sections": {},
           "verses": {
             "1": "I stretched forth my hands unto my Lord, and unto the Most High I raised my voice.",
             "2": "And I spake with the lips of my heart, and He heard me when my voice reached Him.",
@@ -7593,29 +7064,7 @@
           }
         },
         "38": {
-          "sections": {
-            "1": "These Are Deceiver and Error",
-            "2": "These Are Deceiver and Error",
-            "3": "These Are Deceiver and Error",
-            "4": "These Are Deceiver and Error",
-            "5": "These Are Deceiver and Error",
-            "6": "These Are Deceiver and Error",
-            "7": "These Are Deceiver and Error",
-            "8": "These Are Deceiver and Error",
-            "9": "These Are Deceiver and Error",
-            "10": "These Are Deceiver and Error",
-            "11": "These Are Deceiver and Error",
-            "12": "These Are Deceiver and Error",
-            "13": "These Are Deceiver and Error",
-            "14": "These Are Deceiver and Error",
-            "15": "These Are Deceiver and Error",
-            "16": "These Are Deceiver and Error",
-            "17": "These Are Deceiver and Error",
-            "18": "These Are Deceiver and Error",
-            "19": "These Are Deceiver and Error",
-            "20": "These Are Deceiver and Error",
-            "21": "These Are Deceiver and Error"
-          },
+          "sections": {},
           "verses": {
             "1": "I went up into the light of Truth as into a chariot;",
             "2": "And Truth took me and led me, and carried me across pits and gullies, and preserved me from rocks and waves.",
@@ -7641,19 +7090,7 @@
           }
         },
         "39": {
-          "sections": {
-            "1": "Then You Will Cross Without Danger",
-            "2": "Then You Will Cross Without Danger",
-            "3": "Then You Will Cross Without Danger",
-            "4": "Then You Will Cross Without Danger",
-            "5": "Then You Will Cross Without Danger",
-            "6": "Then You Will Cross Without Danger",
-            "7": "Then You Will Cross Without Danger",
-            "8": "Then You Will Cross Without Danger",
-            "9": "Then You Will Cross Without Danger",
-            "10": "Then You Will Cross Without Danger",
-            "11": "Then You Will Cross Without Danger"
-          },
+          "sections": {},
           "verses": {
             "1": "Raging rivers are the power of the Lord;",
             "2": "And they overturn them that despise Him, and entangle their paths;",
@@ -7669,16 +7106,7 @@
           }
         },
         "40": {
-          "sections": {
-            "1": "And My Lips Bring Forth a Song of Praise",
-            "2": "And My Lips Bring Forth a Song of Praise",
-            "3": "And My Lips Bring Forth a Song of Praise",
-            "4": "And My Lips Bring Forth a Song of Praise",
-            "5": "And My Lips Bring Forth a Song of Praise",
-            "6": "And My Lips Bring Forth a Song of Praise",
-            "7": "And My Lips Bring Forth a Song of Praise",
-            "8": "And My Lips Bring Forth a Song of Praise"
-          },
+          "sections": {},
           "verses": {
             "1": "As honey distilleth from the comb of bees,",
             "2": "And milk floweth from the woman who loveth her children,",
@@ -7691,25 +7119,7 @@
           }
         },
         "41": {
-          "sections": {
-            "1": "For the Father of Truth Remembered Me",
-            "2": "For the Father of Truth Remembered Me",
-            "3": "For the Father of Truth Remembered Me",
-            "4": "For the Father of Truth Remembered Me",
-            "5": "For the Father of Truth Remembered Me",
-            "6": "For the Father of Truth Remembered Me",
-            "7": "For the Father of Truth Remembered Me",
-            "8": "For the Father of Truth Remembered Me",
-            "9": "For the Father of Truth Remembered Me",
-            "10": "For the Father of Truth Remembered Me",
-            "11": "For the Father of Truth Remembered Me",
-            "12": "For the Father of Truth Remembered Me",
-            "13": "For the Father of Truth Remembered Me",
-            "14": "For the Father of Truth Remembered Me",
-            "15": "For the Father of Truth Remembered Me",
-            "16": "For the Father of Truth Remembered Me",
-            "17": "For the Father of Truth Remembered Me"
-          },
+          "sections": {},
           "verses": {
             "1": "All the children of the Lord shall praise Him, and gather together the truth of His faith.",
             "2": "And His children shall be known unto Him; therefore will we sing in His love.",
@@ -7731,34 +7141,7 @@
           }
         },
         "42": {
-          "sections": {
-            "1": "And Death Cast Me Up",
-            "2": "And Death Cast Me Up",
-            "3": "And Death Cast Me Up",
-            "4": "And Death Cast Me Up",
-            "5": "And Death Cast Me Up",
-            "6": "And Death Cast Me Up",
-            "7": "And Death Cast Me Up",
-            "8": "And Death Cast Me Up",
-            "9": "And Death Cast Me Up",
-            "10": "And Death Cast Me Up",
-            "11": "And Death Cast Me Up",
-            "12": "And Death Cast Me Up",
-            "13": "And Death Cast Me Up",
-            "14": "And Death Cast Me Up",
-            "15": "And Death Cast Me Up",
-            "16": "And Death Cast Me Up",
-            "17": "And Death Cast Me Up",
-            "18": "And Death Cast Me Up",
-            "19": "And Death Cast Me Up",
-            "20": "And Death Cast Me Up",
-            "21": "And Death Cast Me Up",
-            "22": "And Death Cast Me Up",
-            "23": "And Death Cast Me Up",
-            "24": "And Death Cast Me Up",
-            "25": "And Death Cast Me Up",
-            "26": "And Death Cast Me Up"
-          },
+          "sections": {},
           "verses": {
             "1": "I stretched forth my hands and approached my Lord;",
             "2": "For the stretching forth of my hands is His sign.",
@@ -7795,41 +7178,14 @@
       "url": "https://marcionitechurchofchrist.org/diognetus/",
       "chapters": {
         "1": {
-          "sections": {
-            "1": "Occasion of the Homily",
-            "2": "Occasion of the Homily"
-          },
+          "sections": {},
           "verses": {
             "1": "Since I see, most excellent Diognetus, that thou art exceedingly anxious to understand the religion of the Christians, and that thine enquiries respecting them are distinctly and carefully made, as to what God they trust and how they worship Him; that they all disregard the world and despise death, and take no account of those who are regarded as gods by the Greeks, neither observe the superstition of the Jews; and as to the nature of the affection which they entertain one toward another, and of this new people or manner of life which hath entered into men’s lives now and not before:",
             "2": "I gladly welcome this zeal in thee; and I ask of God, who supplieth both the speaking and the hearing unto us, that it may be granted unto me so to speak that thou mayest be made better by the hearing, and unto thee so to listen that I the speaker may not be disappointed."
           }
         },
         "2": {
-          "sections": {
-            "1": "The Vanity of Idols",
-            "2": "The Vanity of Idols",
-            "3": "The Vanity of Idols",
-            "4": "The Vanity of Idols",
-            "5": "The Vanity of Idols",
-            "6": "The Vanity of Idols",
-            "7": "The Vanity of Idols",
-            "8": "The Vanity of Idols",
-            "9": "The Vanity of Idols",
-            "10": "The Vanity of Idols",
-            "11": "The Vanity of Idols",
-            "12": "The Vanity of Idols",
-            "13": "The Vanity of Idols",
-            "14": "The Vanity of Idols",
-            "15": "The Vanity of Idols",
-            "16": "The Vanity of Idols",
-            "17": "The Vanity of Idols",
-            "18": "The Vanity of Idols",
-            "19": "The Vanity of Idols",
-            "20": "The Vanity of Idols",
-            "21": "The Vanity of Idols",
-            "22": "The Vanity of Idols",
-            "23": "The Vanity of Idols"
-          },
+          "sections": {},
           "verses": {
             "1": "Come then, clear thyself of all the prepossessions which occupy thy mind, and cast off the habit which leadeth thee astray, and become a new man, as it were, from the beginning, as one who would hearken unto a new teaching, even as thou thyself didst confess.",
             "2": "See not only with thine eyes, but with thine understanding also, of what substance or of what form they chance to be whom ye call and regard as gods.",
@@ -7857,15 +7213,7 @@
           }
         },
         "3": {
-          "sections": {
-            "1": "Superstitions of the Jews",
-            "2": "Superstitions of the Jews",
-            "3": "Superstitions of the Jews",
-            "4": "Superstitions of the Jews",
-            "5": "Superstitions of the Jews",
-            "6": "Superstitions of the Jews",
-            "7": "Superstitions of the Jews"
-          },
+          "sections": {},
           "verses": {
             "1": "In the next place, I suppose that thou art chiefly anxious to hear concerning their not practising their religion after the same manner as the Jews.",
             "2": "The Jews then, so far as they abstain from the manner of worship afore described, do well in claiming to reverence one God over all, and to regard Him as Master;",
@@ -7877,14 +7225,7 @@
           }
         },
         "4": {
-          "sections": {
-            "1": "The Other Observances of the Jews",
-            "2": "The Other Observances of the Jews",
-            "3": "The Other Observances of the Jews",
-            "4": "The Other Observances of the Jews",
-            "5": "The Other Observances of the Jews",
-            "6": "The Other Observances of the Jews"
-          },
+          "sections": {},
           "verses": {
             "1": "But again, their scruples concerning meats, and their superstition touching the sabbath, and the vanity of their circumcision, and the dissimulation of their fasting and new moons, I suppose thou needest not to learn from me, for they are ridiculous and unworthy of any consideration.",
             "2": "For to receive some of the things formed by God for the use of man as well formed, but to refuse others as useless and superfluous, is not this impious?",
@@ -7895,33 +7236,7 @@
           }
         },
         "5": {
-          "sections": {
-            "1": "The Manners of the Christians",
-            "2": "The Manners of the Christians",
-            "3": "The Manners of the Christians",
-            "4": "The Manners of the Christians",
-            "5": "The Manners of the Christians",
-            "6": "The Manners of the Christians",
-            "7": "The Manners of the Christians",
-            "8": "The Manners of the Christians",
-            "9": "The Manners of the Christians",
-            "10": "The Manners of the Christians",
-            "11": "The Manners of the Christians",
-            "12": "The Manners of the Christians",
-            "13": "The Manners of the Christians",
-            "14": "The Manners of the Christians",
-            "15": "The Manners of the Christians",
-            "16": "The Manners of the Christians",
-            "17": "The Manners of the Christians",
-            "18": "The Manners of the Christians",
-            "19": "The Manners of the Christians",
-            "20": "The Manners of the Christians",
-            "21": "The Manners of the Christians",
-            "22": "The Manners of the Christians",
-            "23": "The Manners of the Christians",
-            "24": "The Manners of the Christians",
-            "25": "The Manners of the Christians"
-          },
+          "sections": {},
           "verses": {
             "1": "For Christians are not distinguished from the rest of mankind either by country, or by speech, or by customs.",
             "2": "For they dwell not in cities of their own, neither do they use any strange language, nor practise an extraordinary manner of life.",
@@ -7951,23 +7266,7 @@
           }
         },
         "6": {
-          "sections": {
-            "1": "The Relation of Christians to the World",
-            "2": "The Relation of Christians to the World",
-            "3": "The Relation of Christians to the World",
-            "4": "The Relation of Christians to the World",
-            "5": "The Relation of Christians to the World",
-            "6": "The Relation of Christians to the World",
-            "7": "The Relation of Christians to the World",
-            "8": "The Relation of Christians to the World",
-            "9": "The Relation of Christians to the World",
-            "10": "The Relation of Christians to the World",
-            "11": "The Relation of Christians to the World",
-            "12": "The Relation of Christians to the World",
-            "13": "The Relation of Christians to the World",
-            "14": "The Relation of Christians to the World",
-            "15": "The Relation of Christians to the World"
-          },
+          "sections": {},
           "verses": {
             "1": "In a word, what the soul is in the body, that are the Christians in the world.",
             "2": "The soul is spread throughout all the members of the body, and Christians throughout the divers cities of the world.",
@@ -7987,24 +7286,7 @@
           }
         },
         "7": {
-          "sections": {
-            "1": "The Manifestation of Christ",
-            "2": "The Manifestation of Christ",
-            "3": "The Manifestation of Christ",
-            "4": "The Manifestation of Christ",
-            "5": "The Manifestation of Christ",
-            "6": "The Manifestation of Christ",
-            "7": "The Manifestation of Christ",
-            "8": "The Manifestation of Christ",
-            "9": "The Manifestation of Christ",
-            "10": "The Manifestation of Christ",
-            "11": "The Manifestation of Christ",
-            "12": "The Manifestation of Christ",
-            "13": "The Manifestation of Christ",
-            "14": "The Manifestation of Christ",
-            "15": "The Manifestation of Christ",
-            "16": "The Manifestation of Christ"
-          },
+          "sections": {},
           "verses": {
             "1": "For it is no earthly discovery, as I said, which was committed unto them; neither do they care to guard so carefully any mortal invention, nor have they been entrusted with the dispensation of human mysteries.",
             "2": "But truly the Almighty and Maker of all, even the invisible God Himself, hath established among men from heaven the truth and the holy and incomprehensible Word, and hath fixed Him firmly in their hearts; not, as any man might suppose, by sending unto men some servant, or angel, or ruler, or one of those that administer earthly things, or one of those that are entrusted with the orderings in heaven, but the very Artificer and Demiurge of all, through whom He made the heavens, through whom He enclosed the sea within its proper bounds, whose mysteries all the elements faithfully observe, from whom the sun hath received the measure of the courses of the day to keep them, whom the moon obeyeth when He commandeth her to shine by night, whom the stars obey as they follow the course of the moon; through whom all things are ordered, bounded, and subjected: the heavens and the things that are in the heavens, the earth and the things that are in the earth, the sea and the things that are in the sea, fire, air, the abyss, the things that are in the heights, the things that are in the depths, and the things that are between.",
@@ -8025,19 +7307,7 @@
           }
         },
         "8": {
-          "sections": {
-            "1": "The Miserable State of Men Before the Coming of the Word",
-            "2": "The Miserable State of Men Before the Coming of the Word",
-            "3": "The Miserable State of Men Before the Coming of the Word",
-            "4": "The Miserable State of Men Before the Coming of the Word",
-            "5": "The Miserable State of Men Before the Coming of the Word",
-            "6": "The Miserable State of Men Before the Coming of the Word",
-            "7": "The Miserable State of Men Before the Coming of the Word",
-            "8": "The Miserable State of Men Before the Coming of the Word",
-            "9": "The Miserable State of Men Before the Coming of the Word",
-            "10": "The Miserable State of Men Before the Coming of the Word",
-            "11": "The Miserable State of Men Before the Coming of the Word"
-          },
+          "sections": {},
           "verses": {
             "1": "For what man at all had any knowledge what God was, before He came?",
             "2": "Or dost thou receive the vain and foolish sayings of those pretentious philosophers, of whom some said that God was fire, calling that God whereunto they themselves shall go; and others water; and others some other of the elements formed by God?",
@@ -8053,15 +7323,7 @@
           }
         },
         "9": {
-          "sections": {
-            "1": "Why the Son Was Sent So Late",
-            "2": "Why the Son Was Sent So Late",
-            "3": "Why the Son Was Sent So Late",
-            "4": "Why the Son Was Sent So Late",
-            "5": "Why the Son Was Sent So Late",
-            "6": "Why the Son Was Sent So Late",
-            "7": "Why the Son Was Sent So Late"
-          },
+          "sections": {},
           "verses": {
             "1": "Having therefore ordered all things beforehand in His own mind together with His Son, He permitted us during the former time to be borne along by disorderly impulses as we desired, being led astray by pleasures and lusts; not because He delighted in our sins, but because He bore with us; not because He approved the former season of iniquity, but because He was preparing the present season of righteousness; that, being convicted in the former time by our own deeds as unworthy of life, we might now be accounted worthy by the goodness of God; and having made manifest our inability to enter into the kingdom of God of ourselves, we might be enabled by the power of God.",
             "2": "And when our iniquity had been fully accomplished, and it had been made perfectly manifest that the wages thereof, even punishment and death, were expected, and the season came which God had ordained, when henceforth He should manifest His goodness and power – O the exceeding great kindness and love of God! – He hated us not, neither rejected us, nor remembered evil against us, but was long-suffering and patient; and in pity for us He Himself took upon Him our sins, and Himself gave His own Son as a ransom for us: the Holy for the lawless, the guileless for the evil, the just for the unjust, the incorruptible for the corruptible, the immortal for the mortal.",
@@ -8073,24 +7335,7 @@
           }
         },
         "10": {
-          "sections": {
-            "1": "The Blessings That Will Flow from Faith",
-            "2": "The Blessings That Will Flow from Faith",
-            "3": "The Blessings That Will Flow from Faith",
-            "4": "The Blessings That Will Flow from Faith",
-            "5": "The Blessings That Will Flow from Faith",
-            "6": "The Blessings That Will Flow from Faith",
-            "7": "The Blessings That Will Flow from Faith",
-            "8": "The Blessings That Will Flow from Faith",
-            "9": "The Blessings That Will Flow from Faith",
-            "10": "The Blessings That Will Flow from Faith",
-            "11": "The Blessings That Will Flow from Faith",
-            "12": "The Blessings That Will Flow from Faith",
-            "13": "The Blessings That Will Flow from Faith",
-            "14": "The Blessings That Will Flow from Faith",
-            "15": "The Blessings That Will Flow from Faith",
-            "16": "The Blessings That Will Flow from Faith"
-          },
+          "sections": {},
           "verses": {
             "1": "If thou also desirest this faith, receive first the full knowledge of the Father.",
             "2": "For God loved men, for whose sake He made the world, unto whom He subjected all things that are in the earth, unto whom He gave reason and understanding, whom alone He permitted to look upward unto Him, whom He formed after His own image, unto whom He sent His only-begotten Son, unto whom He promised the kingdom which is in heaven, and will give it unto them that have loved Him.",

@@ -1,38 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "10",
-  "verse_start": "28",
-  "verse_end": "34",
+  "book": "Ephesians",
+  "chapter": "11",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "28",
-      "text": "And it came to pass, as he said these things, a certain woman out of the multitude lifted up her voice, and said unto him, Blessed is the womb that bare thee, and the breasts which thou didst suck."
+      "verse": "1",
+      "text": "And pray ye also without ceasing for the rest of mankind for there is in them a hope of repentance, that they may find God."
     },
     {
-      "verse": "29",
-      "text": "But he said, Yea rather, blessed are they that hear the word of God, and keep it, and do according to it."
+      "verse": "2",
+      "text": "Therefore permit them to take lessons at least from your works."
     },
     {
-      "verse": "30",
-      "text": "And when the people were gathered thick together, he began to say, This generation: they seek a sign; and there shall no sign be given it."
+      "verse": "3",
+      "text": "Against their outbursts of wrath be ye meek;"
     },
     {
-      "verse": "31",
-      "text": "No man, when he hath lighted a lamp, putteth it into a secret place, neither under a bushel, but on the lampstand, that they which come in may see the light."
-    },
-    {
-      "verse": "32",
-      "text": "The lamp of the body is the eye: therefore when thine eye is single, thy whole body also is full of light; but when it is evil, thy body also is full of darkness."
-    },
-    {
-      "verse": "33",
-      "text": "Look therefore that the light which is in thee be not darkness."
-    },
-    {
-      "verse": "34",
-      "text": "If therefore thy whole body be full of light, having no part dark, it shall be wholly full of light, as when the lamp with its gleam doth give thee light."
+      "verse": "4",
+      "text": "Against their proud words be ye humble;"
     }
   ],
-  "section": "Concerning the Woman Which Lifted Up Her Voice from the Multitude",
-  "date": "2026-09-18"
+  "section": "",
+  "date": "2026-09-19"
 }

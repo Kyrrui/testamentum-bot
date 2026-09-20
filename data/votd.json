@@ -1,26 +1,34 @@
 {
-  "book": "Ephesians",
-  "chapter": "11",
+  "book": "Metrodorus",
+  "chapter": "3",
   "verse_start": "1",
-  "verse_end": "4",
+  "verse_end": "6",
   "verses": [
     {
       "verse": "1",
-      "text": "And pray ye also without ceasing for the rest of mankind for there is in them a hope of repentance, that they may find God."
+      "text": "Let not those that seem to be plausible and yet teach strange doctrine dismay thee."
     },
     {
       "verse": "2",
-      "text": "Therefore permit them to take lessons at least from your works."
+      "text": "Stand thou firm, as an anvil when it is smitten."
     },
     {
       "verse": "3",
-      "text": "Against their outbursts of wrath be ye meek;"
+      "text": "It is the part of a great athlete to receive blows and be victorious."
     },
     {
       "verse": "4",
-      "text": "Against their proud words be ye humble;"
+      "text": "But especially must we for God’s sake endure all things, that He also may endure us."
+    },
+    {
+      "verse": "5",
+      "text": "Be thou more diligent than thou art. Mark the seasons."
+    },
+    {
+      "verse": "6",
+      "text": "Wait Him that is above every season, the Eternal, the Invisible, who came visible for our sake, the Impalpable, the Impassible, who sufed for our sake, who endured in all ways for our sake."
     }
   ],
   "section": "",
-  "date": "2026-09-19"
+  "date": "2026-09-20"
 }

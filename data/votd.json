@@ -1,34 +1,26 @@
 {
-  "book": "Metrodorus",
-  "chapter": "3",
-  "verse_start": "1",
+  "book": "2 Timothy",
+  "chapter": "1",
+  "verse_start": "3",
   "verse_end": "6",
   "verses": [
     {
-      "verse": "1",
-      "text": "Let not those that seem to be plausible and yet teach strange doctrine dismay thee."
-    },
-    {
-      "verse": "2",
-      "text": "Stand thou firm, as an anvil when it is smitten."
-    },
-    {
       "verse": "3",
-      "text": "It is the part of a great athlete to receive blows and be victorious."
+      "text": "I thank God, whom I serve from my forefathers with pure conscience, that without ceasing I have remembrance of thee in my prayers night and day;"
     },
     {
       "verse": "4",
-      "text": "But especially must we for God’s sake endure all things, that He also may endure us."
+      "text": "Greatly desiring to see thee, being mindful of thy tears, that I may be filled with joy;"
     },
     {
       "verse": "5",
-      "text": "Be thou more diligent than thou art. Mark the seasons."
+      "text": "When I call to remembrance the unfeigned faith that is in thee, which dwelt first in thy grandmother Lois, and thy mother Eunice; and I am persuaded that in thee also."
     },
     {
       "verse": "6",
-      "text": "Wait Him that is above every season, the Eternal, the Invisible, who came visible for our sake, the Impalpable, the Impassible, who sufed for our sake, who endured in all ways for our sake."
+      "text": "Wherefore I put thee in remembrance that thou stir up the gift of God, which is in thee by the putting on of my hands."
     }
   ],
-  "section": "",
-  "date": "2026-09-20"
+  "section": "Concerning the Tears of Timothy and the Remembrance of the Apostle",
+  "date": "2026-09-21"
 }

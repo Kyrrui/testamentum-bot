@@ -1,30 +1,34 @@
 {
-  "book": "Colossians",
-  "chapter": "4",
-  "verse_start": "7",
-  "verse_end": "11",
+  "book": "1 Thessalonians",
+  "chapter": "1",
+  "verse_start": "5",
+  "verse_end": "10",
   "verses": [
     {
+      "verse": "5",
+      "text": "For our gospel came not unto you in word only, but also in power, and in the Holy Ghost, and in much assurance; as ye know what manner of men we were among you for your sake."
+    },
+    {
+      "verse": "6",
+      "text": "And ye became followers of us, and of the Lord, having received the word in much affliction, with joy of the Holy Ghost:"
+    },
+    {
       "verse": "7",
-      "text": "All my state shall Tychicus declare unto you, who is a beloved brother, and a faithful minister and fellowservant in the Lord:"
+      "text": "So that ye were ensamples to all that believe in Macedonia and Achaia."
     },
     {
       "verse": "8",
-      "text": "Whom I have sent unto you for the same purpose, that he might know your estate, and comfort your hearts;"
+      "text": "For from you sounded out the word of the Lord not only in Macedonia and Achaia, but also in every place your faith to God-ward is spread abroad; so that we need not to speak any thing."
     },
     {
       "verse": "9",
-      "text": "With Onesimus, a faithful and beloved brother, who is one of you. They shall make known unto you all things which are done here."
+      "text": "For they themselves shew of us what manner of entering in we had unto you, and how ye turned to God from idols to serve the living and true God;"
     },
     {
       "verse": "10",
-      "text": "Aristarchus my fellowprisoner saluteth you, and Marcus, sister’s son to Barnabas, touching whom ye received commandments: if he come unto you, receive him;"
-    },
-    {
-      "verse": "11",
-      "text": "And Jesus, which is called Justus, who are of the circumcision. These only are my fellowworkers unto the kingdom of God, which have been a comfort unto me."
+      "text": "And to wait for his Son from heaven, whom he raised from the dead, even Jesus, which delivered us from the wrath to come."
     }
   ],
-  "section": "Concerning the Salutations",
-  "date": "2026-09-25"
+  "section": "Concerning the Gospel, Which Is Not to Be Shown in Vain Speech, but by Excellent Work",
+  "date": "2026-09-26"
 }

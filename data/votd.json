@@ -1,34 +1,30 @@
 {
-  "book": "1 Thessalonians",
-  "chapter": "1",
-  "verse_start": "5",
-  "verse_end": "10",
+  "book": "Magnesians",
+  "chapter": "9",
+  "verse_start": "1",
+  "verse_end": "5",
   "verses": [
     {
+      "verse": "1",
+      "text": "Now these things I say, my dearly beloved, not because I have learned that any of you are so minded;"
+    },
+    {
+      "verse": "2",
+      "text": "But as being less than any of you, I would have you be on your guard betimes, that ye fall not into the snares of vain doctrine;"
+    },
+    {
+      "verse": "3",
+      "text": "But be ye fully persuaded concerning the passion and the resurrection, which took place in the time of the governorship of Pontius Pilate;"
+    },
+    {
+      "verse": "4",
+      "text": "For these things were truly and certainly done by Jesus Christ our hope;"
+    },
+    {
       "verse": "5",
-      "text": "For our gospel came not unto you in word only, but also in power, and in the Holy Ghost, and in much assurance; as ye know what manner of men we were among you for your sake."
-    },
-    {
-      "verse": "6",
-      "text": "And ye became followers of us, and of the Lord, having received the word in much affliction, with joy of the Holy Ghost:"
-    },
-    {
-      "verse": "7",
-      "text": "So that ye were ensamples to all that believe in Macedonia and Achaia."
-    },
-    {
-      "verse": "8",
-      "text": "For from you sounded out the word of the Lord not only in Macedonia and Achaia, but also in every place your faith to God-ward is spread abroad; so that we need not to speak any thing."
-    },
-    {
-      "verse": "9",
-      "text": "For they themselves shew of us what manner of entering in we had unto you, and how ye turned to God from idols to serve the living and true God;"
-    },
-    {
-      "verse": "10",
-      "text": "And to wait for his Son from heaven, whom he raised from the dead, even Jesus, which delivered us from the wrath to come."
+      "text": "From which hope may it not befal any of you to be turned aside."
     }
   ],
-  "section": "Concerning the Gospel, Which Is Not to Be Shown in Vain Speech, but by Excellent Work",
-  "date": "2026-09-26"
+  "section": "",
+  "date": "2026-09-27"
 }

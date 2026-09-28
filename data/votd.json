@@ -1,30 +1,26 @@
 {
-  "book": "Magnesians",
-  "chapter": "9",
-  "verse_start": "1",
-  "verse_end": "5",
+  "book": "Evangelicon",
+  "chapter": "3",
+  "verse_start": "69",
+  "verse_end": "72",
   "verses": [
     {
-      "verse": "1",
-      "text": "Now these things I say, my dearly beloved, not because I have learned that any of you are so minded;"
+      "verse": "69",
+      "text": "And after these things he went forth, and saw a publican, named Levi, sitting at the receipt of custom: and he said unto him, Follow me."
     },
     {
-      "verse": "2",
-      "text": "But as being less than any of you, I would have you be on your guard betimes, that ye fall not into the snares of vain doctrine;"
+      "verse": "70",
+      "text": "And he left all, rose up, and followed him."
     },
     {
-      "verse": "3",
-      "text": "But be ye fully persuaded concerning the passion and the resurrection, which took place in the time of the governorship of Pontius Pilate;"
+      "verse": "71",
+      "text": "And Levi made him a great feast in his own house: and there was a great company of publicans and of others that sat down with them."
     },
     {
-      "verse": "4",
-      "text": "For these things were truly and certainly done by Jesus Christ our hope;"
-    },
-    {
-      "verse": "5",
-      "text": "From which hope may it not befal any of you to be turned aside."
+      "verse": "72",
+      "text": "But their scribes and Pharisees murmured against his disciples, saying, Why do ye eat and drink with publicans and sinners?"
     }
   ],
-  "section": "",
-  "date": "2026-09-27"
+  "section": "Concerning Levi the Publican",
+  "date": "2026-09-28"
 }

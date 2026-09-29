@@ -1,26 +1,30 @@
 {
-  "book": "Evangelicon",
-  "chapter": "3",
-  "verse_start": "69",
-  "verse_end": "72",
+  "book": "Philadelphians",
+  "chapter": "7",
+  "verse_start": "1",
+  "verse_end": "5",
   "verses": [
     {
-      "verse": "69",
-      "text": "And after these things he went forth, and saw a publican, named Levi, sitting at the receipt of custom: and he said unto him, Follow me."
+      "verse": "1",
+      "text": "For even though certain persons desired to deceive me after the flesh, yet the spirit is not deceived, being from God;"
     },
     {
-      "verse": "70",
-      "text": "And he left all, rose up, and followed him."
+      "verse": "2",
+      "text": "For it knoweth whence it cometh and where it goeth, and it searcheth out the hidden things."
     },
     {
-      "verse": "71",
-      "text": "And Levi made him a great feast in his own house: and there was a great company of publicans and of others that sat down with them."
+      "verse": "3",
+      "text": "I cried out, when I was among you; I spake with a loud voice, with God’s own voice, Give ye heed to the bishop and the presbytery and deacons."
     },
     {
-      "verse": "72",
-      "text": "But their scribes and Pharisees murmured against his disciples, saying, Why do ye eat and drink with publicans and sinners?"
+      "verse": "4",
+      "text": "Howbeit there were those who suspected me of saying this, because I knew beforehand of the division of certain persons."
+    },
+    {
+      "verse": "5",
+      "text": "But He in whom I am bound is my witness that I learned it not from flesh of man;"
     }
   ],
-  "section": "Concerning Levi the Publican",
-  "date": "2026-09-28"
+  "section": "",
+  "date": "2026-09-29"
 }

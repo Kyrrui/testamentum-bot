@@ -1,30 +1,26 @@
 {
-  "book": "Philadelphians",
-  "chapter": "7",
-  "verse_start": "1",
-  "verse_end": "5",
+  "book": "Romans",
+  "chapter": "8",
+  "verse_start": "19",
+  "verse_end": "22",
   "verses": [
     {
-      "verse": "1",
-      "text": "For even though certain persons desired to deceive me after the flesh, yet the spirit is not deceived, being from God;"
+      "verse": "19",
+      "text": "For the earnest expectation of the creature waiteth for the manifestation of the sons of God."
     },
     {
-      "verse": "2",
-      "text": "For it knoweth whence it cometh and where it goeth, and it searcheth out the hidden things."
+      "verse": "20",
+      "text": "For the creature was made subject to vanity, not willingly, but by reason of him who hath subjected the same in hope,"
     },
     {
-      "verse": "3",
-      "text": "I cried out, when I was among you; I spake with a loud voice, with God’s own voice, Give ye heed to the bishop and the presbytery and deacons."
+      "verse": "21",
+      "text": "Because the creature itself also shall be delivered from the bondage of corruption into the glorious liberty of the children of God."
     },
     {
-      "verse": "4",
-      "text": "Howbeit there were those who suspected me of saying this, because I knew beforehand of the division of certain persons."
-    },
-    {
-      "verse": "5",
-      "text": "But He in whom I am bound is my witness that I learned it not from flesh of man;"
+      "verse": "22",
+      "text": "For we know that the whole creation groaneth and travaileth in pain together until now."
     }
   ],
-  "section": "",
-  "date": "2026-09-29"
+  "section": "Concerning the Creature Which Is Subject unto Vanity",
+  "date": "2026-09-30"
 }

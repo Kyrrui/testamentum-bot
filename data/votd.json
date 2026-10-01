@@ -1,26 +1,30 @@
 {
-  "book": "Romans",
-  "chapter": "8",
-  "verse_start": "19",
-  "verse_end": "22",
+  "book": "Evangelicon",
+  "chapter": "13",
+  "verse_start": "28",
+  "verse_end": "32",
   "verses": [
     {
-      "verse": "19",
-      "text": "For the earnest expectation of the creature waiteth for the manifestation of the sons of God."
+      "verse": "28",
+      "text": "For which of you, intending to build a tower, sitteth not down first, and counteth the cost, whether he have sufficient to finish it?"
     },
     {
-      "verse": "20",
-      "text": "For the creature was made subject to vanity, not willingly, but by reason of him who hath subjected the same in hope,"
+      "verse": "29",
+      "text": "Lest haply, after he hath laid the foundation, and is not able to finish, all that behold it begin to mock him,"
     },
     {
-      "verse": "21",
-      "text": "Because the creature itself also shall be delivered from the bondage of corruption into the glorious liberty of the children of God."
+      "verse": "30",
+      "text": "Saying, This man began to build, and was not able to finish."
     },
     {
-      "verse": "22",
-      "text": "For we know that the whole creation groaneth and travaileth in pain together until now."
+      "verse": "31",
+      "text": "Or what king, going to make war against another king, sitteth not down first, and consulteth whether he be able with ten thousand to meet him that cometh against him with twenty thousand?"
+    },
+    {
+      "verse": "32",
+      "text": "Or else, while the other is yet a great way off, he sendeth an ambassage, and desireth conditions of peace."
     }
   ],
-  "section": "Concerning the Creature Which Is Subject unto Vanity",
-  "date": "2026-09-30"
+  "section": "Parable Concerning the Building of a Tower",
+  "date": "2026-10-01"
 }

@@ -1,26 +1,30 @@
 {
-  "book": "2 Corinthians",
-  "chapter": "2",
-  "verse_start": "14",
-  "verse_end": "17",
+  "book": "Evangelicon",
+  "chapter": "22",
+  "verse_start": "11",
+  "verse_end": "15",
   "verses": [
     {
+      "verse": "11",
+      "text": "And Herod with his soldiers set him at nought, and mocked him, and arraying him in a gorgeous robe, sent him back to Pilate."
+    },
+    {
+      "verse": "12",
+      "text": "And Pilate and Herod became friends with each other that very day: for before they were at enmity between themselves."
+    },
+    {
+      "verse": "13",
+      "text": "And Pilate called together the chief priests and the rulers and the people, and said unto them,"
+    },
+    {
       "verse": "14",
-      "text": "Now thanks be unto God, which always causeth us to triumph in Christ, and maketh manifest the savour of his knowledge by us in every place."
+      "text": "Ye brought this man unto me, as one that perverteth the people: and, behold, I examined him before you, and found no fault in this man of what ye charge against him:"
     },
     {
       "verse": "15",
-      "text": "For we are unto God a sweet savour of Christ, in them that are saved, and in them that perish:"
-    },
-    {
-      "verse": "16",
-      "text": "To the one we are the savour of death unto death; and to the other the savour of life unto life. And who is sufficient for these things?"
-    },
-    {
-      "verse": "17",
-      "text": "For we are not as many, which corrupt the word of God: but as of sincerity, but as of God, in the sight of God speak we in Christ."
+      "text": "No, nor yet Herod: for I sent you to him; and, lo, nothing worthy of death hath been done by him."
     }
   ],
-  "section": "Concerning the Triumph of the Saviour, Whereof He Glorieth in His Disciples",
-  "date": "2026-10-02"
+  "section": "Set at Nought by Herod",
+  "date": "2026-10-03"
 }

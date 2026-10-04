@@ -1,30 +1,30 @@
 {
-  "book": "Evangelicon",
-  "chapter": "22",
-  "verse_start": "11",
-  "verse_end": "15",
+  "book": "2 Corinthians",
+  "chapter": "7",
+  "verse_start": "8",
+  "verse_end": "12",
   "verses": [
     {
+      "verse": "8",
+      "text": "For though I made you sorry with a letter, I do not repent, though I did repent: for I perceive that the same epistle hath made you sorry, though it were but for a season."
+    },
+    {
+      "verse": "9",
+      "text": "Now I rejoice, not that ye were made sorry, but that ye sorrowed to repentance: for ye were made sorry after a godly manner, that ye might receive damage by us in nothing."
+    },
+    {
+      "verse": "10",
+      "text": "For godly sorrow worketh repentance to salvation not to be repented of: but the sorrow of the world worketh death."
+    },
+    {
       "verse": "11",
-      "text": "And Herod with his soldiers set him at nought, and mocked him, and arraying him in a gorgeous robe, sent him back to Pilate."
+      "text": "For behold this selfsame thing, that ye sorrowed after a godly sort, what carefulness it wrought in you, yea, what clearing of yourselves, yea, what indignation, yea, what fear, yea, what vehement desire, yea, what zeal, yea, what revenge! In all things ye have approved yourselves to be clear in this matter."
     },
     {
       "verse": "12",
-      "text": "And Pilate and Herod became friends with each other that very day: for before they were at enmity between themselves."
-    },
-    {
-      "verse": "13",
-      "text": "And Pilate called together the chief priests and the rulers and the people, and said unto them,"
-    },
-    {
-      "verse": "14",
-      "text": "Ye brought this man unto me, as one that perverteth the people: and, behold, I examined him before you, and found no fault in this man of what ye charge against him:"
-    },
-    {
-      "verse": "15",
-      "text": "No, nor yet Herod: for I sent you to him; and, lo, nothing worthy of death hath been done by him."
+      "text": "Wherefore, though I wrote unto you, I did it not for his cause that had done the wrong, nor for his cause that suffered wrong, but that our care for you in the sight of God might appear unto you."
     }
   ],
-  "section": "Set at Nought by Herod",
-  "date": "2026-10-03"
+  "section": "Concerning Intolerable Persecution and the Repentance of the Corinthians",
+  "date": "2026-10-04"
 }

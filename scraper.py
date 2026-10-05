@@ -91,6 +91,29 @@ def fetch_page(url: str) -> BeautifulSoup:
     return BeautifulSoup(resp.text, "html.parser")
 
 
+def _flatten_parts(el) -> list[tuple[str, str]]:
+    """Split an element into ("bold", text) / ("text", text) pieces.
+
+    Recurses into wrapper tags (e.g. <span> pasted in from Bible sites) so a
+    bold verse number nested inside one is still seen as bold.
+    """
+    parts = []
+    for child in el.children:
+        name = getattr(child, "name", None)
+        if name in ("strong", "b"):
+            text = child.get_text(strip=True)
+            if text:
+                parts.append(("bold", text))
+        elif name and child.find(["strong", "b"]):
+            parts.extend(_flatten_parts(child))
+        else:
+            text = child.get_text() if name else str(child)
+            text = text.strip()
+            if text:
+                parts.append(("text", text))
+    return parts
+
+
 def extract_text_blocks(soup: BeautifulSoup) -> list[str]:
     """Extract meaningful text blocks from the page content area."""
     # Find the main content area - usually .entry-content in WordPress
@@ -104,21 +127,12 @@ def extract_text_blocks(soup: BeautifulSoup) -> list[str]:
 
     blocks = []
     for el in content.find_all(["p", "h1", "h2", "h3", "h4", "h5", "h6"]):
-        # Check for bold-only elements (chapter/psalm headings)
-        strongs = el.find_all("strong")
+        # Check for bold-only elements (chapter/psalm headings). The site
+        # mixes <strong> and <b> for verse numbers, so treat them the same.
+        strongs = el.find_all(["strong", "b"])
         if strongs:
             # Process each piece: bold text might be heading or verse number
-            parts = []
-            for child in el.children:
-                if hasattr(child, "name") and child.name == "strong":
-                    text = child.get_text(strip=True)
-                    if text:
-                        parts.append(("bold", text))
-                else:
-                    text = child.get_text() if hasattr(child, "get_text") else str(child)
-                    text = text.strip()
-                    if text:
-                        parts.append(("text", text))
+            parts = _flatten_parts(el)
 
             # Case 1: Entire element is a single bold block -> possible heading
             if len(parts) == 1 and parts[0][0] == "bold":
@@ -140,6 +154,10 @@ def extract_text_blocks(soup: BeautifulSoup) -> list[str]:
                                     blocks.append(("verse", current_verse_num, full_text))
                             current_verse_num = int(text)
                             current_text_parts = []
+                        elif current_verse_num is not None and not CHAPTER_RE.match(text):
+                            # Emphasized words inside a verse (e.g. the Lord's
+                            # Prayer is bolded) - part of the verse, not a heading
+                            current_text_parts.append(text)
                         else:
                             # Bold text that's not a number - could be a heading
                             # Save any pending verse first
@@ -186,6 +204,15 @@ def parse_book(book_name: str, url: str) -> dict:
     current_section = None
 
     for block in blocks:
+        # A verse whose number the site forgot to bold, e.g. "6 In whose...".
+        # Only accepted as the next verse in sequence, so stray numbered
+        # prose isn't mistaken for scripture.
+        if block[0] == "text" and current_chapter:
+            match = VERSE_RE.match(block[1])
+            verses = chapters[str(current_chapter)]["verses"]
+            if match and int(match.group(1)) == max(map(int, verses), default=0) + 1:
+                block = ("verse", int(match.group(1)), match.group(2))
+
         if block[0] == "heading":
             heading_text = block[1]
             match = CHAPTER_RE.match(heading_text)
@@ -204,6 +231,7 @@ def parse_book(book_name: str, url: str) -> dict:
             verse_text = block[2]
             # Clean up the text
             verse_text = re.sub(r"\s+", " ", verse_text).strip()
+            verse_text = re.sub(r"\s+([.,;:!?])", r"\1", verse_text)
             if current_chapter == 0:
                 current_chapter = 1
                 chapters["1"] = {"sections": {}, "verses": {}}

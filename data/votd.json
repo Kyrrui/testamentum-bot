@@ -1,30 +1,46 @@
 {
-  "book": "Galatians",
-  "chapter": "1",
-  "verse_start": "11",
-  "verse_end": "15",
+  "book": "Evangelicon",
+  "chapter": "18",
+  "verse_start": "1",
+  "verse_end": "9",
   "verses": [
     {
-      "verse": "11",
-      "text": "But I certify you, brethren, that the gospel which was preached of me is not after man."
+      "verse": "1",
+      "text": "And it came to pass, that on one of those days, as he taught the people in the temple, and preached the gospel, the chief priests and the scribes came upon him with the elders,"
     },
     {
-      "verse": "12",
-      "text": "For I neither received it of man, neither was I taught it, but by the revelation of Jesus Christ."
+      "verse": "2",
+      "text": "And spake unto him, saying, Tell us, by what authority doest thou these things? or who is he that gave thee this authority?"
     },
     {
-      "verse": "13",
-      "text": "For ye have heard of my conversation in time past in the Jews’ religion, how that beyond measure I persecuted the church of God, and wasted it:"
+      "verse": "3",
+      "text": "And he answered and said unto them, I will also ask you one thing; and answer me:"
     },
     {
-      "verse": "14",
-      "text": "And profited in the Jews’ religion above many my equals in mine own nation, being more exceedingly zealous of the traditions of my fathers."
+      "verse": "4",
+      "text": "The baptism of John, was it from heaven, or of men?"
     },
     {
-      "verse": "15",
-      "text": "But when it pleased God, who separated me from my mother’s womb, and called me by his grace,"
+      "verse": "5",
+      "text": "And they reasoned with themselves, saying, If we shall say, From heaven; he will say, Why then believed ye him not?"
+    },
+    {
+      "verse": "6",
+      "text": "But and if we say, Of men; all the people will stone us: for they be persuaded that John was a prophet."
+    },
+    {
+      "verse": "7",
+      "text": "And they answered, that they could not tell whence it was."
+    },
+    {
+      "verse": "8",
+      "text": "And Jesus said unto them, Neither tell I you by what authority I do these things."
+    },
+    {
+      "verse": "9",
+      "text": "Whosoever shall fall upon that stone shall be broken; but on whomsoever it shall fall, it will grind him to powder."
     }
   ],
-  "section": "Concerning the Gospel Which God, and Not Man, Revealed unto the Apostle",
-  "date": "2026-10-07"
+  "section": "Concerning the Chief Priests and Elders Which Questioned Jesus",
+  "date": "2026-10-08"
 }

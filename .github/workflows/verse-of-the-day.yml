@@ -2,7 +2,7 @@ name: Verse of the Day
 
 on:
   schedule:
-    - cron: "0 10 * * *"  # 6 AM EST (10 AM UTC)
+    - cron: "0 10 * * *"  # 10:00 UTC; GitHub often starts it hours late. The bot posts the pick once it's pushed.
   workflow_dispatch:       # allow manual runs
 
 jobs:
@@ -19,11 +19,12 @@ jobs:
       - name: Install dependencies
         run: pip install requests Pillow
 
-      - name: Pick and post verse of the day
+      # No DISCORD_WEBHOOK_URL: the bot posts the verse itself, under its own
+      # name and avatar (webhook posts showed the webhook's identity instead).
+      - name: Pick verse of the day
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || 'anthropic/claude-sonnet-4' }}
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python verse_of_the_day.py
 
       - name: Commit votd.json and history

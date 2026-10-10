@@ -1,20 +1,22 @@
 """
 Verse of the Day — uses an LLM (via OpenRouter) to pick a meaningful verse
-range from the Testamentum, then posts the rendered image to Discord.
+range from the Testamentum and saves it to data/votd.json. The bot picks the
+pushed file up and posts it, as itself, to every /setup votd channel.
 
 The LLM only picks the reference; it does NOT write a blurb. If the LLM
 call fails or returns an invalid pick, falls back to random selection.
 
-Requires environment variables:
+Environment variables:
   OPENROUTER_API_KEY  — API key for OpenRouter (optional; falls back to random)
   OPENROUTER_MODEL    — model slug, defaults to anthropic/claude-sonnet-4
-  DISCORD_WEBHOOK_URL — Discord webhook URL for the target channel
+  DISCORD_WEBHOOK_URL — optional: also post the card to this webhook (for use
+                        without the bot; webhook posts carry the webhook's own
+                        name and avatar)
 """
 
 import json
 import os
 import random
-import sys
 import time
 from datetime import datetime, timezone
 
@@ -328,10 +330,6 @@ def post_to_discord(verse: dict):
 
 
 def main():
-    if not DISCORD_WEBHOOK_URL:
-        print("ERROR: DISCORD_WEBHOOK_URL not set.")
-        sys.exit(1)
-
     print("Loading verses and history...")
     db = load_db()
     history = load_history()
@@ -372,8 +370,11 @@ def main():
     save_history(history)
     print(f"History updated ({len(history)} entries).")
 
-    print("Posting to Discord...")
-    post_to_discord(verse)
+    if DISCORD_WEBHOOK_URL:
+        print("Posting to Discord webhook...")
+        post_to_discord(verse)
+    else:
+        print("No DISCORD_WEBHOOK_URL; the bot posts the verse once votd.json is pushed.")
 
 
 if __name__ == "__main__":

@@ -134,11 +134,10 @@ Bot-owner only (the Discord application's owner or team, plus any `OWNER_IDS`): 
 
 ### GitHub Actions (Verse of the Day)
 
-Add these as GitHub repository secrets:
+Add this as a GitHub repository secret:
 - `OPENROUTER_API_KEY` — for AI verse selection (falls back to random without it)
-- `DISCORD_WEBHOOK_URL` — webhook for your VOTD channel
 
-The VOTD Action is scheduled for 10:00 UTC, but GitHub often starts scheduled jobs hours late. The bot polls for the new `votd.json` every 15 minutes and reposts it to all configured servers, skipping any channel that already has today's post.
+The VOTD Action picks the verse and pushes `data/votd.json`. It is scheduled for 10:00 UTC, but GitHub often starts scheduled jobs hours late. The bot polls for the new `votd.json` every 15 minutes and posts it, under its own name and avatar, to every `/setup votd` channel, skipping any channel that already has today's post. (`verse_of_the_day.py` can also post to a `DISCORD_WEBHOOK_URL` for use without the bot; the workflow doesn't pass one.)
 
 ### Daily Scraper
 

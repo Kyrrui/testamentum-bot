@@ -64,7 +64,13 @@ OPENROUTER_GUIDE_MODEL = os.getenv("OPENROUTER_GUIDE_MODEL", "anthropic/claude-h
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")  # legacy fallback
-VOTD_GITHUB_URL = "https://raw.githubusercontent.com/Kyrrui/testamentum-bot/main/data/votd.json"
+# The GitHub repo whose Action picks the Verse of the Day (a fork sets its own).
+VOTD_REPO = os.getenv("VOTD_REPO", "Kyrrui/testamentum-bot")
+VOTD_GITHUB_URL = f"https://raw.githubusercontent.com/{VOTD_REPO}/main/data/votd.json"
+# The maintainer's Discord username, as the AI writes it in replies. Replies turn it into a
+# mention of the application's owner (its team's owner, for a team app), who is also the
+# person pinged for "the bot is broken".
+BOT_MAINTAINER = os.getenv("BOT_MAINTAINER", "kyrrui").lstrip("@")
 # Daily posts go out at 6 AM US Eastern, following DST.
 EASTERN = ZoneInfo("America/New_York")
 # Extra bot-owner user IDs (comma-separated). The Discord application owner
@@ -3518,7 +3524,7 @@ def _openrouter_chat(
         headers={
             "Authorization": f"Bearer {OPENROUTER_API_KEY}",
             "Content-Type": "application/json",
-            "HTTP-Referer": "https://github.com/Kyrrui/testamentum-bot",
+            "HTTP-Referer": f"https://github.com/{VOTD_REPO}",
             "X-Title": "Testamentum Bot",
         },
         json={
@@ -3873,7 +3879,7 @@ _NEGATION = r"\b(?:not|isn'?t|ain'?t|never|no\s+longer)\s+(?:so\s+|very\s+|that\
 _NEGATED_PRAISE_RE = re.compile(rf"{_NEGATION}(?:{_PRAISE_WORDS})\b", re.IGNORECASE)
 _NEGATED_COMPLAINT_RE = re.compile(rf"{_NEGATION}(?:{_COMPLAINT_WORDS})\b", re.IGNORECASE)
 _BOT_NAME_RE = re.compile(r"\btestamentum\s*bot\b", re.IGNORECASE)
-_OWNER_HANDLE_RE = re.compile(r"(?<![\w<])@kyrrui\b", re.IGNORECASE)
+_OWNER_HANDLE_RE = re.compile(rf"(?<![\w<])@{re.escape(BOT_MAINTAINER)}\b", re.IGNORECASE)
 # Anything link-like left once the allowed church URLs are taken out of a guide reply.
 _LINKISH_RE = re.compile(r"://|www\.|discord(?:app)?\.(?:gg|com/invite)|\]\(|[​-‏⁠﻿]", re.IGNORECASE)
 
@@ -3932,7 +3938,7 @@ def _owner_id() -> int | None:
 
 def _owner_mention() -> str:
     owner_id = _owner_id()
-    return f"<@{owner_id}>" if owner_id else "@kyrrui"
+    return f"<@{owner_id}>" if owner_id else f"@{BOT_MAINTAINER}"
 
 
 _owner_last_ping = -float(OWNER_PING_COOLDOWN_SECONDS)
@@ -4060,7 +4066,7 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "- If they say a lookup failed, said not found, or showed the wrong passage, don't guess why and "
         "never claim a chapter or verse is missing from this canon. Point to the command that fits "
         "(`/verse` needs a chapter and verse like Rom 7:11-13, `/chapter` reads a whole chapter, "
-        "`/bookinfo` shows a book's chapters), and add that saying \"the bot is broken\" pings @kyrrui if "
+        f"`/bookinfo` shows a book's chapters), and add that saying \"the bot is broken\" pings @{BOT_MAINTAINER} if "
         "it still fails.",
         "- Never give your own theological opinions or explanations. If a Didascalicon Q&A answers the "
         "question, select it (it is posted verbatim under your reply) and say so briefly; otherwise "
@@ -4070,7 +4076,7 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "chat, set reminders), say no and point to `/help`. That \"no\" is only for features: never claim "
         "you have no limits, rules or behaviors; your limits are in ABOUT YOU, and the message's USAGE "
         "line gives their live numbers. For any other question about you that isn't covered, say you're "
-        "not sure and point them to `/help` or @kyrrui.",
+        f"not sure and point them to `/help` or @{BOT_MAINTAINER}.",
         "- Only mention the commands and links listed below, plus the `/setup` commands named in ABOUT "
         "YOU. Write commands in backticks and links as plain URLs, never as [text](url) markdown.",
         '- If they ask for something AND compliment or criticise the bot, the intent is "help" (if they '
@@ -4108,7 +4114,7 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
          f"Add App, then Add to Server, or uses {_server_install_url()}. Then they choose channels with "
          f"`/setup`. Add to My Apps is different: it only gives that one person my slash commands."
          if _server_install_url() else
-         "- Adding me to another server: ask @kyrrui. Add to My Apps does not add me to a server; it only "
+         f"- Adding me to another server: ask @{BOT_MAINTAINER}. Add to My Apps does not add me to a server; it only "
          "gives that one person my slash commands there."),
         "- I work the same in Discord on desktop, web and mobile: type / to see my commands.",
         "- I don't remember past conversations: each mention is answered on its own. Saved verses are in "
@@ -4122,19 +4128,20 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "always posted word for word, never AI-written.",
         "- New articles on the church website are announced in the server's news channel.",
         f"- Limits: AI-written replies (like this one, and theology auto-answers) are limited to "
-        f"{LLM_CALLS_PER_USER_PER_DAY} per person per day (@kyrrui is exempt) and "
+        f"{LLM_CALLS_PER_USER_PER_DAY} per person per day (@{BOT_MAINTAINER} is exempt) and "
         f"{LLM_CALLS_PER_SERVER_PER_DAY} per day per server, resetting at midnight US Eastern. Someone who "
         "hits a limit is told so. \"good bot\" / \"bot is broken\" replies, slash commands and typed verse "
         "references are not limited. To say how many they have left, give the USAGE line's numbers "
         "exactly, speaking to them as \"you\". If they ask about a kind of limit that doesn't exist "
         "(e.g. an hourly one), say plainly there isn't one, then give the limits that do exist.",
-        "- AI replies (these @mention answers and theology auto-answers) only run in servers where @kyrrui "
+        f"- AI replies (these @mention answers and theology auto-answers) only run in servers where @{BOT_MAINTAINER} "
         "has turned them on. Other servers still get my slash commands, typed verse references and daily "
         "posts. The SERVERS line in the message gives the live count; answer from it.",
-        "- You were built by, and are maintained by, @kyrrui.",
+        ("- You were built by, and are maintained by, @kyrrui." if BOT_MAINTAINER.lower() == "kyrrui"
+         else f"- You were built by Kyrrui and are maintained by @{BOT_MAINTAINER}."),
         "- Saying the bot is broken (e.g. \"the bot is broken\", \"clanker needs fixing\") gets an apology "
-        "and pings your maintainer, @kyrrui, so that is how to report a problem. \"good bot\" gets a "
-        "thank-you. Write the maintainer as @kyrrui (the bot turns it into a mention).",
+        f"and pings your maintainer, @{BOT_MAINTAINER}, so that is how to report a problem. \"good bot\" gets a "
+        f"thank-you. Write the maintainer as @{BOT_MAINTAINER} (the bot turns it into a mention).",
         "",
         "BOT COMMANDS:",
         *commands,
@@ -4429,7 +4436,7 @@ async def _handle_bot_mention(
         qa = None  # verses were asked for; one answer per reply
     reply = _clean_guide_text(str(result.get("reply") or "")) if intent == "help" else None
     if reply:
-        # The model writes the maintainer as "@kyrrui"; make it a real (non-pinging) mention.
+        # The model writes the maintainer as "@<BOT_MAINTAINER>"; make it a real (non-pinging) mention.
         reply = _OWNER_HANDLE_RE.sub(lambda _: _owner_mention(), reply)
     if verses:
         try:
@@ -4605,7 +4612,7 @@ async def on_ready():
         print(
             f"Installs: Public Bot {'on' if app.bot_public else 'OFF'}; "
             f"server installs {'on' if _server_install_url() else 'OFF (needs Public Bot + Guild Install with the bot scope)'}; "
-            f"user installs {'on' if app.user_integration_config else 'off'}"
+            f"user installs {'on' if app.user_integration_config else 'OFF'}"
         )
     # The paid (OpenRouter) features: list every server that has one on.
     for gid, c in _load_server_config().items():
@@ -4874,6 +4881,10 @@ def main():
         raise SystemExit("ERROR: DISCORD_TOKEN not set. Create a .env file with your token.")
     try:
         client.run(token)
+    except discord.PrivilegedIntentsRequired:
+        # The code asks for message content; Discord refuses the login until the portal allows it.
+        raise SystemExit("ERROR: Message Content Intent is off. Turn it on in the Discord Developer "
+                         "Portal (your application -> Bot -> Privileged Gateway Intents), then restart.")
     except (discord.HTTPException, discord.LoginFailure, discord.DiscordServerError) as e:
         status = getattr(e, "status", None)
         # 429 = token-level rate limit, 5xx = Discord overloaded.

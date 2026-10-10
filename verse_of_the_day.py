@@ -162,7 +162,7 @@ def _call_llm(system_text: str, user_text: str) -> str:
             headers={
                 "Authorization": f"Bearer {OPENROUTER_API_KEY}",
                 "Content-Type": "application/json",
-                "HTTP-Referer": "https://github.com/Kyrrui/testamentum-bot",
+                "HTTP-Referer": f"https://github.com/{os.environ.get('GITHUB_REPOSITORY', 'Kyrrui/testamentum-bot')}",
                 "X-Title": "Testamentum Bot",
             },
             json=body,

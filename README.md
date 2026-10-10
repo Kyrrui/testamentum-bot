@@ -2,7 +2,7 @@
 
 A Discord bot for the Marcionite Testamentum — 24 books, 4,300+ verses. Look up verses, search scripture, take quizzes, and more.
 
-[Invite to your server](https://discord.com/oauth2/authorize?client_id=YOUR_APP_ID&permissions=277025467456&scope=bot+applications.commands)
+**Add it to your server:** open the bot's profile in any server it's in → **Add App** → **Add to Server**. To run your own copy, see [docs/SETUP.md](docs/SETUP.md).
 
 ## Features
 
@@ -100,60 +100,9 @@ Bot-owner only (the Discord application's owner or team, plus any `OWNER_IDS`): 
 
 ## Self-Hosting
 
-### Requirements
-- Python 3.12+
-- Discord bot token
-- Railway account (or any hosting platform)
-- OpenRouter API key (Verse of the Day picks; theology auto-answer)
+**[docs/SETUP.md](docs/SETUP.md)** is the full guide to running your own copy, written so anyone can take over the bot: the Discord application, Railway hosting, the GitHub jobs, OpenRouter, server setup, troubleshooting and every environment variable.
 
-### Setup
-
-1. Clone the repo
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Create `.env`:
-   ```
-   DISCORD_TOKEN=your_bot_token
-   ```
-4. Scrape the verse database:
-   ```
-   python scraper.py
-   ```
-5. Run the bot:
-   ```
-   python bot.py
-   ```
-
-### Railway Deployment
-
-1. Connect the GitHub repo to Railway
-2. Set environment variables:
-   - `DISCORD_TOKEN` — your bot token
-   - `DATA_DIR` — `/data` (with a persistent volume mounted there)
-   - `OPENROUTER_API_KEY` — enables theology auto-answer (optional; `OPENROUTER_MODEL` overrides the model)
-   - `OWNER_IDS` — optional extra bot-owner user IDs, comma-separated
-3. Add a persistent volume mounted at `/data` (`/setup status` warns if it isn't)
-4. Deploy
-
-### Letting other servers add the bot
-
-In the [Discord Developer Portal](https://discord.com/developers/applications), open the app and:
-1. **Bot** → turn on **Public Bot** (otherwise only the app owner can add it to servers).
-2. **Installation** → under Installation Contexts tick **Guild Install** (keep **User Install**), set Install Link to **Discord Provided Link**, and under Default Install Settings → Guild Install add the scopes `applications.commands` and `bot` with these permissions: View Channels, Send Messages, Send Messages in Threads, Create Public Threads, Embed Links, Attach Files, Read Message History, Add Reactions, and Mention Everyone (for news announcements).
-3. Save and restart the bot. Its startup log prints `Installs: Public Bot on; server installs on…`, and its @mention replies start telling people to add it themselves (profile → **Add App** → **Add to Server**).
-
-### GitHub Actions (Verse of the Day)
-
-Add this as a GitHub repository secret:
-- `OPENROUTER_API_KEY` — for AI verse selection (falls back to random without it)
-
-The VOTD Action picks the verse and pushes `data/votd.json`. It is scheduled for 10:00 UTC, but GitHub often starts scheduled jobs hours late. The bot polls for the new `votd.json` every 15 minutes and posts it, under its own name and avatar, to every `/setup votd` channel, skipping any channel that already has today's post. (`verse_of_the_day.py` can also post to a `DISCORD_WEBHOOK_URL` for use without the bot; the workflow doesn't pass one.)
-
-### Daily Scraper
-
-A GitHub Action runs daily to re-scrape the Testamentum website. It validates the data before overwriting to prevent corruption if the site is down.
+In short: fork the repo and enable its two scheduled Actions, create a Discord application (with the Message Content intent), deploy the fork on Railway with a volume at `/data`, set `DISCORD_TOKEN`, `DATA_DIR`, `OPENROUTER_API_KEY`, `VOTD_REPO` and `BOT_MAINTAINER`, and add `OPENROUTER_API_KEY` as a GitHub Actions secret.
 
 ## Architecture
 

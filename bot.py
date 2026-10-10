@@ -53,8 +53,8 @@ THEOLOGY_CHANNEL_COOLDOWN_HOURS = 24
 # Daily caps on OpenRouter calls triggered by chat messages (bot-reply guide and
 # theology auto-answer cache misses), per person and per server. A "day" ends at
 # midnight US Eastern. Counts persist in LLM_USAGE_PATH so restarts don't reset them.
-LLM_CALLS_PER_USER_PER_DAY = 20
-LLM_CALLS_PER_SERVER_PER_DAY = 500
+LLM_CALLS_PER_USER_PER_DAY = 100
+LLM_CALLS_PER_SERVER_PER_DAY = 2000
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-5.5")
 # Bot replies (the @mention guide) run on Haiku: in a side-by-side on the bot's real

@@ -492,7 +492,17 @@ def guild_only_command(func):
     return app_commands.allowed_installs(guilds=True, users=False)(func)
 
 
+# Which members Discord shows /setup and the owner commands to. Moderators, not
+# just admins: the bot owner is often only a moderator. Who may actually run
+# them is checked at run time (SetupGroup, owner_only).
+MOD_VISIBLE = discord.Permissions(manage_messages=True)
+
+
 class NotBotOwner(app_commands.CheckFailure):
+    pass
+
+
+class NotServerManager(app_commands.CheckFailure):
     pass
 
 
@@ -525,6 +535,8 @@ def owner_only():
 async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
     if isinstance(error, NotBotOwner):
         msg = "Only the bot owner can use this command."
+    elif isinstance(error, NotServerManager):
+        msg = "You need the **Manage Server** permission to change this server's bot settings."
     elif isinstance(error, app_commands.CheckFailure):
         msg = "You can't use this command here."
     else:
@@ -1611,10 +1623,19 @@ def _generate_quiz_data() -> dict:
     }
 
 
-setup_group = app_commands.Group(
+class SetupGroup(app_commands.Group):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        # Server managers configure their own server; the bot owner can too,
+        # even where they're only a moderator.
+        if interaction.permissions.manage_guild or _is_bot_owner(interaction.user.id):
+            return True
+        raise NotServerManager()
+
+
+setup_group = SetupGroup(
     name="setup",
-    description="Configure Testamentum Bot for this server (admin only)",
-    default_permissions=discord.Permissions(administrator=True),
+    description="Configure Testamentum Bot for this server (Manage Server)",
+    default_permissions=MOD_VISIBLE,
     allowed_contexts=GUILD_ONLY_CONTEXTS,
     allowed_installs=GUILD_ONLY_INSTALLS,
 )
@@ -1789,7 +1810,7 @@ async def setup_status(interaction: discord.Interaction):
 
 
 @tree.command(name="postquiz", description="Re-roll and post the daily quiz to every server (bot owner only)")
-@app_commands.default_permissions(administrator=True)
+@app_commands.default_permissions(manage_messages=True)  # MOD_VISIBLE; owner_only() decides
 @guild_only_command
 @owner_only()
 async def postquiz_command(interaction: discord.Interaction):
@@ -1799,7 +1820,7 @@ async def postquiz_command(interaction: discord.Interaction):
 
 
 @tree.command(name="postdidascalicon", description="Post a Didascalicon Q&A to every server now (bot owner only)")
-@app_commands.default_permissions(administrator=True)
+@app_commands.default_permissions(manage_messages=True)  # MOD_VISIBLE; owner_only() decides
 @guild_only_command
 @owner_only()
 async def postdidascalicon_command(interaction: discord.Interaction):
@@ -1809,7 +1830,7 @@ async def postdidascalicon_command(interaction: discord.Interaction):
 
 
 @tree.command(name="checknews", description="Poll the news feed now (bot owner only)")
-@app_commands.default_permissions(administrator=True)
+@app_commands.default_permissions(manage_messages=True)  # MOD_VISIBLE; owner_only() decides
 @guild_only_command
 @owner_only()
 async def checknews_command(interaction: discord.Interaction):
@@ -1825,7 +1846,7 @@ async def checknews_command(interaction: discord.Interaction):
 
 
 @tree.command(name="resetnews", description="Reset the seen-articles cache (bot owner only — will reseed silently on next check)")
-@app_commands.default_permissions(administrator=True)
+@app_commands.default_permissions(manage_messages=True)  # MOD_VISIBLE; owner_only() decides
 @guild_only_command
 @owner_only()
 async def resetnews_command(interaction: discord.Interaction):
@@ -1838,7 +1859,7 @@ async def resetnews_command(interaction: discord.Interaction):
 
 
 @tree.command(name="testannounce", description="Force-post the most recent news article to this server's announcement channel (bot owner only)")
-@app_commands.default_permissions(administrator=True)
+@app_commands.default_permissions(manage_messages=True)  # MOD_VISIBLE; owner_only() decides
 @guild_only_command
 @owner_only()
 async def testannounce_command(interaction: discord.Interaction):
@@ -1886,7 +1907,7 @@ async def testannounce_command(interaction: discord.Interaction):
 
 @tree.command(name="asktheology", description="Test the Didascalicon matcher (bot owner only)")
 @app_commands.describe(question="Question to match against the Didascalicon")
-@app_commands.default_permissions(administrator=True)
+@app_commands.default_permissions(manage_messages=True)  # MOD_VISIBLE; owner_only() decides
 @guild_only_command
 @owner_only()
 async def asktheology_command(interaction: discord.Interaction, question: str):
@@ -2428,7 +2449,7 @@ async def help_command(interaction: discord.Interaction):
         inline=False,
     )
     embed.add_field(
-        name="Server Setup (admin)",
+        name="Server Setup (Manage Server)",
         value=(
             "`/setup quiz #channel` — daily quiz channel\n"
             "`/setup votd #channel` — Verse of the Day channel\n"

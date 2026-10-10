@@ -66,7 +66,7 @@ In a server with this on, any message that @mentions the bot or says "bot", "cla
 - Spend caps: bot replies get 50 OpenRouter calls a day and theology auto-answer 100, separately, and each allows 5 per user per hour.
 
 ### Multi-Server Support
-Server admins configure channels with `/setup` (server-only; not available in DMs or user installs):
+Members with **Manage Server** (and the bot owner) configure channels with `/setup` (server-only; not available in DMs or user installs). Discord shows `/setup` and the owner commands to anyone with Manage Messages, so a bot owner who is a moderator can see them; who may run them is checked when they're used.
 - `/setup quiz #daily-quiz` — set the daily quiz channel
 - `/setup votd #verse-of-the-day` — set the Verse of the Day channel
 - `/setup didascalicon #channel` — daily Didascalicon Q&A

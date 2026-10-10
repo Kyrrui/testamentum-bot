@@ -3778,6 +3778,7 @@ _NEGATION = r"\b(?:not|isn'?t|ain'?t|never|no\s+longer)\s+(?:so\s+|very\s+|that\
 _NEGATED_PRAISE_RE = re.compile(rf"{_NEGATION}(?:{_PRAISE_WORDS})\b", re.IGNORECASE)
 _NEGATED_COMPLAINT_RE = re.compile(rf"{_NEGATION}(?:{_COMPLAINT_WORDS})\b", re.IGNORECASE)
 _BOT_NAME_RE = re.compile(r"\btestamentum\s*bot\b", re.IGNORECASE)
+_OWNER_HANDLE_RE = re.compile(r"(?<![\w<])@kyrrui\b", re.IGNORECASE)
 # Anything link-like left once the allowed church URLs are taken out of a guide reply.
 _LINKISH_RE = re.compile(r"://|www\.|discord(?:app)?\.(?:gg|com/invite)|\]\(|[​-‏⁠﻿]", re.IGNORECASE)
 
@@ -3960,7 +3961,7 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "- You were built by, and are maintained by, @kyrrui.",
         "- Saying the bot is broken (e.g. \"the bot is broken\", \"clanker needs fixing\") gets an apology "
         "and pings your maintainer, @kyrrui, so that is how to report a problem. \"good bot\" gets a "
-        "thank-you. Refer to the maintainer as @kyrrui in plain text.",
+        "thank-you. Write the maintainer as @kyrrui (the bot turns it into a mention).",
         "",
         "BOT COMMANDS:",
         *commands,
@@ -4046,6 +4047,9 @@ async def _handle_bot_mention(
     # type() not isinstance(): a JSON true would otherwise count as Q&A #1.
     qa = questions[qa_index - 1] if type(qa_index) is int and 1 <= qa_index <= len(questions) else None
     reply = _clean_guide_text(str(result.get("reply") or "")) if intent == "help" else None
+    if reply:
+        # The model writes the maintainer as "@kyrrui"; make it a real (non-pinging) mention.
+        reply = _OWNER_HANDLE_RE.sub(lambda _: _owner_mention(), reply)
     if not reply and not qa:
         if not direct:
             if result is None and theology_strict is not None:

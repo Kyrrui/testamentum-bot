@@ -3892,10 +3892,20 @@ async def _send_bare_reply(message: discord.Message):
 _bot_guide_prompt: str | None = None
 
 
+def _user_install_url() -> str | None:
+    """Discord's "Add to My Apps" link for this bot (use its commands in any DM or server)."""
+    app_id = client.application_id
+    if not app_id:
+        return None
+    return f"https://discord.com/oauth2/authorize?client_id={app_id}&integration_type=1&scope=applications.commands"
+
+
 def _guide_links() -> list[str]:
-    """The only URLs the guide may post: church site pages and the Testamentum book pages."""
+    """The only URLs the guide may post: church site pages, the Testamentum book pages,
+    and this bot's add-to-my-apps link."""
     links = [CHURCH_SITE, f"{CHURCH_SITE}didascalicon/", f"{CHURCH_SITE}category/news/"]
-    return links + [b["url"] for b in DB["books"].values() if b.get("url")]
+    links += [b["url"] for b in DB["books"].values() if b.get("url")]
+    return links + ([_user_install_url()] if _user_install_url() else [])
 
 
 def _bot_guide_system_prompt(questions: list[dict]) -> str:
@@ -3934,8 +3944,12 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "- Never give your own theological opinions or explanations. If a Didascalicon Q&A answers the "
         "question, select it (it is posted verbatim under your reply) and say so briefly; otherwise "
         "point to the website.",
-        "- Only mention the commands and links listed below. Write commands in backticks and links as "
-        "plain URLs, never as [text](url) markdown.",
+        "- About yourself, only state what ABOUT YOU and BOT COMMANDS say. Together they list everything "
+        "you do: if they ask whether you can do something not listed (play music, moderate, chat, set "
+        "reminders), say no and point to `/help`. For any other question about you that isn't covered, "
+        "say you're not sure and point them to `/help` or @kyrrui.",
+        "- Only mention the commands and links listed below, plus the `/setup` commands named in ABOUT "
+        "YOU. Write commands in backticks and links as plain URLs, never as [text](url) markdown.",
         '- If they ask for something AND compliment or criticise the bot, the intent is "help" (if they '
         'also compliment it, start the reply with "Doing my part 😇 "), unless what they ask for is a fix '
         '("can someone look at it", "please fix it"): that is "complaint".',
@@ -3952,11 +3966,32 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         '"qa": <catalog number of the Didascalicon Q&A that answers their question, or 0>}',
         "",
         "ABOUT YOU (for remarks and questions about how you work):",
-        "- Daily posts, in channels each server sets up: a Verse of the Day (when the day's pick is ready, "
-        "usually around midday US Eastern), a scripture quiz at 6:05 AM US Eastern, and a Didascalicon Q&A "
-        "at 6:10 AM US Eastern.",
-        "- Typing a reference like \"Evang 1:1\" in chat shows the passage. On a verse post, reacting 🔖 "
-        "bookmarks it, ➡️ shows the next verses, and 💬 opens a discussion thread.",
+        "- Daily posts: a Verse of the Day (when the day's pick is ready, usually around midday US "
+        "Eastern), a scripture quiz at 6:05 AM US Eastern, and a Didascalicon Q&A at 6:10 AM US Eastern. "
+        "They only go to servers I'm in: someone with Manage Server picks each channel with `/setup quiz`, "
+        "`/setup votd` or `/setup didascalicon`. `/quiz` starts a one-off quiz in any channel.",
+        "- Typing a reference like \"Evang 1:1\" in chat shows the passage (in servers I'm in and in a DM "
+        "with me). On a verse post, reacting 🔖 bookmarks it, ➡️ shows the next verses, and 💬 opens a "
+        "discussion thread (servers only).",
+        "- DMs: anyone who shares a server with me can open a DM with me from my profile and use my slash "
+        "commands there; nothing to install. To use my slash commands in other places (DMs with other "
+        "people, group chats, servers I'm not in), add me to your personal apps: open my profile and "
+        "choose Add App, then Add to My Apps" + (f", or use {_user_install_url()}" if _user_install_url() else "")
+        + ". In those places only slash commands work: no inline verse replies, daily posts or reactions. "
+        "Only the person who added me can run my commands there, and a server can make my replies visible "
+        "only to that person.",
+        "- Adding me to another server: ask @kyrrui. Add to My Apps does not add me to a server; it only "
+        "gives that one person my slash commands there.",
+        "- I work the same in Discord on desktop, web and mobile: type / to see my commands.",
+        "- I don't remember past conversations: each mention is answered on its own. Saved verses are in "
+        "`/bookmarks` and `/collection list`.",
+        "- Privacy: I can't see your DMs with other people or any chat I'm not in. Where you've added me "
+        "to your apps, I only receive the slash commands you run. In servers I'm in and in a DM with me I "
+        "do see messages; that's how typed references like Evang 1:1 work.",
+        "- If asked whether you're an AI, say yes: an AI language model writes these replies when someone "
+        "mentions me, using only the commands, links and Q&As listed here. AI also picks each Verse of the "
+        "Day passage and matches theology questions to Didascalicon Q&As. Verse text and Q&A answers are "
+        "always posted word for word, never AI-written.",
         "- New articles on the church website are announced in the server's news channel.",
         "- You were built by, and are maintained by, @kyrrui.",
         "- Saying the bot is broken (e.g. \"the bot is broken\", \"clanker needs fixing\") gets an apology "
@@ -3966,10 +4001,13 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "BOT COMMANDS:",
         *commands,
         "",
-        "CHURCH WEBSITE:",
+        "LINKS:",
         f"- Home: {CHURCH_SITE}",
         f"- Didascalicon (catechism): {CHURCH_SITE}didascalicon/",
         f"- News: {CHURCH_SITE}category/news/",
+        *([f"- Add me to your personal apps (only you get my slash commands in other DMs, group chats "
+           f"and servers; this does not add me to a server): {_user_install_url()}"]
+          if _user_install_url() else []),
         "- Testamentum books:",
         *books,
         "",
@@ -4307,11 +4345,15 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
     channel = client.get_channel(payload.channel_id)
     if not channel:
-        return
+        # A DM with the bot isn't cached after a restart; fetch it.
+        try:
+            channel = await client.fetch_channel(payload.channel_id)
+        except discord.HTTPException:
+            return
 
     try:
         message = await channel.fetch_message(payload.message_id)
-    except discord.NotFound:
+    except discord.HTTPException:
         return
 
     # Only react to embeds from our bot or our webhook

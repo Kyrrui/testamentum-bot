@@ -3489,6 +3489,18 @@ def _llm_usage_note(user_id: str, guild_id: str | None, *, per_user: bool = True
     return f"USAGE (exact, after this reply): this person has {mine}{server}. Both reset at midnight US Eastern."
 
 
+def _ai_servers_note() -> str:
+    """Which of the bot's servers have AI replies on, for "does only this server get them?"."""
+    config = _load_server_config()
+    in_guilds = {str(g.id) for g in client.guilds}
+    on = [gid for gid in in_guilds
+          if any(config.get(gid, {}).get(k) for k in ("bot_replies", "theology_channel", "theology_everywhere"))]
+    if len(in_guilds) == 1:
+        return "SERVERS (exact): I'm only in this one server, and AI replies are on here."
+    return (f"SERVERS (exact): AI replies are turned on in {len(on)} of the {len(in_guilds)} servers I'm in"
+            f"{', and this is the only one' if len(on) == 1 else ', this one included'}.")
+
+
 def _openrouter_chat(system_text: str, user_text: str, max_tokens: int, effort: str = "low") -> str:
     """One OpenRouter chat completion; returns the reply text. Blocking — run in a thread.
 
@@ -4110,6 +4122,9 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "references are not limited. To say how many they have left, give the USAGE line's numbers "
         "exactly, speaking to them as \"you\". If they ask about a kind of limit that doesn't exist "
         "(e.g. an hourly one), say plainly there isn't one, then give the limits that do exist.",
+        "- AI replies (these @mention answers and theology auto-answers) only run in servers where @kyrrui "
+        "has turned them on. Other servers still get my slash commands, typed verse references and daily "
+        "posts. The SERVERS line in the message gives the live count; answer from it.",
         "- You were built by, and are maintained by, @kyrrui.",
         "- Saying the bot is broken (e.g. \"the bot is broken\", \"clanker needs fixing\") gets an apology "
         "and pings your maintainer, @kyrrui, so that is how to report a problem. \"good bot\" gets a "
@@ -4361,7 +4376,7 @@ async def _handle_bot_mention(
     if not OPENROUTER_API_KEY:
         print("[bot-replies] OPENROUTER_API_KEY isn't set, so the guide can't run.")
     elif (limit_hit := _llm_budget(uid, gid, per_user=per_user)) is None:
-        user_text += "\n\n" + _llm_usage_note(uid, gid, per_user=per_user)
+        user_text += "\n\n" + _llm_usage_note(uid, gid, per_user=per_user) + "\n" + _ai_servers_note()
         try:
             async with message.channel.typing():
                 raw = await asyncio.to_thread(

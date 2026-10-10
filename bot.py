@@ -14,6 +14,7 @@ import re
 import threading
 import time
 import traceback
+from collections import Counter
 from difflib import SequenceMatcher
 from zoneinfo import ZoneInfo
 
@@ -4029,11 +4030,15 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "- At most 3 short sentences, under 500 characters. No greetings, no small talk, no questions back.",
         "- Never quote, paraphrase or cite scripture verses or chapter numbers from memory; this canon's "
         "books and numbering differ from other Bibles. To help find a passage, suggest `/search` with "
-        "keywords, or name the book.",
+        "keywords, or name the book. Never point to books that aren't in the Testamentum books list "
+        "below (e.g. Acts, Matthew, Revelation).",
         "- When they ask for a verse or passage, the message may come with CANDIDATE VERSES found in this "
         "canon. Pick up to 3 that truly fit what they asked for, by id, in \"verses\"; their exact text "
         "is posted under your reply, so don't quote them yourself (you may name their references). If "
-        "none fit, pick none and suggest `/search` with a good keyword.",
+        "you pick any verses, set \"qa\" to 0 and don't mention a Q&A: only the verses are posted. If "
+        "none fit, or it says none were found, pick none and suggest `/search` with one word as it "
+        "would appear in King James-style English (e.g. `/search troubled` rather than "
+        "`/search stressed`), since /search matches the verses' wording.",
         "- If they say a lookup failed, said not found, or showed the wrong passage, don't guess why and "
         "never claim a chapter or verse is missing from this canon. Point to the command that fits "
         "(`/verse` needs a chapter and verse like Rom 7:11-13, `/chapter` reads a whole chapter, "
@@ -4064,7 +4069,7 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "",
         'Reply with ONLY a JSON object: {"intent": "help"|"praise"|"complaint"|"bare", "reply": "...", '
         '"qa": <catalog number of the Didascalicon Q&A that answers their question, or 0>, '
-        '"verses": [<up to 3 CANDIDATE VERSES ids>]}. When verses fit, prefer them over a Q&A.',
+        '"verses": [<up to 3 CANDIDATE VERSES ids>]}.',
         "",
         "ABOUT YOU (for remarks and questions about how you work):",
         "- Daily posts: a Verse of the Day (when the day's pick is ready, usually around midday US "
@@ -4102,7 +4107,9 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         f"{LLM_CALLS_PER_USER_PER_DAY} per person per day (@kyrrui is exempt) and "
         f"{LLM_CALLS_PER_SERVER_PER_DAY} per day per server, resetting at midnight US Eastern. Someone who "
         "hits a limit is told so. \"good bot\" / \"bot is broken\" replies, slash commands and typed verse "
-        "references are not limited. To say how many they have left, quote the USAGE line exactly.",
+        "references are not limited. To say how many they have left, give the USAGE line's numbers "
+        "exactly, speaking to them as \"you\". If they ask about a kind of limit that doesn't exist "
+        "(e.g. an hourly one), say plainly there isn't one, then give the limits that do exist.",
         "- You were built by, and are maintained by, @kyrrui.",
         "- Saying the bot is broken (e.g. \"the bot is broken\", \"clanker needs fixing\") gets an apology "
         "and pings your maintainer, @kyrrui, so that is how to report a problem. \"good bot\" gets a "
@@ -4144,7 +4151,7 @@ _TOPIC_STOP = STOP_WORDS | {
     "favorite", "favourite", "nice", "cool", "thanks", "thank", "today", "lol", "written", "being",
     "vs", "versus", "psalm", "psalms",
 } | {name.lower() for name in DB["books"]}
-GUIDE_CANDIDATE_VERSES = 20
+GUIDE_CANDIDATE_VERSES = 40
 # Naming a book narrows the search to it ("a psalm about joy" -> the Psalmicon).
 _BOOK_IN_TEXT_RE = re.compile(
     r"\b(" + "|".join(re.escape(n) for n in sorted(DB["books"], key=len, reverse=True)) + r"|psalms?)\b",
@@ -4153,51 +4160,147 @@ _BOOK_IN_TEXT_RE = re.compile(
 
 # Every verse with its distinct lowercase words, for prefix matching.
 _VERSE_INDEX = [
-    (bname, int(ch), int(v), text, frozenset(re.findall(r"[a-z]+", text.lower())))
+    # Hyphenated words stay whole, so "mother-in-law" isn't a match for "law".
+    (bname, int(ch), int(v), text, Counter(re.findall(r"[a-z]+(?:-[a-z]+)*", text.lower())))
     for bname, bdata in DB["books"].items()
     for ch, cdata in bdata["chapters"].items()
     for v, text in cdata["verses"].items()
 ]
+# Most candidates any one book may supply, so a broad topic shows a spread of the canon
+# (no cap when the person names a book).
+GUIDE_CANDIDATES_PER_BOOK = 8
+SYNONYM_WEIGHT = 0.6
+
+
+# Modern words people ask with, mapped to how this King James-style text says it:
+# (the topic's own words, stand-ins that count for less). "x*" is a prefix; other
+# entries are whole words plus common endings.
+_TOPIC_SYNONYMS = {
+    frozenset({"anxiety", "anxious", "anxieties", "worry", "worried", "worries", "worrying", "stress",
+               "stressed", "fear", "afraid", "scared"}): (["anxious"], ["careful", "troubl*", "afraid", "fear"]),
+    frozenset({"forgive", "forgiveness", "forgiving", "forgiven", "forgave", "pardon"}): (["forgi*"], ["forgave", "remission"]),
+    frozenset({"joy", "joyful", "happy", "happiness", "rejoice", "rejoicing", "gladness"}): (["joy"], ["rejoic*", "glad", "exult*"]),
+    frozenset({"enemy", "enemies"}): (["enemy", "enemies"], ["curse", "persecut*", "despitefully"]),
+    frozenset({"love", "loving", "loved"}): (["love"], ["charity"]),
+}
+# "the unknown God" / "alien God": the Father whom no one knew but the Son.
+_UNKNOWN_GOD_RE = re.compile(r"\b(?:unknown|alien|stranger|hidden)\s+(?:god|father)\b", re.IGNORECASE)
+# Short words match only themselves plus these endings ("law" -> laws, not lawyer).
+_SHORT_WORD_SUFFIXES = {"", "s", "es", "d", "ed", "ing", "eth", "est", "er", "ers", "ful", "fully", "ly",
+                        "y", "n", "ness"}
+
+
+def _as_matchers(primary: list[str], standins: list[str] = ()) -> list[tuple[str, bool, float]]:
+    """(text, exact, weight) triples. "x*" matches as a prefix; anything else is a whole
+    word plus common endings ("law" -> laws, not lawyer). Stand-ins weigh less."""
+    return [(w.rstrip("*"), not w.endswith("*"), weight)
+            for words, weight in ((primary, 1.0), (standins, SYNONYM_WEIGHT)) for w in words]
+
+
+def _topic_terms(text: str) -> list[list[tuple[str, bool, float]]]:
+    """The message's topic as concepts, each a list of matchers (any one matching counts):
+    "forgiveness" -> forgi*, forgave*, remission*; "law" -> law/laws/lawful;
+    "prayer" -> pray* (a stem cut from a longer word is always a prefix)."""
+    lowered = text.lower()
+    terms: list[list[tuple[str, bool, float]]] = []
+    if _UNKNOWN_GOD_RE.search(lowered):
+        # Not "unknown" itself: in this text that's mostly "unknown tongue".
+        terms += [_as_matchers(["know", "knew"]), _as_matchers(["god", "father"])]
+        lowered = _UNKNOWN_GOD_RE.sub(" ", lowered)
+    for word in re.findall(r"[a-z]+", lowered):
+        if len(word) < 3 or word in _TOPIC_STOP:
+            continue
+        synonyms = next((v for k, v in _TOPIC_SYNONYMS.items() if word in k), None)
+        if synonyms:
+            term = _as_matchers(*synonyms)
+        elif len(word) <= 4:
+            term = [(word, True, 1.0)]
+        else:
+            if len(word) > 5:
+                base = re.sub(r"(?:ness|ings?|ions?|ities|ity|ety|ious|ous|ies|ied|ers?|ed|es|s|ful|ly"
+                              r"|ment|dom|ship|y)$", "", word)
+            else:
+                base = re.sub(r"(?<!s)(?:s|y)$", "", word)  # works -> work, mercy -> merc
+            term = [(base[:max(5, len(base) - 2)] if len(base) > 5 else base, False, 1.0)]
+        if term not in terms:
+            terms.append(term)
+    return terms[:6]
 
 
 def _topic_stems(text: str) -> list[str]:
-    """Content words as loose prefixes: "forgiveness" -> "forgi" (forgive, forgiven, forgiving)."""
-    stems: list[str] = []
-    for word in re.findall(r"[a-z]+", text.lower()):
-        if len(word) < 3 or word in _TOPIC_STOP:
-            continue
-        base = re.sub(r"(?:ness|ings?|ions?|ed|es|s|ful|ly|ment|dom|ship)$", "", word) if len(word) > 5 else word
-        stem = base[:max(4, len(base) - 2)] if len(base) > 4 else base
-        if stem not in stems:
-            stems.append(stem)
-    return stems[:6]
+    """Flat list of the matcher texts (for logging and tests)."""
+    return [m for term in _topic_terms(text) for m, _, _ in term]
+
+
+def _word_matches(word: str, matcher: str, exact: bool) -> bool:
+    if exact:
+        return word.startswith(matcher) and word[len(matcher):] in _SHORT_WORD_SUFFIXES
+    return word.startswith(matcher)
 
 
 def _topic_verse_candidates(text: str, limit: int = GUIDE_CANDIDATE_VERSES) -> list[tuple[str, int, int, str]]:
-    """Verses matching the message's topic words, rarer words weighing more."""
-    stems = _topic_stems(text)
-    if not stems:
+    """Verses about the message's topic. Each concept scores by its rarest matching word
+    (a verse with "anxious" beats one with only "fear"), a bit more when the verse dwells
+    on it; ties go to verses where the topic words are a larger share of the verse, and
+    no book supplies more than GUIDE_CANDIDATES_PER_BOOK."""
+    terms = _topic_terms(text)
+    if not terms:
         return []
     books = {"Psalmicon" if m.lower().startswith("psalm") else
              next(n for n in DB["books"] if n.lower() == m.lower())
              for m in _BOOK_IN_TEXT_RE.findall(text)}
-    matches = {s: {i for i, entry in enumerate(_VERSE_INDEX)
-                   if (not books or entry[0] in books) and any(w.startswith(s) for w in entry[4])}
-               for s in stems}
+    pool = [i for i, entry in enumerate(_VERSE_INDEX) if not books or entry[0] in books]
     total = len(_VERSE_INDEX)
-    weight = {s: math.log((total + 1) / (len(ids) + 1)) for s, ids in matches.items() if ids}
     scores: dict[int, float] = {}
-    for s, ids in matches.items():
-        for i in ids:
-            scores[i] = scores.get(i, 0.0) + weight.get(s, 0.0)
-    best = sorted(scores, key=lambda i: (-scores[i], i))[:limit]
-    return [_VERSE_INDEX[i][:4] for i in best if scores[i] > 0]
+    hits: dict[int, int] = {}
+    for term in terms:
+        best_weight: dict[int, float] = {}
+        occurrences: dict[int, int] = {}
+        for matcher, exact, matcher_weight in term:
+            found = {}
+            for i in pool:
+                n = sum(c for w, c in _VERSE_INDEX[i][4].items() if _word_matches(w, matcher, exact))
+                if n:
+                    found[i] = n
+            # The person's own word counts in full; synonyms for it count for less.
+            weight = math.log((total + 1) / (len(found) + 1)) * matcher_weight
+            for i, n in found.items():
+                best_weight[i] = max(best_weight.get(i, 0.0), weight)
+                occurrences[i] = occurrences.get(i, 0) + n
+        for i, w in best_weight.items():
+            scores[i] = scores.get(i, 0.0) + w * (1 + 0.25 * min(occurrences[i] - 1, 3))
+            hits[i] = hits.get(i, 0) + occurrences[i]
+    ranked = sorted(scores, key=lambda i: (-round(scores[i], 6),
+                                           -hits[i] / max(1, sum(_VERSE_INDEX[i][4].values())), i))
+    best: list[int] = []
+    per_book: dict[str, int] = {}
+    for i in ranked:
+        book = _VERSE_INDEX[i][0]
+        if not books and per_book.get(book, 0) >= GUIDE_CANDIDATES_PER_BOOK:
+            continue
+        per_book[book] = per_book.get(book, 0) + 1
+        best.append(i)
+        if len(best) >= limit:
+            break
+    return [_VERSE_INDEX[i][:4] for i in best]
 
 
 def _verse_embed(book: str, chapter: int, verse: int, text: str) -> discord.Embed:
-    """One verse, word for word from the database. The title is a plain reference so
-    🔖/➡️/💬 reactions work on it like on /verse."""
-    embed = discord.Embed(title=f"{book} {chapter}:{verse}", description=text[:4096], color=EMBED_COLOR)
+    """A picked verse, word for word from the database, carried on through up to two
+    following verses when it ends mid-sentence (4:45 "...do good to them which hate
+    you," continues in 4:46). The title is a plain reference so 🔖/➡️/💬 reactions
+    work on it like on /verse."""
+    verses = DB["books"][book]["chapters"][str(chapter)]["verses"]
+    lines, end = [text], verse
+    while lines[-1].rstrip()[-1:] in (",", ";", ":", "-") and str(end + 1) in verses and end - verse < 2:
+        end += 1
+        lines.append(verses[str(end)])
+    if end == verse:
+        title, body = f"{book} {chapter}:{verse}", text
+    else:
+        title = f"{book} {chapter}:{verse}-{end}"
+        body = "\n".join(f"**{verse + n}** {t}" for n, t in enumerate(lines))
+    embed = discord.Embed(title=title, description=body[:4096], color=EMBED_COLOR)
     section = DB["books"][book]["chapters"][str(chapter)]["sections"].get(str(verse))
     if section:
         embed.set_footer(text=section[:2048])
@@ -4242,11 +4345,14 @@ async def _handle_bot_mention(
     how = "They @mentioned you directly." if direct else "They mentioned the bot in conversation."
     user_text = f"{how}\n\n{text[:600]}"
     # Asking for scripture: give the model real verses from this canon to choose from.
-    candidates = await asyncio.to_thread(_topic_verse_candidates, text) if _VERSE_REQUEST_RE.search(text) else []
+    wants_verses = bool(_VERSE_REQUEST_RE.search(text))
+    candidates = await asyncio.to_thread(_topic_verse_candidates, text) if wants_verses else []
     if candidates:
         user_text += "\n\nCANDIDATE VERSES (id. reference — text):\n" + "\n".join(
             f"{i}. {b} {c}:{v} — {t[:220]}" for i, (b, c, v, t) in enumerate(candidates, start=1)
         )
+    elif wants_verses:
+        user_text += "\n\nCANDIDATE VERSES: none found for those words."
     result = None
     limit_hit = None  # "user"/"server" when a daily cap stopped the guide
     # The owner skips the personal cap so testing doesn't make the bot go quiet.
@@ -4346,8 +4452,10 @@ async def _handle_bot_reply(message: discord.Message, theology_strict: bool | No
         return False  # can't reply here; don't spend anything trying
     text = _strip_bot_mentions(message)
 
-    # Questions go to the guide even when they contain "good bot" ("what's a good bot command?").
-    if "?" not in text and len(text.split()) <= BOT_REACTION_MAX_WORDS:
+    # Questions and verse requests go to the guide even when they contain "good bot"
+    # ("what's a good bot command?", "bot any good verses about hope").
+    if ("?" not in text and len(text.split()) <= BOT_REACTION_MAX_WORDS
+            and not _VERSE_REQUEST_RE.search(text)):
         kind = _classify_bot_reaction(text)
         if kind:
             await _send_bot_reaction(message, kind, ping=(kind == "complaint" and _is_breakage_report(text)))

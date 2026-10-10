@@ -57,6 +57,10 @@ LLM_CALLS_PER_USER_PER_DAY = 20
 LLM_CALLS_PER_SERVER_PER_DAY = 500
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-5.5")
+# Bot replies (the @mention guide) run on Haiku: in a side-by-side on the bot's real
+# prompts it matched Sonnet at ~1/20 the cost. Theology matching stays on Sonnet,
+# where Haiku missed clear matches.
+OPENROUTER_GUIDE_MODEL = os.getenv("OPENROUTER_GUIDE_MODEL", "anthropic/claude-haiku-5.5")
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")  # legacy fallback
@@ -3501,12 +3505,14 @@ def _ai_servers_note() -> str:
             f"{', and this is the only one' if len(on) == 1 else ', this one included'}.")
 
 
-def _openrouter_chat(system_text: str, user_text: str, max_tokens: int, effort: str = "low") -> str:
+def _openrouter_chat(
+    system_text: str, user_text: str, max_tokens: int, effort: str = "low", model: str | None = None
+) -> str:
     """One OpenRouter chat completion; returns the reply text. Blocking — run in a thread.
 
-    Sonnet 5.5 always thinks (high effort by default) and its thinking counts against
-    max_tokens, so callers pass a generous max_tokens and a low effort; the reasoning
-    text itself is excluded from the response."""
+    Sonnet/Haiku 5.5 think before answering and that thinking counts against max_tokens,
+    so callers pass a generous max_tokens and a low effort; the reasoning text itself is
+    excluded from the response. `model` defaults to OPENROUTER_MODEL."""
     resp = http_requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
         headers={
@@ -3516,7 +3522,7 @@ def _openrouter_chat(system_text: str, user_text: str, max_tokens: int, effort: 
             "X-Title": "Testamentum Bot",
         },
         json={
-            "model": OPENROUTER_MODEL,
+            "model": model or OPENROUTER_MODEL,
             "max_tokens": max_tokens,
             "reasoning": {"effort": effort, "exclude": True},
             "messages": [
@@ -4380,7 +4386,8 @@ async def _handle_bot_mention(
         try:
             async with message.channel.typing():
                 raw = await asyncio.to_thread(
-                    _openrouter_chat, _bot_guide_system_prompt(questions), user_text, 4000
+                    _openrouter_chat, _bot_guide_system_prompt(questions), user_text, 4000,
+                    model=OPENROUTER_GUIDE_MODEL,
                 )
             result = _parse_guide_reply(raw)
             if result is None:

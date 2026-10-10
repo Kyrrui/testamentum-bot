@@ -4,3 +4,15 @@ __pycache__/
 venv/
 .venv/
 node_modules/
+
+# Bot runtime state (lives under DATA_DIR in production; data/ when run locally)
+data/daily_quiz.json
+data/quiz_history.json
+data/quiz_leaderboard.json
+data/server_config.json
+data/didascalicon_history.json
+data/theology_cache.json
+data/theology_replies.json
+data/announcements_seen.json
+data/users/
+data/*.tmp

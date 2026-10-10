@@ -146,9 +146,11 @@ testamentum-bot/
 ├── verse_image.py         # Verse image generator (Pillow)
 ├── verse_of_the_day.py    # VOTD script (OpenRouter pick + webhook post)
 ├── announcements.py       # Church website news feed reader
-├── daily_quiz.py          # Quiz generator (legacy, now handled by bot)
+├── scrape_didascalicon.py # Didascalicon (catechism) scraper
 ├── data/
-│   └── testamentum.json   # Scraped verse database (committed)
+│   ├── testamentum.json   # Scraped verse database (committed)
+│   ├── didascalicon.json  # Scraped catechism Q&As (committed)
+│   └── votd*.json         # Verse of the Day + history (written by the Action)
 ├── assets/
 │   ├── EBGaramond.ttf     # Serif font for verse images
 │   └── EBGaramond-Italic.ttf

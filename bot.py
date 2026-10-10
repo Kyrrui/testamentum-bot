@@ -10,7 +10,10 @@ import json
 import os
 import random
 import re
+import threading
+import time
 import traceback
+from collections import deque
 from difflib import SequenceMatcher
 from zoneinfo import ZoneInfo
 
@@ -45,6 +48,10 @@ ANNOUNCEMENTS_SEEN_MAX = 500
 THEOLOGY_REPLIES_PATH = os.path.join(RUNTIME_DIR, "theology_replies.json")
 THEOLOGY_USER_COOLDOWN_DAYS = 30
 THEOLOGY_CHANNEL_COOLDOWN_HOURS = 24
+# Spend caps for theology auto-answer: OpenRouter calls (cache misses) per user
+# per hour, and across the whole bot per UTC day. Cached answers are free.
+THEOLOGY_USER_CALLS_PER_HOUR = 5
+THEOLOGY_CALLS_PER_DAY = 100
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
 
@@ -69,7 +76,8 @@ def _storage_status() -> str:
 
 def _write_json(path: str, data):
     """Write JSON atomically so a restart mid-write can't leave a truncated file."""
-    tmp = f"{path}.tmp"
+    # Per-thread temp name: some writers (the VOTD cache) run in worker threads.
+    tmp = f"{path}.{os.getpid()}.{threading.get_ident()}.tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     os.replace(tmp, path)
@@ -495,7 +503,11 @@ def _is_bot_owner(user_id: int) -> bool:
     if app is None:
         return False
     if app.team:
-        return any(m.id == user_id for m in app.team.members)
+        # Same rule as discord.py's Bot.is_owner: admins and developers, not read-only.
+        return any(
+            m.id == user_id and m.role in (discord.TeamMemberRole.admin, discord.TeamMemberRole.developer)
+            for m in app.team.members
+        )
     return app.owner is not None and app.owner.id == user_id
 
 
@@ -592,8 +604,8 @@ async def verse_autocomplete(
 # --- Pagination views ---
 
 
-# Interaction tokens expire after 15 minutes, and edits to slash-command replies
-# go through that token — so time views out just before, while the edit still works.
+# Views time out this long after the last click. Edits to slash-command replies go
+# through a 15-minute interaction token, so the timeout edit uses the freshest one.
 VIEW_TIMEOUT = 840
 # /image draws the whole passage into one PNG; keep it a shareable size.
 IMAGE_MAX_VERSES = 12
@@ -603,16 +615,27 @@ class TimeoutView(ui.View):
     """Base view that disables all buttons when it times out."""
 
     message: discord.Message | None = None
+    _last_interaction: discord.Interaction | None = None
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        self._last_interaction = interaction
+        return True
 
     async def on_timeout(self):
         for item in self.children:
             if isinstance(item, ui.Button):
                 item.disabled = True
-        if self.message:
-            try:
+        last = self._last_interaction
+        try:
+            # A click answered with edit_message owns this message and its token is
+            # newer than the original command's; replies sent as new messages don't.
+            if (last is not None and not last.is_expired()
+                    and last.response.type == discord.InteractionResponseType.message_update):
+                await last.edit_original_response(view=self)
+            elif self.message:
                 await self.message.edit(view=self)
-            except discord.HTTPException:
-                pass
+        except discord.HTTPException:
+            pass
 
 
 class SearchPaginator(TimeoutView):
@@ -949,7 +972,9 @@ async def votd_command(interaction: discord.Interaction):
             description="The Verse of the Day hasn't been set yet. Check back later!",
             color=0xFF0000,
         )
-        await interaction.followup.send(embed=embed)
+        # The deferred reply is public; swap it for a private note.
+        await interaction.delete_original_response()
+        await interaction.followup.send(embed=embed, ephemeral=True)
         return
 
     png = await asyncio.to_thread(_render_votd_png, votd)
@@ -2567,8 +2592,11 @@ def _build_alltime_leaderboard(guild_id: str | None = None, max_entries: int = 1
     return "\n".join(lines)
 
 
-async def _update_quiz_embed(quiz: dict):
-    """Update quiz embeds in all servers with both leaderboards."""
+async def _update_quiz_embed(quiz: dict, guild_id: str | None = None):
+    """Refresh the leaderboards on the quiz post(s) in one server (or all, if guild_id is None).
+
+    Boards are per server, so an answer only changes its own server's post.
+    """
     # Get all message locations
     messages = quiz.get("messages", {})
     # Legacy fallback
@@ -2579,17 +2607,24 @@ async def _update_quiz_embed(quiz: dict):
         channel = client.get_channel(int(ch_id))
         if not channel:
             continue
+        ch_guild_id = str(channel.guild.id) if channel.guild else None
+        if guild_id is not None and ch_guild_id != guild_id:
+            continue
         try:
             message = await channel.fetch_message(int(msg_id))
         except discord.HTTPException:
             continue
 
-        guild_id = str(channel.guild.id) if channel.guild else None
-        alltime_lb = _build_alltime_leaderboard(guild_id, 5)
+        # A new quiz may have been posted (and this one closed) while we waited.
+        current = _load_daily_quiz()
+        if not current or current.get("id") != quiz.get("id"):
+            return
+
+        alltime_lb = _build_alltime_leaderboard(ch_guild_id, 5)
 
         embed = message.embeds[0]
         embed.clear_fields()
-        embed.add_field(name="Today's Scores", value=_build_today_leaderboard(quiz, guild_id), inline=False)
+        embed.add_field(name="Today's Scores", value=_build_today_leaderboard(current, ch_guild_id), inline=False)
         embed.add_field(name="All-Time Leaderboard", value=alltime_lb, inline=False)
 
         try:
@@ -2699,7 +2734,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str, q
                 f"✅ Correct! The book is **{quiz['book']}**.\n\n*Now guess the chapter:*",
                 view=ch_view, ephemeral=True,
             )
-            client.loop.create_task(_update_quiz_embed(quiz))
+            client.loop.create_task(_update_quiz_embed(quiz, guild_id))
         else:
             user_entry["done"] = True
             _update_alltime_score(guild_id, user_id, user_name, user_entry["score"])
@@ -2708,7 +2743,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str, q
                 f"❌ Wrong! The answer is **{ref}**.\nYour score: **{user_entry['score']}/3**",
                 ephemeral=True,
             )
-            client.loop.create_task(_update_quiz_embed(quiz))
+            client.loop.create_task(_update_quiz_embed(quiz, guild_id))
 
     elif stage == "chapter":
         choice = quiz["chapter_choices"][choice_idx]
@@ -2728,7 +2763,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str, q
                 f"✅ Correct! It's **{quiz['book']} Chapter {quiz['chapter']}**.\n\n*Now guess the verse:*",
                 view=v_view, ephemeral=True,
             )
-            client.loop.create_task(_update_quiz_embed(quiz))
+            client.loop.create_task(_update_quiz_embed(quiz, guild_id))
         else:
             user_entry["done"] = True
             _update_alltime_score(guild_id, user_id, user_name, user_entry["score"])
@@ -2737,7 +2772,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str, q
                 f"❌ Wrong chapter! The answer is **{ref}**.\nYour score: **{user_entry['score']}/3**",
                 ephemeral=True,
             )
-            client.loop.create_task(_update_quiz_embed(quiz))
+            client.loop.create_task(_update_quiz_embed(quiz, guild_id))
 
     elif stage == "verse":
         choice = quiz["verse_choices"][choice_idx]
@@ -2757,7 +2792,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str, q
                 f"❌ Close! The answer is **{ref}** (you guessed verse {choice}).\nYour score: **{user_entry['score']}/3**",
                 ephemeral=True,
             )
-        client.loop.create_task(_update_quiz_embed(quiz))
+        client.loop.create_task(_update_quiz_embed(quiz, guild_id))
 
 
 def _make_ephemeral_handler(custom_id: str, quiz_id: str | None):
@@ -2817,7 +2852,11 @@ async def _auto_post_quiz() -> int:
         print("No quiz channels configured.")
         return 0
 
-    previous = _load_daily_quiz()
+    try:
+        previous = _load_daily_quiz()
+    except (OSError, ValueError) as e:
+        print(f"  Couldn't read the previous quiz ({e!r}); starting fresh.")
+        previous = None
     quiz_data = _generate_quiz_data()
 
     # Track message IDs per channel for leaderboard updates. Saved before the
@@ -2869,7 +2908,12 @@ async def _auto_post_quiz() -> int:
             print(f"  Failed to post quiz in {ch_id}: {e}")
             continue
         quiz_data["messages"][str(ch_id)] = str(msg.id)
-        _save_daily_quiz(quiz_data)
+        # Merge into what's on disk rather than saving quiz_data: players on the
+        # servers posted earlier may already have answered during this loop.
+        current = _load_daily_quiz()
+        if current and current.get("id") == quiz_data["id"]:
+            current.setdefault("messages", {})[str(ch_id)] = str(msg.id)
+            _save_daily_quiz(current)
         print(f"  Posted quiz to #{channel.name} ({ch_id})")
 
     print(f"Daily quiz posted: {quiz_data['book']} {quiz_data['chapter']}:{quiz_data['verse']}")
@@ -3309,11 +3353,36 @@ def _save_theology_cache(cache: dict):
     _write_json(THEOLOGY_CACHE_PATH, cache)
 
 
-async def _llm_match_question(user_question: str, questions: list[dict]) -> int | None:
+_theology_user_calls: dict[str, deque] = {}
+_theology_day_calls: dict = {"date": None, "count": 0}
+
+
+def _theology_budget_ok(user_id: str) -> bool:
+    """Check and consume one OpenRouter call from the per-user and daily caps."""
+    now = time.monotonic()
+    today = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+    if _theology_day_calls["date"] != today:
+        _theology_day_calls.update(date=today, count=0)
+    if _theology_day_calls["count"] >= THEOLOGY_CALLS_PER_DAY:
+        print(f"[theology] Daily cap of {THEOLOGY_CALLS_PER_DAY} OpenRouter calls reached; skipping.")
+        return False
+    recent = _theology_user_calls.setdefault(user_id, deque())
+    while recent and now - recent[0] > 3600:
+        recent.popleft()
+    if len(recent) >= THEOLOGY_USER_CALLS_PER_HOUR:
+        print(f"[theology] User {user_id} hit {THEOLOGY_USER_CALLS_PER_HOUR} OpenRouter calls/hour; skipping.")
+        return False
+    recent.append(now)
+    _theology_day_calls["count"] += 1
+    return True
+
+
+async def _llm_match_question(user_question: str, questions: list[dict], *, user_id: str | None = None) -> int | None:
     """Match a user's question to a Didascalicon Q&A.
 
     Cached: persistent JSON keyed by normalized question text. Cache hits and
-    cached no-matches both avoid an OpenRouter call.
+    cached no-matches both avoid an OpenRouter call. When `user_id` is given,
+    cache misses count against the theology spend caps.
 
     Returns the matching question's index, or None if no good match (or LLM
     unavailable). The LLM is ONLY used for matching; the response text the bot
@@ -3339,7 +3408,10 @@ async def _llm_match_question(user_question: str, questions: list[dict]) -> int 
         # Cached number no longer exists in the data — fall through to LLM
         print(f"[theology] Cache hit ({cached}) is stale; calling LLM again")
 
-    numbered = [f"{i + 1}. {q['question']}" for i, q in enumerate(questions)]
+    if user_id is not None and not _theology_budget_ok(user_id):
+        return None
+
+    numbered =[f"{i + 1}. {q['question']}" for i, q in enumerate(questions)]
     catalog = "\n".join(numbered)
 
     system_text = (
@@ -3515,6 +3587,9 @@ def _record_theology_reply(user_id: str, channel_id: str, qa_number: str):
     _save_theology_replies(data)
 
 
+_theology_inflight: set[tuple[str, str, str]] = set()
+
+
 async def _handle_theology_question(message: discord.Message, *, strict: bool = False):
     """If the message looks like a question and matches a Didascalicon Q&A, post the verbatim Q&A."""
     snippet = (message.content[:120] + "...") if len(message.content) > 120 else message.content
@@ -3530,8 +3605,13 @@ async def _handle_theology_question(message: discord.Message, *, strict: bool = 
     if not OPENROUTER_API_KEY:
         print("[theology] OPENROUTER_API_KEY not set; skipping match.")
         return
+    if message.guild:
+        perms = message.channel.permissions_for(message.guild.me)
+        can_send = perms.send_messages_in_threads if isinstance(message.channel, discord.Thread) else perms.send_messages
+        if not can_send:
+            return  # don't pay for a match we can't post
     print(f"[theology] Matching: {snippet!r}")
-    idx = await _llm_match_question(message.content, questions)
+    idx = await _llm_match_question(message.content, questions, user_id=str(message.author.id))
     if idx is None:
         print("[theology] No match returned by LLM.")
         return
@@ -3545,15 +3625,23 @@ async def _handle_theology_question(message: discord.Message, *, strict: bool = 
         print(f"[theology] Throttled: {cooldown}")
         return
 
-    # Record before sending: two quick questions matching the same Q&A would
-    # otherwise both pass the cooldown check while the first reply is in flight.
-    _record_theology_reply(user_id, channel_id, qa["number"])
+    # Two quick questions matching the same Q&A would both pass the cooldown check
+    # while the first reply is in flight; the in-flight set closes that gap without
+    # stamping the cooldown for a reply that then fails to post.
+    inflight = {("user", user_id, qa["number"]), ("channel", channel_id, qa["number"])}
+    if inflight & _theology_inflight:
+        print(f"[theology] Throttled: reply for {qa['number']} already in flight")
+        return
+    _theology_inflight.update(inflight)
     try:
         await _send_qa(message, qa, title_prefix="", reply=True)
+        _record_theology_reply(user_id, channel_id, qa["number"])
     except discord.Forbidden:
         print(f"  No permission to reply in theology channel {message.channel.id}.")
     except Exception as e:
         print(f"  Error posting theology reply: {e}")
+    finally:
+        _theology_inflight.difference_update(inflight)
 
 
 @tasks.loop(time=datetime.time(hour=6, minute=5, tzinfo=EASTERN))
@@ -3565,24 +3653,29 @@ async def daily_quiz_task():
         traceback.print_exc()
 
 
-async def _channel_has_votd_today(channel: discord.abc.Messageable, today: datetime.date) -> bool:
-    """True if `channel` already has a Verse of the Day post from today (UTC) — ours,
-    or the GitHub Action's webhook post. Lives in Discord, so it survives restarts."""
-    since = datetime.datetime.combine(today, datetime.time.min, tzinfo=datetime.timezone.utc)
+async def _channel_has_votd(channel: discord.abc.Messageable, votd_date: str) -> bool:
+    """True if `channel` already shows the Verse of the Day for `votd_date` — our post,
+    or the GitHub Action's webhook post. Lives in Discord, so it survives restarts.
+    Matched on the title's date, so a /verseoftheday reply that showed yesterday's
+    pick earlier today doesn't count."""
+    since = datetime.datetime.combine(
+        datetime.date.fromisoformat(votd_date), datetime.time.min, tzinfo=datetime.timezone.utc
+    )
     try:
         async for msg in channel.history(limit=100):  # newest first
             if msg.created_at < since:
                 break
             if msg.author.id != client.user.id and msg.webhook_id is None:
                 continue
-            if msg.embeds and (msg.embeds[0].title or "").startswith("Verse of the Day"):
+            if msg.embeds and _votd_title_date(msg.embeds[0].title or "") == votd_date:
                 return True
     except discord.HTTPException:
-        pass  # can't read history; fall back to the in-memory guard
+        pass  # can't read history (repeats are then only prevented until a restart)
     return False
 
 
-_votd_reposted_on: str | None = None
+# Channels that already have today's VOTD: {"date": "YYYY-MM-DD", "channels": {id, ...}}
+_votd_done: dict = {"date": None, "channels": set()}
 
 
 @tasks.loop(minutes=15)
@@ -3592,38 +3685,36 @@ async def votd_repost_task():
     The GitHub Action that picks the verse runs on a cron GitHub routinely
     delays by hours, so poll for it instead of firing at a fixed time.
     """
-    global _votd_reposted_on
     try:
-        today = datetime.datetime.now(datetime.timezone.utc).date()
-        if _votd_reposted_on == today.isoformat():
-            return
-        channels = _get_votd_channels()
-        if not channels:
+        today = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+        if _votd_done["date"] != today:
+            _votd_done.update(date=today, channels=set())
+        pending = [ch_id for ch_id in _get_votd_channels() if ch_id not in _votd_done["channels"]]
+        if not pending:
             return
 
         votd = await asyncio.to_thread(_fetch_votd)
-        if not votd or votd.get("date") != today.isoformat():
+        if not votd or votd.get("date") != today:
             return  # today's pick hasn't landed yet
 
         png = None
-        all_done = True
-        for ch_id in channels:
+        for ch_id in pending:
             channel = client.get_channel(ch_id)
-            if not channel or await _channel_has_votd_today(channel, today):
+            if not channel or await _channel_has_votd(channel, today):
+                _votd_done["channels"].add(ch_id)
                 continue
             if png is None:
                 png = await asyncio.to_thread(_render_votd_png, votd)
             try:
                 file = discord.File(io.BytesIO(png), filename="votd.png")
                 await channel.send(embed=_build_votd_embed(votd), file=file)
+                _votd_done["channels"].add(ch_id)
                 print(f"  Posted VOTD to #{channel.name} ({ch_id})")
             except discord.Forbidden:
+                _votd_done["channels"].add(ch_id)
                 print(f"  No permission to post VOTD in {ch_id}")
             except discord.HTTPException as e:
-                all_done = False  # retry on the next poll
-                print(f"  Failed to post VOTD in {ch_id}: {e}")
-        if all_done:
-            _votd_reposted_on = today.isoformat()
+                print(f"  Failed to post VOTD in {ch_id}: {e}")  # retried on the next poll
     except Exception:
         traceback.print_exc()
 
@@ -3654,6 +3745,11 @@ async def on_ready():
         _commands_synced = True
     print(f"Bot is ready! Logged in as {client.user}")
     print(f"Storage: {_storage_status()}")
+    # Theology auto-answer is the paid feature: list every server that has it on.
+    for gid, c in _load_server_config().items():
+        if c.get("theology_channel") or c.get("theology_everywhere"):
+            guild = client.get_guild(int(gid)) if gid.isdigit() else None
+            print(f"Theology auto-answer ON in {guild.name if guild else 'unknown server'} ({gid})")
     print(f"Loaded {len(DB['books'])} books, {verse_count()} verses")
     did = _load_didascalicon()
     print(f"Loaded {len(did.get('questions', []))} Didascalicon Q&As")
@@ -3860,7 +3956,7 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
         expand_embed.set_footer(text="Continued reading")
         view = RelatedView(book, chapter, results[0][0])
         try:
-            await channel.send(embed=expand_embed, view=view)
+            view.message = await channel.send(embed=expand_embed, view=view)
         except discord.HTTPException as e:
             print(f"Expand reaction failed in {channel.id}: {e}")
 
@@ -3893,7 +3989,6 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
 
 def main():
-    import time
     token = os.getenv("DISCORD_TOKEN")
     if not token:
         # Non-zero exit so Railway's ON_FAILURE restart policy notices.

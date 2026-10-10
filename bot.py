@@ -3900,12 +3900,30 @@ def _user_install_url() -> str | None:
     return f"https://discord.com/oauth2/authorize?client_id={app_id}&integration_type=1&scope=applications.commands"
 
 
+def _server_install_url() -> str | None:
+    """Link for adding the bot to a server, or None if the app doesn't allow it. That
+    takes Public Bot on, plus Guild Install whose default scopes include "bot" (or a
+    custom install link), in the Developer Portal. Read at login, so a change there
+    shows up after the next restart."""
+    app = client.application
+    if not app or not getattr(app, "bot_public", False):
+        return None
+    if getattr(app, "custom_install_url", None):
+        return app.custom_install_url
+    cfg = getattr(app, "guild_integration_config", None)
+    params = cfg.oauth2_install_params if cfg else None
+    if not params or "bot" not in params.scopes:
+        return None
+    return (f"https://discord.com/oauth2/authorize?client_id={app.id}&integration_type=0"
+            f"&scope={'+'.join(params.scopes)}&permissions={params.permissions.value}")
+
+
 def _guide_links() -> list[str]:
     """The only URLs the guide may post: church site pages, the Testamentum book pages,
     and this bot's add-to-my-apps link."""
     links = [CHURCH_SITE, f"{CHURCH_SITE}didascalicon/", f"{CHURCH_SITE}category/news/"]
     links += [b["url"] for b in DB["books"].values() if b.get("url")]
-    return links + ([_user_install_url()] if _user_install_url() else [])
+    return links + [url for url in (_user_install_url(), _server_install_url()) if url]
 
 
 def _bot_guide_system_prompt(questions: list[dict]) -> str:
@@ -3980,8 +3998,12 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         + ". In those places only slash commands work: no inline verse replies, daily posts or reactions. "
         "Only the person who added me can run my commands there, and a server can make my replies visible "
         "only to that person.",
-        "- Adding me to another server: ask @kyrrui. Add to My Apps does not add me to a server; it only "
-        "gives that one person my slash commands there.",
+        (f"- Adding me to another server: someone with Manage Server there opens my profile and chooses "
+         f"Add App, then Add to Server, or uses {_server_install_url()}. Then they choose channels with "
+         f"`/setup`. Add to My Apps is different: it only gives that one person my slash commands."
+         if _server_install_url() else
+         "- Adding me to another server: ask @kyrrui. Add to My Apps does not add me to a server; it only "
+         "gives that one person my slash commands there."),
         "- I work the same in Discord on desktop, web and mobile: type / to see my commands.",
         "- I don't remember past conversations: each mention is answered on its own. Saved verses are in "
         "`/bookmarks` and `/collection list`.",
@@ -4246,6 +4268,13 @@ async def on_ready():
     print(f"Storage: {_storage_status()}")
     print("OpenRouter: " + ("configured" if OPENROUTER_API_KEY else
                             "OPENROUTER_API_KEY NOT SET — theology auto-answer and the bot-replies guide are off"))
+    app = client.application
+    if app:
+        print(
+            f"Installs: Public Bot {'on' if app.bot_public else 'OFF'}; "
+            f"server installs {'on' if _server_install_url() else 'OFF (needs Public Bot + Guild Install with the bot scope)'}; "
+            f"user installs {'on' if app.user_integration_config else 'off'}"
+        )
     # The paid (OpenRouter) features: list every server that has one on.
     for gid, c in _load_server_config().items():
         paid = [name for name, on in (

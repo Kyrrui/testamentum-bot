@@ -136,6 +136,13 @@ Bot-owner only (the Discord application's owner or team, plus any `OWNER_IDS`): 
 3. Add a persistent volume mounted at `/data` (`/setup status` warns if it isn't)
 4. Deploy
 
+### Letting other servers add the bot
+
+In the [Discord Developer Portal](https://discord.com/developers/applications), open the app and:
+1. **Bot** → turn on **Public Bot** (otherwise only the app owner can add it to servers).
+2. **Installation** → under Installation Contexts tick **Guild Install** (keep **User Install**), set Install Link to **Discord Provided Link**, and under Default Install Settings → Guild Install add the scopes `applications.commands` and `bot` with these permissions: View Channels, Send Messages, Send Messages in Threads, Create Public Threads, Embed Links, Attach Files, Read Message History, Add Reactions, and Mention Everyone (for news announcements).
+3. Save and restart the bot. Its startup log prints `Installs: Public Bot on; server installs on…`, and its @mention replies start telling people to add it themselves (profile → **Add App** → **Add to Server**).
+
 ### GitHub Actions (Verse of the Day)
 
 Add this as a GitHub repository secret:

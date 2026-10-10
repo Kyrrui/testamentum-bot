@@ -8,7 +8,7 @@ call fails or returns an invalid pick, falls back to random selection.
 
 Environment variables:
   OPENROUTER_API_KEY  — API key for OpenRouter (optional; falls back to random)
-  OPENROUTER_MODEL    — model slug, defaults to anthropic/claude-sonnet-4
+  OPENROUTER_MODEL    — model slug, defaults to anthropic/claude-sonnet-5.5
   DISCORD_WEBHOOK_URL — optional: also post the card to this webhook (for use
                         without the bot; webhook posts carry the webhook's own
                         name and avatar)
@@ -25,7 +25,7 @@ import requests
 from verse_image import render_verse
 
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
-OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
+OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "anthropic/claude-sonnet-5.5")
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), "data", "testamentum.json")
@@ -147,7 +147,10 @@ def build_structure_summary(db: dict) -> str:
 def _call_llm(system_text: str, user_text: str) -> str:
     body = {
         "model": OPENROUTER_MODEL,
-        "max_tokens": 256,
+        # Sonnet 5.5 always thinks, and thinking counts against max_tokens: leave room
+        # for it, keep the effort moderate, and leave the reasoning text out of the reply.
+        "max_tokens": 4000,
+        "reasoning": {"effort": "medium", "exclude": True},
         "messages": [
             {"role": "system", "content": system_text},
             {"role": "user", "content": user_text},

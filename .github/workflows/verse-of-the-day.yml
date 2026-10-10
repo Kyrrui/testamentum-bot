@@ -24,7 +24,7 @@ jobs:
       - name: Pick verse of the day
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || 'anthropic/claude-sonnet-4' }}
+          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL || 'anthropic/claude-sonnet-5.5' }}
         run: python verse_of_the_day.py
 
       - name: Commit votd.json and history

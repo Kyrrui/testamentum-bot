@@ -7,13 +7,13 @@ import asyncio
 import datetime
 import io
 import json
+import math
 import os
 import random
 import re
 import threading
 import time
 import traceback
-from collections import deque
 from difflib import SequenceMatcher
 from zoneinfo import ZoneInfo
 
@@ -46,14 +46,16 @@ THEOLOGY_CACHE_PATH = os.path.join(RUNTIME_DIR, "theology_cache.json")
 ANNOUNCEMENTS_SEEN_PATH = os.path.join(RUNTIME_DIR, "announcements_seen.json")
 ANNOUNCEMENTS_SEEN_MAX = 500
 THEOLOGY_REPLIES_PATH = os.path.join(RUNTIME_DIR, "theology_replies.json")
+LLM_USAGE_PATH = os.path.join(RUNTIME_DIR, "llm_usage.json")
 THEOLOGY_USER_COOLDOWN_DAYS = 30
 THEOLOGY_CHANNEL_COOLDOWN_HOURS = 24
-# Spend caps on OpenRouter calls triggered by chat messages, per feature so one
-# can't starve the other: per user per hour, and bot-wide per UTC day.
-LLM_USER_CALLS_PER_HOUR = 5
-LLM_CALLS_PER_DAY = {"theology": 100, "guide": 50}
+# Daily caps on OpenRouter calls triggered by chat messages (bot-reply guide and
+# theology auto-answer cache misses), per person and per server. A "day" ends at
+# midnight US Eastern. Counts persist in LLM_USAGE_PATH so restarts don't reset them.
+LLM_CALLS_PER_USER_PER_DAY = 20
+LLM_CALLS_PER_SERVER_PER_DAY = 500
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
+OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-5.5")
 
 EMBED_COLOR = 0x8B4513  # brown/parchment
 QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")  # legacy fallback
@@ -3410,35 +3412,88 @@ def _save_theology_cache(cache: dict):
     _write_json(THEOLOGY_CACHE_PATH, cache)
 
 
-_llm_user_calls: dict[tuple[str, str], deque] = {}
-_llm_day_calls: dict = {"date": None, "counts": {}}
+LLM_LIMIT_USER_REPLY = (
+    f"You've used your {LLM_CALLS_PER_USER_PER_DAY} AI replies for today; they reset at midnight US "
+    "Eastern. Slash commands like `/search` and `/verse` still work."
+)
+LLM_LIMIT_SERVER_REPLY = (
+    f"This server has used its {LLM_CALLS_PER_SERVER_PER_DAY} AI replies for today; they reset at "
+    "midnight US Eastern. Slash commands like `/search` and `/verse` still work."
+)
+
+_llm_usage: dict | None = None
 
 
-def _llm_budget_ok(feature: str, user_id: str, *, per_user: bool = True) -> bool:
-    """Check and consume one OpenRouter call from `feature`'s per-user and daily caps
-    (`per_user=False` skips the hourly per-user cap, e.g. for the bot owner testing)."""
-    now = time.monotonic()
-    today = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
-    if _llm_day_calls["date"] != today:
-        _llm_day_calls.update(date=today, counts={})
-    counts = _llm_day_calls["counts"]
-    if counts.get(feature, 0) >= LLM_CALLS_PER_DAY[feature]:
-        print(f"[llm] {feature}: daily cap of {LLM_CALLS_PER_DAY[feature]} OpenRouter calls reached; skipping.")
+class LLMLimitReached(Exception):
+    def __init__(self, which: str):  # "user" or "server"
+        super().__init__(which)
+        self.which = which
+
+
+def _llm_usage_today() -> dict:
+    """Today's counts: {"date", "users": {id: n}, "servers": {id: n}, "notified": [user ids]}."""
+    global _llm_usage
+    today = datetime.datetime.now(EASTERN).date().isoformat()
+    if _llm_usage is None:
+        try:
+            with open(LLM_USAGE_PATH, "r", encoding="utf-8") as f:
+                _llm_usage = json.load(f)
+        except (OSError, ValueError):
+            _llm_usage = {}
+    if _llm_usage.get("date") != today:
+        _llm_usage = {"date": today, "users": {}, "servers": {}, "notified": []}
+    return _llm_usage
+
+
+def _llm_budget(user_id: str, guild_id: str | None, *, per_user: bool = True) -> str | None:
+    """Consume one OpenRouter call. None if allowed, else the cap that stopped it:
+    "server" or "user". (`per_user=False`: the bot owner, exempt from the personal cap.)"""
+    usage = _llm_usage_today()
+    if guild_id and usage["servers"].get(guild_id, 0) >= LLM_CALLS_PER_SERVER_PER_DAY:
+        print(f"[llm] Server {guild_id} hit {LLM_CALLS_PER_SERVER_PER_DAY} calls today; skipping.")
+        return "server"
+    if per_user and usage["users"].get(user_id, 0) >= LLM_CALLS_PER_USER_PER_DAY:
+        print(f"[llm] User {user_id} hit {LLM_CALLS_PER_USER_PER_DAY} calls today; skipping.")
+        return "user"
+    usage["users"][user_id] = usage["users"].get(user_id, 0) + 1
+    if guild_id:
+        usage["servers"][guild_id] = usage["servers"].get(guild_id, 0) + 1
+    _write_json(LLM_USAGE_PATH, usage)
+    return None
+
+
+def _llm_limit_reply(which: str) -> str:
+    return LLM_LIMIT_SERVER_REPLY if which == "server" else LLM_LIMIT_USER_REPLY
+
+
+def _llm_first_limit_notice(user_id: str) -> bool:
+    """True the first time today this person is told about a limit (so passing
+    mentions and theology questions get one notice a day, not one per message)."""
+    usage = _llm_usage_today()
+    if user_id in usage["notified"]:
         return False
-    if per_user:
-        recent = _llm_user_calls.setdefault((feature, user_id), deque())
-        while recent and now - recent[0] > 3600:
-            recent.popleft()
-        if len(recent) >= LLM_USER_CALLS_PER_HOUR:
-            print(f"[llm] {feature}: user {user_id} hit {LLM_USER_CALLS_PER_HOUR} calls/hour; skipping.")
-            return False
-        recent.append(now)
-    counts[feature] = counts.get(feature, 0) + 1
+    usage["notified"].append(user_id)
+    _write_json(LLM_USAGE_PATH, usage)
     return True
 
 
-def _openrouter_chat(system_text: str, user_text: str, max_tokens: int) -> str:
-    """One OpenRouter chat completion; returns the reply text. Blocking — run in a thread."""
+def _llm_usage_note(user_id: str, guild_id: str | None, *, per_user: bool = True) -> str:
+    """Exact remaining allowances, for the guide to quote when asked about limits."""
+    usage = _llm_usage_today()
+    mine = (f"{LLM_CALLS_PER_USER_PER_DAY - usage['users'].get(user_id, 0)} of "
+            f"{LLM_CALLS_PER_USER_PER_DAY} AI replies left today" if per_user
+            else "no personal limit (bot owner)")
+    server = (f"; this server has {LLM_CALLS_PER_SERVER_PER_DAY - usage['servers'].get(guild_id, 0)} of "
+              f"{LLM_CALLS_PER_SERVER_PER_DAY} left today" if guild_id else "")
+    return f"USAGE (exact, after this reply): this person has {mine}{server}. Both reset at midnight US Eastern."
+
+
+def _openrouter_chat(system_text: str, user_text: str, max_tokens: int, effort: str = "low") -> str:
+    """One OpenRouter chat completion; returns the reply text. Blocking — run in a thread.
+
+    Sonnet 5.5 always thinks (high effort by default) and its thinking counts against
+    max_tokens, so callers pass a generous max_tokens and a low effort; the reasoning
+    text itself is excluded from the response."""
     resp = http_requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
         headers={
@@ -3450,18 +3505,24 @@ def _openrouter_chat(system_text: str, user_text: str, max_tokens: int) -> str:
         json={
             "model": OPENROUTER_MODEL,
             "max_tokens": max_tokens,
+            "reasoning": {"effort": effort, "exclude": True},
             "messages": [
                 {"role": "system", "content": system_text},
                 {"role": "user", "content": user_text},
             ],
         },
-        timeout=30,
+        timeout=60,
     )
     resp.raise_for_status()
-    return (resp.json()["choices"][0]["message"]["content"] or "").strip()
+    choice = resp.json()["choices"][0]
+    if choice.get("finish_reason") == "length":
+        print(f"[llm] Hit max_tokens={max_tokens}; the reply may be cut short.")
+    return (choice["message"]["content"] or "").strip()
 
 
-async def _llm_match_question(user_question: str, questions: list[dict], *, user_id: str | None = None) -> int | None:
+async def _llm_match_question(
+    user_question: str, questions: list[dict], *, user_id: str | None = None, guild_id: str | None = None
+) -> int | None:
     """Match a user's question to a Didascalicon Q&A.
 
     Cached: persistent JSON keyed by normalized question text. Cache hits and
@@ -3492,8 +3553,10 @@ async def _llm_match_question(user_question: str, questions: list[dict], *, user
         # Cached number no longer exists in the data — fall through to LLM
         print(f"[theology] Cache hit ({cached}) is stale; calling LLM again")
 
-    if user_id is not None and not _llm_budget_ok("theology", user_id):
-        return None
+    if user_id is not None:
+        limit = _llm_budget(user_id, guild_id, per_user=not _is_bot_owner(int(user_id)))
+        if limit:
+            raise LLMLimitReached(limit)
 
     numbered =[f"{i + 1}. {q['question']}" for i, q in enumerate(questions)]
     catalog = "\n".join(numbered)
@@ -3514,7 +3577,7 @@ async def _llm_match_question(user_question: str, questions: list[dict], *, user
 
     idx: int | None = None
     try:
-        raw = await asyncio.to_thread(_openrouter_chat, system_text, user_text, 8)
+        raw = await asyncio.to_thread(_openrouter_chat, system_text, user_text, 2000)
         m = re.search(r"-?\d+", raw)
         if m:
             n = int(m.group(0))
@@ -3674,7 +3737,20 @@ async def _handle_theology_question(message: discord.Message, *, strict: bool = 
         if not can_send:
             return  # don't pay for a match we can't post
     print(f"[theology] Matching: {snippet!r}")
-    idx = await _llm_match_question(message.content, questions, user_id=str(message.author.id))
+    try:
+        idx = await _llm_match_question(
+            message.content, questions, user_id=str(message.author.id),
+            guild_id=str(message.guild.id) if message.guild else None,
+        )
+    except LLMLimitReached as limit:
+        # Say so once a day; staying quiet after that keeps a busy channel clean.
+        if _llm_first_limit_notice(str(message.author.id)):
+            try:
+                await message.reply(_llm_limit_reply(limit.which), mention_author=False,
+                                    allowed_mentions=discord.AllowedMentions.none())
+            except discord.HTTPException:
+                pass
+        return
     if idx is None:
         print("[theology] No match returned by LLM.")
         return
@@ -3954,6 +4030,10 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "- Never quote, paraphrase or cite scripture verses or chapter numbers from memory; this canon's "
         "books and numbering differ from other Bibles. To help find a passage, suggest `/search` with "
         "keywords, or name the book.",
+        "- When they ask for a verse or passage, the message may come with CANDIDATE VERSES found in this "
+        "canon. Pick up to 3 that truly fit what they asked for, by id, in \"verses\"; their exact text "
+        "is posted under your reply, so don't quote them yourself (you may name their references). If "
+        "none fit, pick none and suggest `/search` with a good keyword.",
         "- If they say a lookup failed, said not found, or showed the wrong passage, don't guess why and "
         "never claim a chapter or verse is missing from this canon. Point to the command that fits "
         "(`/verse` needs a chapter and verse like Rom 7:11-13, `/chapter` reads a whole chapter, "
@@ -3962,10 +4042,12 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "- Never give your own theological opinions or explanations. If a Didascalicon Q&A answers the "
         "question, select it (it is posted verbatim under your reply) and say so briefly; otherwise "
         "point to the website.",
-        "- About yourself, only state what ABOUT YOU and BOT COMMANDS say. Together they list everything "
-        "you do: if they ask whether you can do something not listed (play music, moderate, chat, set "
-        "reminders), say no and point to `/help`. For any other question about you that isn't covered, "
-        "say you're not sure and point them to `/help` or @kyrrui.",
+        "- About yourself, only state what ABOUT YOU and BOT COMMANDS say. Together they list every "
+        "feature you have: if they ask whether you can do something not listed (play music, moderate, "
+        "chat, set reminders), say no and point to `/help`. That \"no\" is only for features: never claim "
+        "you have no limits, rules or behaviors; your limits are in ABOUT YOU, and the message's USAGE "
+        "line gives their live numbers. For any other question about you that isn't covered, say you're "
+        "not sure and point them to `/help` or @kyrrui.",
         "- Only mention the commands and links listed below, plus the `/setup` commands named in ABOUT "
         "YOU. Write commands in backticks and links as plain URLs, never as [text](url) markdown.",
         '- If they ask for something AND compliment or criticise the bot, the intent is "help" (if they '
@@ -3981,7 +4063,8 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         'bot then posts a fixed one-line pointer. For "praise", "complaint" and "bare", reply "".',
         "",
         'Reply with ONLY a JSON object: {"intent": "help"|"praise"|"complaint"|"bare", "reply": "...", '
-        '"qa": <catalog number of the Didascalicon Q&A that answers their question, or 0>}',
+        '"qa": <catalog number of the Didascalicon Q&A that answers their question, or 0>, '
+        '"verses": [<up to 3 CANDIDATE VERSES ids>]}. When verses fit, prefer them over a Q&A.',
         "",
         "ABOUT YOU (for remarks and questions about how you work):",
         "- Daily posts: a Verse of the Day (when the day's pick is ready, usually around midday US "
@@ -4015,6 +4098,11 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         "Day passage and matches theology questions to Didascalicon Q&As. Verse text and Q&A answers are "
         "always posted word for word, never AI-written.",
         "- New articles on the church website are announced in the server's news channel.",
+        f"- Limits: AI-written replies (like this one, and theology auto-answers) are limited to "
+        f"{LLM_CALLS_PER_USER_PER_DAY} per person per day (@kyrrui is exempt) and "
+        f"{LLM_CALLS_PER_SERVER_PER_DAY} per day per server, resetting at midnight US Eastern. Someone who "
+        "hits a limit is told so. \"good bot\" / \"bot is broken\" replies, slash commands and typed verse "
+        "references are not limited. To say how many they have left, quote the USAGE line exactly.",
         "- You were built by, and are maintained by, @kyrrui.",
         "- Saying the bot is broken (e.g. \"the bot is broken\", \"clanker needs fixing\") gets an apology "
         "and pings your maintainer, @kyrrui, so that is how to report a problem. \"good bot\" gets a "
@@ -4037,6 +4125,83 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         *catalog,
     ])
     return _bot_guide_prompt
+
+
+# --- Topic search for the guide: real verses for "is there a verse on forgiveness?" ---
+
+# Messages asking for scripture; only these get candidate verses (keeps other calls small).
+_VERSE_REQUEST_RE = re.compile(
+    r"\b(?:verses?|scriptures?|passages?|quotes?|psalms?|readings?|bible)\b"
+    r"|\b(?:say|says|said|teach|teaches|talk|talks|written)\s+about\b",
+    re.IGNORECASE,
+)
+_TOPIC_STOP = STOP_WORDS | {
+    "verse", "verses", "scripture", "scriptures", "passage", "passages", "quote", "quotes", "bible",
+    "testamentum", "bot", "clanker", "hey", "pull", "show", "find", "give", "any", "some", "something",
+    "about", "please", "could", "tell", "know", "want", "need", "like", "look", "looking", "read",
+    "reading", "topic", "talk", "talks", "say", "says", "teach", "teaches", "help", "good", "great",
+    "get", "share", "post", "mean", "means", "your", "does", "there", "where", "which", "why", "any",
+    "favorite", "favourite", "nice", "cool", "thanks", "thank", "today", "lol", "written", "being",
+    "vs", "versus", "psalm", "psalms",
+} | {name.lower() for name in DB["books"]}
+GUIDE_CANDIDATE_VERSES = 20
+# Naming a book narrows the search to it ("a psalm about joy" -> the Psalmicon).
+_BOOK_IN_TEXT_RE = re.compile(
+    r"\b(" + "|".join(re.escape(n) for n in sorted(DB["books"], key=len, reverse=True)) + r"|psalms?)\b",
+    re.IGNORECASE,
+)
+
+# Every verse with its distinct lowercase words, for prefix matching.
+_VERSE_INDEX = [
+    (bname, int(ch), int(v), text, frozenset(re.findall(r"[a-z]+", text.lower())))
+    for bname, bdata in DB["books"].items()
+    for ch, cdata in bdata["chapters"].items()
+    for v, text in cdata["verses"].items()
+]
+
+
+def _topic_stems(text: str) -> list[str]:
+    """Content words as loose prefixes: "forgiveness" -> "forgi" (forgive, forgiven, forgiving)."""
+    stems: list[str] = []
+    for word in re.findall(r"[a-z]+", text.lower()):
+        if len(word) < 3 or word in _TOPIC_STOP:
+            continue
+        base = re.sub(r"(?:ness|ings?|ions?|ed|es|s|ful|ly|ment|dom|ship)$", "", word) if len(word) > 5 else word
+        stem = base[:max(4, len(base) - 2)] if len(base) > 4 else base
+        if stem not in stems:
+            stems.append(stem)
+    return stems[:6]
+
+
+def _topic_verse_candidates(text: str, limit: int = GUIDE_CANDIDATE_VERSES) -> list[tuple[str, int, int, str]]:
+    """Verses matching the message's topic words, rarer words weighing more."""
+    stems = _topic_stems(text)
+    if not stems:
+        return []
+    books = {"Psalmicon" if m.lower().startswith("psalm") else
+             next(n for n in DB["books"] if n.lower() == m.lower())
+             for m in _BOOK_IN_TEXT_RE.findall(text)}
+    matches = {s: {i for i, entry in enumerate(_VERSE_INDEX)
+                   if (not books or entry[0] in books) and any(w.startswith(s) for w in entry[4])}
+               for s in stems}
+    total = len(_VERSE_INDEX)
+    weight = {s: math.log((total + 1) / (len(ids) + 1)) for s, ids in matches.items() if ids}
+    scores: dict[int, float] = {}
+    for s, ids in matches.items():
+        for i in ids:
+            scores[i] = scores.get(i, 0.0) + weight.get(s, 0.0)
+    best = sorted(scores, key=lambda i: (-scores[i], i))[:limit]
+    return [_VERSE_INDEX[i][:4] for i in best if scores[i] > 0]
+
+
+def _verse_embed(book: str, chapter: int, verse: int, text: str) -> discord.Embed:
+    """One verse, word for word from the database. The title is a plain reference so
+    🔖/➡️/💬 reactions work on it like on /verse."""
+    embed = discord.Embed(title=f"{book} {chapter}:{verse}", description=text[:4096], color=EMBED_COLOR)
+    section = DB["books"][book]["chapters"][str(chapter)]["sections"].get(str(verse))
+    if section:
+        embed.set_footer(text=section[:2048])
+    return embed
 
 
 def _parse_guide_reply(raw: str) -> dict | None:
@@ -4075,15 +4240,26 @@ async def _handle_bot_mention(
     questions = _load_didascalicon().get("questions", [])
     kind = "direct" if direct else "passing"
     how = "They @mentioned you directly." if direct else "They mentioned the bot in conversation."
+    user_text = f"{how}\n\n{text[:600]}"
+    # Asking for scripture: give the model real verses from this canon to choose from.
+    candidates = await asyncio.to_thread(_topic_verse_candidates, text) if _VERSE_REQUEST_RE.search(text) else []
+    if candidates:
+        user_text += "\n\nCANDIDATE VERSES (id. reference — text):\n" + "\n".join(
+            f"{i}. {b} {c}:{v} — {t[:220]}" for i, (b, c, v, t) in enumerate(candidates, start=1)
+        )
     result = None
+    limit_hit = None  # "user"/"server" when a daily cap stopped the guide
+    # The owner skips the personal cap so testing doesn't make the bot go quiet.
+    per_user = not _is_bot_owner(message.author.id)
+    uid, gid = str(message.author.id), (str(message.guild.id) if message.guild else None)
     if not OPENROUTER_API_KEY:
         print("[bot-replies] OPENROUTER_API_KEY isn't set, so the guide can't run.")
-    # The owner skips the hourly per-user cap so testing doesn't make the bot go quiet.
-    elif _llm_budget_ok("guide", str(message.author.id), per_user=not _is_bot_owner(message.author.id)):
+    elif (limit_hit := _llm_budget(uid, gid, per_user=per_user)) is None:
+        user_text += "\n\n" + _llm_usage_note(uid, gid, per_user=per_user)
         try:
             async with message.channel.typing():
                 raw = await asyncio.to_thread(
-                    _openrouter_chat, _bot_guide_system_prompt(questions), f"{how}\n\n{text[:600]}", 400
+                    _openrouter_chat, _bot_guide_system_prompt(questions), user_text, 4000
                 )
             result = _parse_guide_reply(raw)
             if result is None:
@@ -4100,16 +4276,42 @@ async def _handle_bot_mention(
         if fallback:
             await _send_bot_reaction(message, fallback, ping=_is_breakage_report(text))
             return
+        if limit_hit:
+            # Tell them: always for an @mention, once a day for a passing mention.
+            if direct or _llm_first_limit_notice(uid):
+                try:
+                    await message.reply(_llm_limit_reply(limit_hit), mention_author=False,
+                                        allowed_mentions=discord.AllowedMentions.none())
+                except discord.HTTPException as e:
+                    print(f"[bot-replies] Couldn't reply in {message.channel.id}: {e}")
+            return
     elif intent in ("praise", "complaint"):
         await _send_bot_reaction(message, intent, ping=(intent == "complaint"))
         return
     qa_index = result.get("qa") if intent == "help" else None
     # type() not isinstance(): a JSON true would otherwise count as Q&A #1.
     qa = questions[qa_index - 1] if type(qa_index) is int and 1 <= qa_index <= len(questions) else None
+    picked = result.get("verses") if intent == "help" else None
+    verses = []
+    for n in picked if isinstance(picked, list) else []:
+        if type(n) is int and 1 <= n <= len(candidates) and candidates[n - 1] not in verses:
+            verses.append(candidates[n - 1])
+    verses = verses[:3]
+    if verses:
+        qa = None  # verses were asked for; one answer per reply
     reply = _clean_guide_text(str(result.get("reply") or "")) if intent == "help" else None
     if reply:
         # The model writes the maintainer as "@kyrrui"; make it a real (non-pinging) mention.
         reply = _OWNER_HANDLE_RE.sub(lambda _: _owner_mention(), reply)
+    if verses:
+        try:
+            await message.reply(
+                reply, embeds=[_verse_embed(*v) for v in verses], mention_author=False,
+                allowed_mentions=discord.AllowedMentions.none(),
+            )
+        except discord.HTTPException as e:
+            print(f"[bot-replies] Couldn't reply in {message.channel.id}: {e}")
+        return
     if not reply and not qa:
         if not direct:
             if result is None and theology_strict is not None:

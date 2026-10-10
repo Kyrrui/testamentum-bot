@@ -14,5 +14,6 @@ data/didascalicon_history.json
 data/theology_cache.json
 data/theology_replies.json
 data/announcements_seen.json
+data/llm_usage.json
 data/users/
 data/*.tmp

@@ -63,7 +63,8 @@ Turned on per server by the bot owner (`/setup bot-replies enabled:true`):
 In a server with this on, any message that @mentions the bot or says "bot", "clanker" or "testamentum bot" is treated as being about this bot ("Testamentum" alone means the scripture).
 - **"good bot"** and similar → "Doing my part 😇". **"bot is broken" / "clanker needs fixing"** → an apology that **pings the bot owner** for breakage reports (at most once per 10 minutes; insults like "bad bot" get the apology without a ping). Short messages are free phrase matches; "if the bot breaks…" isn't a report.
 - **Anything else about the bot** → one OpenRouter call that recognises longer praise/complaints, points people to the right command, church website page, or Didascalicon Q&A (posted in full under the reply), or confirms how the bot works. A bare passing mention ("lol the bot") gets a one-line `/help` pointer, at most once per channel per 10 minutes. It never quotes scripture from memory, only links to church website pages, and doesn't hold conversations. If OpenRouter is unavailable, breakage reports still get the apology and ping.
-- Spend caps: bot replies get 50 OpenRouter calls a day and theology auto-answer 100, separately, and each allows 5 per user per hour (the bot owner is exempt from the hourly limit). Every decision is logged as `[bot-replies] …` in the bot's logs.
+- Limits: AI replies (bot replies and theology auto-answers together) are capped at 20 per person per day and 500 per server per day, resetting at midnight US Eastern; counts are kept in `llm_usage.json` so restarts don't reset them. Someone who hits a limit is told (always for an @mention, once a day otherwise). The bot owner has no personal limit. Every decision is logged as `[bot-replies] …` in the bot's logs.
+- Model: `anthropic/claude-sonnet-5.5` via OpenRouter (override with `OPENROUTER_MODEL`), run at low effort for these replies.
 
 ### Using it in DMs
 - Anyone who shares a server with the bot can DM it from its profile and use its slash commands there (and type references like `Evang 1:1`); nothing to install.
@@ -186,6 +187,7 @@ Runtime data (persistent volume):
 - `votd.json` — cached VOTD
 - `users/<id>.json` — per-user bookmarks and collections
 - `didascalicon_history.json`, `theology_cache.json`, `theology_replies.json` — Didascalicon rotation, LLM match cache, reply cooldowns
+- `llm_usage.json` — today's AI-reply counts per person and per server
 - `announcements_seen.json` — news articles already announced
 
 ## License

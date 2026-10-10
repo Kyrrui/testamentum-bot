@@ -1,22 +1,30 @@
 {
-  "book": "1 Corinthians",
-  "chapter": "5",
-  "verse_start": "6",
-  "verse_end": "8",
+  "book": "Romans",
+  "chapter": "12",
+  "verse_start": "9",
+  "verse_end": "13",
   "verses": [
     {
-      "verse": "6",
-      "text": "Your glorying is not good. Know ye not that a little leaven leaveneth the whole lump?"
+      "verse": "9",
+      "text": "Recompense to no man evil for evil. Provide things honest in the sight of all men."
     },
     {
-      "verse": "7",
-      "text": "Purge out therefore the old leaven, that ye may be a new lump, as ye are unleavened. For even Christ our passover is sacrificed for us:"
+      "verse": "10",
+      "text": "If it be possible, as much as lieth in you, live peaceably with all men."
     },
     {
-      "verse": "8",
-      "text": "Therefore let us keep the feast, not with old leaven, neither with the leaven of malice and wickedness; but with the unleavened bread of sincerity and truth."
+      "verse": "11",
+      "text": "Dearly beloved, avenge not yourselves, but rather give place unto wrath: for it is written, Vengeance is mine; I will repay, saith the Lord."
+    },
+    {
+      "verse": "12",
+      "text": "Therefore if thine enemy hunger, feed him; if he thirst, give him drink: for in so doing thou shalt heap coals of fire on his head."
+    },
+    {
+      "verse": "13",
+      "text": "Be not overcome of evil, but overcome evil with good."
     }
   ],
-  "section": "Concerning the Old Leaven Which Is to Be Purged Out",
-  "date": "2026-10-09"
+  "section": "Concerning Good Things to Be Done before God and Men",
+  "date": "2026-10-10"
 }

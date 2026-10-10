@@ -1324,5 +1324,12 @@
     "chapter": "5",
     "verse_start": "6",
     "verse_end": "8"
+  },
+  {
+    "date": "2026-10-10",
+    "book": "Romans",
+    "chapter": "12",
+    "verse_start": "9",
+    "verse_end": "13"
   }
 ]

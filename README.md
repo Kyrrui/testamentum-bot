@@ -58,6 +58,11 @@ A Discord bot for the Marcionite Testamentum — 24 books, 4,300+ verses. Look u
 - New articles on the Marcionite Church website are announced with an @everyone ping
 - **Theology auto-answer** — questions in an enabled channel are matched to a Didascalicon answer via OpenRouter. It's the one feature that costs money per message, so only the bot owner can turn it on.
 
+### Bot Replies
+Turned on per server by the bot owner (`/setup bot-replies enabled:true`):
+- **Mention the bot** with what you're looking for and it replies once with a pointer to the right command, church website page, or Didascalicon Q&A (posted in full under the reply). It never quotes scripture from memory and doesn't hold conversations. One OpenRouter call, within the spend caps (5 per user per hour, 100 per day).
+- **"good bot"** and similar → "Doing my part 😇". **"bot is broken" / "clanker needs fixing"** → an apology pointing to the bot owner. These are free phrase matches. They fire when the message is aimed at the bot: a mention, a reply to its post, or a short message right after it posted in the channel.
+
 ### Multi-Server Support
 Server admins configure channels with `/setup` (server-only; not available in DMs or user installs):
 - `/setup quiz #daily-quiz` — set the daily quiz channel
@@ -67,7 +72,7 @@ Server admins configure channels with `/setup` (server-only; not available in DM
 - `/setup status` — view current config (and whether storage is persistent)
 - `/setup disable quiz` — disable a feature
 
-Bot-owner only (the Discord application's owner or team, plus any `OWNER_IDS`): `/setup theology`, `/setup theology-all`, and the commands that act on every server at once — `/postquiz`, `/postdidascalicon`, `/checknews`, `/resetnews`, `/asktheology`. `/testannounce` posts only in the server it's run from.
+Bot-owner only (the Discord application's owner or team, plus any `OWNER_IDS`): `/setup theology`, `/setup theology-all`, `/setup bot-replies`, and the commands that act on every server at once — `/postquiz`, `/postdidascalicon`, `/checknews`, `/resetnews`, `/asktheology`. `/testannounce` posts only in the server it's run from.
 
 ## Books
 

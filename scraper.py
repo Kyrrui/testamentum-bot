@@ -43,20 +43,16 @@ BOOKS = {
     "Metrodorus": "https://marcionitechurchofchrist.org/metrodorus/",
 }
 
-# Map written numbers to digits
-WORD_TO_NUM = {
-    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-    "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-    "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14,
-    "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18,
-    "nineteen": 19, "twenty": 20, "twenty-one": 21, "twenty-two": 22,
-    "twenty-three": 23, "twenty-four": 24, "twenty-five": 25,
-    "twenty-six": 26, "twenty-seven": 27, "twenty-eight": 28,
-    "twenty-nine": 29, "thirty": 30, "thirty-one": 31, "thirty-two": 32,
-    "thirty-three": 33, "thirty-four": 34, "thirty-five": 35,
-    "thirty-six": 36, "thirty-seven": 37, "thirty-eight": 38,
-    "thirty-nine": 39, "forty": 40, "forty-one": 41, "forty-two": 42,
-}
+# Map written numbers to digits ("one" .. "ninety-nine")
+_ONES = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
+_TEENS = ["ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+          "sixteen", "seventeen", "eighteen", "nineteen"]
+_TENS = ["twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
+WORD_TO_NUM = {w: i for i, w in enumerate(_ONES + _TEENS, start=1)}
+for _t, _tens in enumerate(_TENS, start=2):
+    WORD_TO_NUM[_tens] = _t * 10
+    for _o, _one in enumerate(_ONES, start=1):
+        WORD_TO_NUM[f"{_tens}-{_one}"] = _t * 10 + _o
 
 # Regex for chapter/psalm headings like "CHAPTER ONE" or "PSALM FORTY"
 CHAPTER_RE = re.compile(
@@ -137,6 +133,10 @@ def extract_text_blocks(soup: BeautifulSoup) -> list[str]:
             # Case 1: Entire element is a single bold block -> possible heading
             if len(parts) == 1 and parts[0][0] == "bold":
                 blocks.append(("heading", parts[0][1]))
+            # Case 1b: a chapter heading split across bold tags, e.g.
+            # "<strong>CHAPTER</strong> <strong>TWELVE</strong>" (2 Corinthians)
+            elif all(kind == "bold" for kind, _ in parts) and CHAPTER_RE.match(" ".join(t for _, t in parts)):
+                blocks.append(("heading", " ".join(t for _, t in parts)))
             # Case 2: Starts with bold number followed by text -> verse(s)
             elif parts:
                 # Reconstruct verses from bold-number + text pairs
@@ -219,10 +219,12 @@ def parse_book(book_name: str, url: str) -> dict:
             if match:
                 word = match.group(1)
                 num = word_to_number(word)
-                if num is not None:
-                    current_chapter = num
-                    current_section = None
-                    chapters[str(current_chapter)] = {"sections": {}, "verses": {}}
+                if num is None:
+                    # Ignoring it would pour the chapter's verses into the previous one.
+                    raise ValueError(f"unrecognised chapter heading {heading_text!r}")
+                current_chapter = num
+                current_section = None
+                chapters[str(current_chapter)] = {"sections": {}, "verses": {}}
             else:
                 # Section heading within a chapter
                 current_section = heading_text
@@ -236,6 +238,12 @@ def parse_book(book_name: str, url: str) -> dict:
                 current_chapter = 1
                 chapters["1"] = {"sections": {}, "verses": {}}
             ch = chapters.setdefault(str(current_chapter), {"sections": {}, "verses": {}})
+            if str(verse_num) in ch["verses"]:
+                # A repeated verse number means a chapter heading was missed.
+                raise ValueError(
+                    f"chapter {current_chapter} has verse {verse_num} twice "
+                    "(missed chapter heading?)"
+                )
             ch["verses"][str(verse_num)] = verse_text
             if current_section:
                 ch["sections"][str(verse_num)] = current_section
@@ -289,6 +297,13 @@ def validate_scrape(db: dict, errors: list[str]) -> bool:
             f"Only {total_verses} verses scraped (expected >{MIN_EXPECTED_VERSES}). "
             "Site HTML may have changed."
         )
+
+    # Chapters must run 1..N with no gaps (a gap means a heading wasn't recognised)
+    for book_name, book in db["books"].items():
+        nums = sorted(int(c) for c in book["chapters"])
+        if nums and nums != list(range(1, nums[-1] + 1)):
+            missing = sorted(set(range(1, nums[-1] + 1)) - set(nums))
+            errors.append(f"{book_name}: missing chapter(s) {missing}")
 
     # Check a few key verses exist as a canary
     canaries = [

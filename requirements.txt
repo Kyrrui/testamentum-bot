@@ -1,7 +1,7 @@
 requests
 beautifulsoup4
-discord.py
+discord.py>=2.4
 python-dotenv
 Pillow
-ddgs
 feedparser
+tzdata

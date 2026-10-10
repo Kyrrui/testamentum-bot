@@ -31,14 +31,15 @@ A Discord bot for the Marcionite Testamentum — 24 books, 4,300+ verses. Look u
 - React with :bookmark: on any verse embed to bookmark it
 
 ### Verse of the Day
-- AI-selected daily passage with a contextual reflection
-- Searches the web for today's holidays and news to connect the passage to current events
+- AI-selected daily passage (chosen by a GitHub Action, with history to avoid repeats)
 - Styled verse image with parchment aesthetic
-- Posts automatically to configured channels at 6:00 AM EST
+- Posted to configured channels as soon as the day's pick lands (GitHub's scheduler runs it late, often midday)
 - `/verseoftheday` — view today's pick anytime
 
 ### Daily Quiz
-- Multiplayer scripture quiz posted daily at 6:05 AM EST
+- Multiplayer scripture quiz posted daily at 6:05 AM US Eastern
+- Every server plays the same verse; each server sees only its own players on today's board
+- Yesterday's quiz closes and reveals its answer when the new one posts
 - Three rounds: guess the **book** → **chapter** → **verse**
 - Verse shown as a styled image (no reference visible)
 - Everyone answers independently with private responses
@@ -52,12 +53,21 @@ A Discord bot for the Marcionite Testamentum — 24 books, 4,300+ verses. Look u
 - :arrow_right: — expand to show the next few verses
 - :speech_balloon: — create a discussion thread for the passage
 
+### Didascalicon & News
+- A random Didascalicon (catechism) Q&A is posted daily at 6:10 AM US Eastern
+- New articles on the Marcionite Church website are announced with an @everyone ping
+- **Theology auto-answer** — questions in an enabled channel are matched to a Didascalicon answer via OpenRouter. It's the one feature that costs money per message, so only the bot owner can turn it on.
+
 ### Multi-Server Support
-Admins configure channels with `/setup`:
+Server admins configure channels with `/setup` (server-only; not available in DMs or user installs):
 - `/setup quiz #daily-quiz` — set the daily quiz channel
 - `/setup votd #verse-of-the-day` — set the Verse of the Day channel
-- `/setup status` — view current config
+- `/setup didascalicon #channel` — daily Didascalicon Q&A
+- `/setup announcements #channel` — website news with @everyone
+- `/setup status` — view current config (and whether storage is persistent)
 - `/setup disable quiz` — disable a feature
+
+Bot-owner only (the Discord application's owner or team, plus any `OWNER_IDS`): `/setup theology`, `/setup theology-all`, and the commands that act on every server at once — `/postquiz`, `/postdidascalicon`, `/checknews`, `/resetnews`, `/asktheology`. `/testannounce` posts only in the server it's run from.
 
 ## Books
 
@@ -82,7 +92,7 @@ Admins configure channels with `/setup`:
 - Python 3.12+
 - Discord bot token
 - Railway account (or any hosting platform)
-- Anthropic API key (for Verse of the Day)
+- OpenRouter API key (Verse of the Day picks; theology auto-answer)
 
 ### Setup
 
@@ -110,16 +120,18 @@ Admins configure channels with `/setup`:
 2. Set environment variables:
    - `DISCORD_TOKEN` — your bot token
    - `DATA_DIR` — `/data` (with a persistent volume mounted there)
-3. Add a persistent volume mounted at `/data`
+   - `OPENROUTER_API_KEY` — enables theology auto-answer (optional; `OPENROUTER_MODEL` overrides the model)
+   - `OWNER_IDS` — optional extra bot-owner user IDs, comma-separated
+3. Add a persistent volume mounted at `/data` (`/setup status` warns if it isn't)
 4. Deploy
 
 ### GitHub Actions (Verse of the Day)
 
 Add these as GitHub repository secrets:
-- `ANTHROPIC_API_KEY` — for AI verse selection
+- `OPENROUTER_API_KEY` — for AI verse selection (falls back to random without it)
 - `DISCORD_WEBHOOK_URL` — webhook for your VOTD channel
 
-The VOTD runs daily at 6:00 AM EST via GitHub Actions. The bot fetches the result from GitHub and reposts to all configured servers.
+The VOTD Action is scheduled for 10:00 UTC, but GitHub often starts scheduled jobs hours late. The bot polls for the new `votd.json` every 15 minutes and reposts it to all configured servers, skipping any channel that already has today's post.
 
 ### Daily Scraper
 
@@ -132,7 +144,8 @@ testamentum-bot/
 ├── bot.py                 # Discord bot (slash commands, reactions, scheduled tasks)
 ├── scraper.py             # Web scraper for marcionitechurchofchrist.org
 ├── verse_image.py         # Verse image generator (Pillow)
-├── verse_of_the_day.py    # VOTD script (Claude API + web search)
+├── verse_of_the_day.py    # VOTD script (OpenRouter pick + webhook post)
+├── announcements.py       # Church website news feed reader
 ├── daily_quiz.py          # Quiz generator (legacy, now handled by bot)
 ├── data/
 │   └── testamentum.json   # Scraped verse database (committed)
@@ -153,6 +166,8 @@ Runtime data (persistent volume):
 - `daily_quiz.json` — current quiz state
 - `votd.json` — cached VOTD
 - `users/<id>.json` — per-user bookmarks and collections
+- `didascalicon_history.json`, `theology_cache.json`, `theology_replies.json` — Didascalicon rotation, LLM match cache, reply cooldowns
+- `announcements_seen.json` — news articles already announced
 
 ## License
 

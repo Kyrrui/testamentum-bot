@@ -3,12 +3,16 @@ Testamentum Discord Bot
 Serves verses from the Marcionite Testamentum via slash commands.
 """
 
+import asyncio
 import datetime
+import io
 import json
 import os
 import random
 import re
+import traceback
 from difflib import SequenceMatcher
+from zoneinfo import ZoneInfo
 
 import discord
 import requests as http_requests
@@ -47,6 +51,28 @@ OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4")
 EMBED_COLOR = 0x8B4513  # brown/parchment
 QUIZ_CHANNEL_ID = os.getenv("QUIZ_CHANNEL_ID")  # legacy fallback
 VOTD_GITHUB_URL = "https://raw.githubusercontent.com/Kyrrui/testamentum-bot/main/data/votd.json"
+# Daily posts go out at 6 AM US Eastern, following DST.
+EASTERN = ZoneInfo("America/New_York")
+# Extra bot-owner user IDs (comma-separated). The Discord application owner
+# (or its team) is always an owner; this is only an escape hatch.
+OWNER_IDS = {int(x) for x in os.getenv("OWNER_IDS", "").split(",") if x.strip().isdigit()}
+
+
+def _storage_status() -> str:
+    """Whether runtime data survives a redeploy (Railway: a volume mounted at DATA_DIR)."""
+    if not os.getenv("DATA_DIR"):
+        return "⚠️ `DATA_DIR` is not set — server config, bookmarks and scores reset on every redeploy."
+    if not os.path.ismount(RUNTIME_DIR):
+        return f"⚠️ `{RUNTIME_DIR}` is not a mounted volume — data resets on every redeploy."
+    return f"`{RUNTIME_DIR}` (persistent volume)"
+
+
+def _write_json(path: str, data):
+    """Write JSON atomically so a restart mid-write can't leave a truncated file."""
+    tmp = f"{path}.tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    os.replace(tmp, path)
 
 
 # --- User data (bookmarks, collections) ---
@@ -61,9 +87,7 @@ def _load_user_data(user_id: str) -> dict:
 
 
 def _save_user_data(user_id: str, data: dict):
-    path = os.path.join(USERDATA_DIR, f"{user_id}.json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    _write_json(os.path.join(USERDATA_DIR, f"{user_id}.json"), data)
 
 
 # --- Server config (multi-server support) ---
@@ -78,8 +102,7 @@ def _load_server_config() -> dict:
 
 
 def _save_server_config(config: dict):
-    with open(SERVER_CONFIG_PATH, "w", encoding="utf-8") as f:
-        json.dump(config, f, indent=2, ensure_ascii=False)
+    _write_json(SERVER_CONFIG_PATH, config)
 
 
 def _get_quiz_channels() -> list[int]:
@@ -110,9 +133,10 @@ def _get_announcements_channels() -> list[int]:
     return [int(c["announcements_channel"]) for c in config.values() if c.get("announcements_channel")]
 
 
-def _get_theology_channels() -> dict[int, str]:
+def _get_theology_channels(config: dict | None = None) -> dict[int, str]:
     """Return {channel_id: guild_id} for servers that pinned a specific theology channel."""
-    config = _load_server_config()
+    if config is None:
+        config = _load_server_config()
     result: dict[int, str] = {}
     for guild_id, c in config.items():
         ch = c.get("theology_channel")
@@ -121,11 +145,12 @@ def _get_theology_channels() -> dict[int, str]:
     return result
 
 
-def _is_theology_everywhere(guild_id: int | str | None) -> bool:
+def _is_theology_everywhere(guild_id: int | str | None, config: dict | None = None) -> bool:
     """True if the server has opted into auto-answering theology questions in any channel."""
     if guild_id is None:
         return False
-    config = _load_server_config()
+    if config is None:
+        config = _load_server_config()
     return bool(config.get(str(guild_id), {}).get("theology_everywhere"))
 
 # --- Load Data ---
@@ -238,6 +263,9 @@ def get_verses(book: str, chapter: int, verse_start: int, verse_end: int | None 
         return None
     if verse_end is None:
         verse_end = verse_start
+    # Clamp to the chapter's last verse so a huge range ("Evang 1:1-99999999")
+    # can't spin the event loop.
+    verse_end = min(verse_end, max((int(v) for v in ch["verses"]), default=0))
 
     results = []
     for v in range(verse_start, verse_end + 1):
@@ -248,7 +276,40 @@ def get_verses(book: str, chapter: int, verse_start: int, verse_end: int | None 
     return results if results else None
 
 
+TRUNCATED_NOTE = "\n*…passage truncated — use /chapter to read the rest.*"
+
+
+def _fit_lines(lines: list[str], limit: int, note: str = TRUNCATED_NOTE) -> str:
+    """Join lines with newlines, dropping trailing lines so the result fits in `limit`
+    characters (Discord: embed description 4096, field 1024, message 2000).
+    `note` is appended when lines are dropped; `{n}` in it becomes the dropped count."""
+    text = "\n".join(lines)
+    if len(text) <= limit:
+        return text
+    kept: list[str] = []
+    used = 0
+    budget = limit - len(note.format(n=len(lines)))
+    for line in lines:
+        add = len(line) + (1 if kept else 0)
+        if used + add > budget:
+            break
+        kept.append(line)
+        used += add
+    if not kept:
+        kept = [lines[0][:max(0, budget - 1)] + "…"]
+    return "\n".join(kept) + note.format(n=len(lines) - len(kept))
+
+
 # --- Fuzzy search ---
+
+SEARCH_MAX_CHARS = 100
+SEARCH_MAX_WORDS = 8
+
+
+def _similar(a: str, b: str, threshold: float) -> bool:
+    """SequenceMatcher ratio > threshold, checking the cheap upper bounds first."""
+    sm = SequenceMatcher(None, a, b)
+    return sm.real_quick_ratio() > threshold and sm.quick_ratio() > threshold and sm.ratio() > threshold
 
 
 def fuzzy_search(query: str, book_filter: str | None = None, max_results: int = 50) -> list[tuple[str, str, str, str, float]]:
@@ -257,7 +318,8 @@ def fuzzy_search(query: str, book_filter: str | None = None, max_results: int = 
     Exact substring matches score 1.0, fuzzy matches score lower.
     """
     query_lower = query.lower()
-    query_words = query_lower.split()
+    # Fuzzy matching is per word pair, so cap the words to keep a long query cheap.
+    query_words = query_lower.split()[:SEARCH_MAX_WORDS]
     results = []
 
     books_to_search = DB["books"]
@@ -281,10 +343,9 @@ def fuzzy_search(query: str, book_filter: str | None = None, max_results: int = 
                     verse_words = v_lower.split()
                     matched_words = 0
                     for qw in query_words:
-                        for vw in verse_words:
-                            if qw in vw or SequenceMatcher(None, qw, vw).ratio() > 0.75:
-                                matched_words += 1
-                                break
+                        if not any(qw in vw or _similar(qw, vw, 0.75) for vw in verse_words):
+                            break  # every word must match; no point checking the rest
+                        matched_words += 1
                     if matched_words == len(query_words):
                         score = matched_words / len(query_words) * 0.8
                         results.append((bname, ch_num, v_num, v_text, score))
@@ -297,7 +358,11 @@ def fuzzy_search(query: str, book_filter: str | None = None, max_results: int = 
                     for vw in verse_words:
                         # Strip punctuation for matching
                         vw_clean = re.sub(r"[^\w]", "", vw)
-                        ratio = SequenceMatcher(None, query_lower, vw_clean).ratio()
+                        sm = SequenceMatcher(None, query_lower, vw_clean)
+                        # quick_ratio() is an upper bound: skip words that can't beat `best`.
+                        if sm.real_quick_ratio() <= best or sm.quick_ratio() <= best:
+                            continue
+                        ratio = sm.ratio()
                         if ratio > best:
                             best = ratio
                     if best > 0.75:
@@ -405,6 +470,63 @@ ALLOWED_INSTALLS = app_commands.AppInstallationType(guild=True, user=True)
 tree.allowed_contexts = ALLOWED_CONTEXTS
 tree.allowed_installs = ALLOWED_INSTALLS
 
+# Setup/admin commands only make sense in a server the bot itself is in: no DMs,
+# and no user installs (those run in servers the bot can't see). Every flag is
+# set explicitly because unset flags inherit the tree-wide defaults above.
+GUILD_ONLY_CONTEXTS = app_commands.AppCommandContext(guild=True, dm_channel=False, private_channel=False)
+GUILD_ONLY_INSTALLS = app_commands.AppInstallationType(guild=True, user=False)
+
+
+def guild_only_command(func):
+    """Restrict a command to servers where the bot is installed."""
+    func = app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)(func)
+    return app_commands.allowed_installs(guilds=True, users=False)(func)
+
+
+class NotBotOwner(app_commands.CheckFailure):
+    pass
+
+
+def _is_bot_owner(user_id: int) -> bool:
+    """The Discord application's owner (or its team members), plus OWNER_IDS."""
+    if user_id in OWNER_IDS:
+        return True
+    app = client.application
+    if app is None:
+        return False
+    if app.team:
+        return any(m.id == user_id for m in app.team.members)
+    return app.owner is not None and app.owner.id == user_id
+
+
+def owner_only():
+    """Commands that act on every server at once, or that spend OpenRouter credit."""
+    async def predicate(interaction: discord.Interaction) -> bool:
+        if not _is_bot_owner(interaction.user.id):
+            raise NotBotOwner()
+        return True
+    return app_commands.check(predicate)
+
+
+@tree.error
+async def on_app_command_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
+    if isinstance(error, NotBotOwner):
+        msg = "Only the bot owner can use this command."
+    elif isinstance(error, app_commands.CheckFailure):
+        msg = "You can't use this command here."
+    else:
+        name = interaction.command.qualified_name if interaction.command else "?"
+        print(f"[command error] /{name}:")
+        traceback.print_exception(error)
+        msg = "Something went wrong running that command."
+    try:
+        if interaction.response.is_done():
+            await interaction.followup.send(msg, ephemeral=True)
+        else:
+            await interaction.response.send_message(msg, ephemeral=True)
+    except discord.HTTPException:
+        pass
+
 
 # --- Autocomplete ---
 
@@ -470,6 +592,13 @@ async def verse_autocomplete(
 # --- Pagination views ---
 
 
+# Interaction tokens expire after 15 minutes, and edits to slash-command replies
+# go through that token — so time views out just before, while the edit still works.
+VIEW_TIMEOUT = 840
+# /image draws the whole passage into one PNG; keep it a shareable size.
+IMAGE_MAX_VERSES = 12
+
+
 class TimeoutView(ui.View):
     """Base view that disables all buttons when it times out."""
 
@@ -482,7 +611,7 @@ class TimeoutView(ui.View):
         if self.message:
             try:
                 await self.message.edit(view=self)
-            except discord.NotFound:
+            except discord.HTTPException:
                 pass
 
 
@@ -492,7 +621,7 @@ class SearchPaginator(TimeoutView):
     PER_PAGE = 5
 
     def __init__(self, results: list[tuple[str, str, str, str, float]], query: str, book_filter: str | None):
-        super().__init__(timeout=900)
+        super().__init__(timeout=VIEW_TIMEOUT)
         self.results = results
         self.query = query
         self.book_filter = book_filter
@@ -557,7 +686,7 @@ class ChapterPaginator(TimeoutView):
     VERSES_PER_PAGE = 15
 
     def __init__(self, book: str, chapter: int):
-        super().__init__(timeout=900)
+        super().__init__(timeout=VIEW_TIMEOUT)
         self.book = book
         self.chapter = chapter
         ch_data = DB["books"][book]["chapters"][str(chapter)]
@@ -616,7 +745,7 @@ class RelatedView(TimeoutView):
     """Button to show related passages for a verse."""
 
     def __init__(self, book: str, chapter: int, verse: int):
-        super().__init__(timeout=900)
+        super().__init__(timeout=VIEW_TIMEOUT)
         self.book = book
         self.chapter = chapter
         self.verse = verse
@@ -688,7 +817,7 @@ async def verse_command(interaction: discord.Interaction, reference: str):
             last_section = section
         desc_lines.append(f"**{vnum}** {text}")
 
-    embed.description = "\n".join(desc_lines)
+    embed.description = _fit_lines(desc_lines, 4096)
     view = RelatedView(book, chapter, v_start)
     await interaction.response.send_message(embed=embed, view=view)
     view.message = await interaction.original_response()
@@ -701,22 +830,39 @@ async def verse_command(interaction: discord.Interaction, reference: str):
 )
 @app_commands.autocomplete(book=book_autocomplete)
 async def search_command(interaction: discord.Interaction, text: str, book: str | None = None):
-    results = fuzzy_search(text, book)
+    if len(text) > SEARCH_MAX_CHARS:
+        await interaction.response.send_message(
+            f"Search text is too long (max {SEARCH_MAX_CHARS} characters).", ephemeral=True
+        )
+        return
+    if book and not resolve_book(book):
+        embed = discord.Embed(
+            title="Unknown Book",
+            description=f"Unknown book: `{book}`",
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
+    # A full fuzzy scan can take seconds: acknowledge first, search off the event loop.
+    await interaction.response.defer()
+    results = await asyncio.to_thread(fuzzy_search, text, book)
 
     if not results:
         resolved = resolve_book(book) if book else None
         embed = discord.Embed(
             title="No Results",
             description=f'No results for "{text}"'
-            + (f" in **{resolved or book}**" if book else ""),
+            + (f" in **{resolved}**" if resolved else ""),
             color=0xFF0000,
         )
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        # The deferred reply is public; swap it for a private "no results" note.
+        await interaction.delete_original_response()
+        await interaction.followup.send(embed=embed, ephemeral=True)
         return
 
     view = SearchPaginator(results, text, book)
-    await interaction.response.send_message(embed=view.make_embed(), view=view)
-    view.message = await interaction.original_response()
+    view.message = await interaction.followup.send(embed=view.make_embed(), view=view, wait=True)
 
 
 @tree.command(name="random", description="Get a random verse")
@@ -795,34 +941,20 @@ async def chapter_command(interaction: discord.Interaction, book: str, chapter: 
 
 @tree.command(name="verseoftheday", description="See today's Verse of the Day")
 async def votd_command(interaction: discord.Interaction):
-    votd = _fetch_votd()
+    await interaction.response.defer()
+    votd = await asyncio.to_thread(_fetch_votd)
     if not votd:
         embed = discord.Embed(
             title="Not Available Yet",
             description="The Verse of the Day hasn't been set yet. Check back later!",
             color=0xFF0000,
         )
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.followup.send(embed=embed)
         return
 
-    ref = f"{votd['book']} {votd['chapter']}:{votd['verse_start']}"
-    if votd["verse_start"] != votd["verse_end"]:
-        ref += f"-{votd['verse_end']}"
-
-    # Generate verse image
-    verse_tuples = [(int(v["verse"]), v["text"]) for v in votd["verses"]]
-    section = _votd_section(votd)
-    buf = render_verse(ref, verse_tuples, section=section)
-    file = discord.File(buf, filename="votd.png")
-
-    embed = discord.Embed(
-        title=f"Verse of the Day — {votd.get('date', 'Today')}",
-        color=EMBED_COLOR,
-    )
-    if votd.get("blurb"):
-        embed.description = f"*{votd['blurb']}*"
-    embed.set_image(url="attachment://votd.png")
-    await interaction.response.send_message(embed=embed, file=file)
+    png = await asyncio.to_thread(_render_votd_png, votd)
+    file = discord.File(io.BytesIO(png), filename="votd.png")
+    await interaction.followup.send(embed=_build_votd_embed(votd), file=file)
 
 
 @tree.command(name="sections", description="List section headings in a book or chapter")
@@ -958,13 +1090,22 @@ async def context_command(interaction: discord.Interaction, reference: str, radi
             desc_lines.append(f"\n__**{section}**__")
             last_section = section
         if v == v_target:
-            desc_lines.append(f">>> **{v}** {text}")
+            desc_lines.append(f"▶ **{v}** {text}")
         else:
             desc_lines.append(f"**{v}** {text}")
 
+    if str(v_target) not in ch_data["verses"]:
+        embed = discord.Embed(
+            title="Not Found",
+            description=f"**{book} {chapter}** has no verse {v_target}.",
+            color=0xFF0000,
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        return
+
     embed = discord.Embed(
         title=f"{book} {chapter}:{v_target} (in context)",
-        description="\n".join(desc_lines),
+        description=_fit_lines(desc_lines, 4096),
         color=EMBED_COLOR,
     )
     embed.set_footer(text=f"Showing verses {v_start}-{v_end}")
@@ -1017,9 +1158,10 @@ async def bookinfo_command(interaction: discord.Interaction, book: str):
         inline=False,
     )
     if all_sections:
-        sec_text = "\n".join(f"- {s}" for s in all_sections[:30])
-        if len(all_sections) > 30:
-            sec_text += f"\n*...and {len(all_sections) - 30} more*"
+        sec_text = _fit_lines(
+            [f"- {s}" for s in all_sections], 1024,
+            note=f"\n*...and {{n}} more — see /sections {resolved}*",
+        )
         embed.add_field(name=f"Sections ({len(all_sections)})", value=sec_text, inline=False)
     embed.add_field(name="Source", value=book_data.get("url", "N/A"), inline=False)
     await interaction.response.send_message(embed=embed)
@@ -1056,7 +1198,14 @@ async def image_command(interaction: discord.Interaction, reference: str):
         await interaction.response.send_message(embed=embed, ephemeral=True)
         return
 
-    ref_str = f"{book} {chapter}:{v_start}" + (f"-{v_end}" if v_end else "")
+    note = None
+    if len(results) > IMAGE_MAX_VERSES:
+        results = results[:IMAGE_MAX_VERSES]
+        note = f"Images show up to {IMAGE_MAX_VERSES} verses — use `/verse` for the full passage."
+    if len(results) > 1:
+        ref_str = f"{book} {chapter}:{results[0][0]}-{results[-1][0]}"
+    else:
+        ref_str = f"{book} {chapter}:{results[0][0]}"
 
     # Get section heading from first verse
     section = results[0][2]
@@ -1065,10 +1214,12 @@ async def image_command(interaction: discord.Interaction, reference: str):
     verse_tuples = [(vnum, text) for vnum, text, _ in results]
 
     await interaction.response.defer()
-    buf = render_verse(ref_str, verse_tuples, section=section)
+    buf = await asyncio.to_thread(render_verse, ref_str, verse_tuples, section=section)
     file = discord.File(buf, filename="verse.png")
     embed = discord.Embed(title=ref_str, color=EMBED_COLOR)
     embed.set_image(url="attachment://verse.png")
+    if note:
+        embed.set_footer(text=note)
     await interaction.followup.send(embed=embed, file=file)
 
 
@@ -1081,7 +1232,7 @@ class QuizView(TimeoutView):
 
     def __init__(self, book: str, chapter: str, verse: str, text: str,
                  start_stage: int = 0):
-        super().__init__(timeout=900)
+        super().__init__(timeout=VIEW_TIMEOUT)
         self.book = book
         self.chapter = chapter
         self.verse = verse
@@ -1351,7 +1502,7 @@ async def quiz_command(interaction: discord.Interaction, book: str | None = None
         hint = "Pick the correct verse!"
 
     # Generate verse image without reference
-    quiz_img = render_verse("", [(1, txt)], hide_reference=True)
+    quiz_img = await asyncio.to_thread(render_verse, "", [(1, txt)], hide_reference=True)
     file = discord.File(quiz_img, filename="quiz.png")
 
     embed = discord.Embed(
@@ -1418,10 +1569,11 @@ def _generate_quiz_data() -> dict:
 
     # Update history
     history.append(f"{book} {chapter}:{verse}")
-    with open(history_path, "w", encoding="utf-8") as f:
-        json.dump(history, f, indent=2, ensure_ascii=False)
+    _write_json(history_path, history)
 
     return {
+        # Identifies this quiz so buttons from an older quiz can be recognised.
+        "id": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "book": book,
         "chapter": chapter,
         "verse": verse,
@@ -1437,6 +1589,8 @@ setup_group = app_commands.Group(
     name="setup",
     description="Configure Testamentum Bot for this server (admin only)",
     default_permissions=discord.Permissions(administrator=True),
+    allowed_contexts=GUILD_ONLY_CONTEXTS,
+    allowed_installs=GUILD_ONLY_INSTALLS,
 )
 tree.add_command(setup_group)
 
@@ -1495,8 +1649,9 @@ async def setup_announcements(interaction: discord.Interaction, channel: discord
     )
 
 
-@setup_group.command(name="theology", description="Set the channel where questions get auto-answered from the Didascalicon")
+@setup_group.command(name="theology", description="Set the channel where questions get auto-answered from the Didascalicon (bot owner only)")
 @app_commands.describe(channel="Theology channel where the bot listens for questions")
+@owner_only()
 async def setup_theology(interaction: discord.Interaction, channel: discord.TextChannel):
     config = _load_server_config()
     guild_id = str(interaction.guild_id)
@@ -1509,8 +1664,9 @@ async def setup_theology(interaction: discord.Interaction, channel: discord.Text
     )
 
 
-@setup_group.command(name="theology-all", description="Enable/disable Didascalicon auto-answer across ALL channels in this server")
+@setup_group.command(name="theology-all", description="Enable/disable Didascalicon auto-answer across ALL channels in this server (bot owner only)")
 @app_commands.describe(enabled="True to listen in every channel, False to turn off")
+@owner_only()
 async def setup_theology_all(interaction: discord.Interaction, enabled: bool):
     config = _load_server_config()
     guild_id = str(interaction.guild_id)
@@ -1573,6 +1729,7 @@ async def setup_status(interaction: discord.Interaction):
     everywhere = guild_config.get("theology_everywhere")
     lines.append(f"**Theology auto-answer in ALL channels:** {'On' if everywhere else 'Off'}")
     lines.append(f"**News Announcements (@everyone):** {fmt(guild_config.get('announcements_channel'))}")
+    lines.append(f"\n**Storage:** {_storage_status()}")
 
     embed = discord.Embed(
         title="Server Configuration",
@@ -1582,24 +1739,30 @@ async def setup_status(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="postquiz", description="Manually trigger the daily quiz (admin only)")
+@tree.command(name="postquiz", description="Re-roll and post the daily quiz to every server (bot owner only)")
 @app_commands.default_permissions(administrator=True)
+@guild_only_command
+@owner_only()
 async def postquiz_command(interaction: discord.Interaction):
-    await interaction.response.defer()
-    await _auto_post_quiz()
-    await interaction.followup.send("Daily quiz posted!", ephemeral=True)
+    await interaction.response.defer(ephemeral=True)
+    posted = await _auto_post_quiz()
+    await interaction.followup.send(f"Daily quiz posted to {posted} channel(s).", ephemeral=True)
 
 
-@tree.command(name="postdidascalicon", description="Manually trigger the daily Didascalicon Q&A (admin only)")
+@tree.command(name="postdidascalicon", description="Post a Didascalicon Q&A to every server now (bot owner only)")
 @app_commands.default_permissions(administrator=True)
+@guild_only_command
+@owner_only()
 async def postdidascalicon_command(interaction: discord.Interaction):
     await interaction.response.defer(ephemeral=True)
-    await _auto_post_didascalicon()
-    await interaction.followup.send("Daily Didascalicon posted.", ephemeral=True)
+    posted = await _auto_post_didascalicon()
+    await interaction.followup.send(f"Didascalicon Q&A posted to {posted} channel(s).", ephemeral=True)
 
 
-@tree.command(name="checknews", description="Poll the news feed now (admin only)")
+@tree.command(name="checknews", description="Poll the news feed now (bot owner only)")
 @app_commands.default_permissions(administrator=True)
+@guild_only_command
+@owner_only()
 async def checknews_command(interaction: discord.Interaction):
     await interaction.response.defer(ephemeral=True)
     await _check_announcements()
@@ -1612,8 +1775,10 @@ async def checknews_command(interaction: discord.Interaction):
     )
 
 
-@tree.command(name="resetnews", description="Reset the seen-articles cache (admin only — will reseed silently on next check)")
+@tree.command(name="resetnews", description="Reset the seen-articles cache (bot owner only — will reseed silently on next check)")
 @app_commands.default_permissions(administrator=True)
+@guild_only_command
+@owner_only()
 async def resetnews_command(interaction: discord.Interaction):
     if os.path.exists(ANNOUNCEMENTS_SEEN_PATH):
         os.remove(ANNOUNCEMENTS_SEEN_PATH)
@@ -1623,22 +1788,26 @@ async def resetnews_command(interaction: discord.Interaction):
     )
 
 
-@tree.command(name="testannounce", description="Force-post the most recent news article to all announcement channels (admin only)")
+@tree.command(name="testannounce", description="Force-post the most recent news article to this server's announcement channel (bot owner only)")
 @app_commands.default_permissions(administrator=True)
+@guild_only_command
+@owner_only()
 async def testannounce_command(interaction: discord.Interaction):
     """Force-post the latest article to verify the end-to-end pipeline.
+    Only posts in THIS server, so a test never @everyone-pings other servers.
     Bypasses the seen-set check but does NOT modify it — the real watcher
     will still treat that article as already-seen."""
     await interaction.response.defer(ephemeral=True)
-    channels = _get_announcements_channels()
-    if not channels:
+    ch_id = _load_server_config().get(str(interaction.guild_id), {}).get("announcements_channel")
+    channel = client.get_channel(int(ch_id)) if ch_id else None
+    if not channel:
         await interaction.followup.send(
-            "No announcement channels configured. Run `/setup announcements #channel` first.",
+            "This server has no announcement channel. Run `/setup announcements #channel` first.",
             ephemeral=True,
         )
         return
     try:
-        articles = announcements.fetch_feed()
+        articles = await asyncio.to_thread(announcements.fetch_feed)
     except Exception as e:
         await interaction.followup.send(f"Feed fetch failed: {e}", ephemeral=True)
         return
@@ -1647,33 +1816,30 @@ async def testannounce_command(interaction: discord.Interaction):
         return
 
     latest = articles[-1]
-    _enrich_with_image(latest)
-    posted = 0
-    for ch_id in channels:
-        channel = client.get_channel(ch_id)
-        if not channel:
-            continue
-        try:
-            await channel.send(
-                content="@everyone",
-                embed=_build_announcement_embed(latest),
-                allowed_mentions=discord.AllowedMentions(everyone=True),
-            )
-            posted += 1
-        except discord.Forbidden:
-            await interaction.followup.send(
-                f"No permission to post (or mention @everyone) in <#{ch_id}>.",
-                ephemeral=True,
-            )
+    await asyncio.to_thread(_enrich_with_image, latest)
+    try:
+        await channel.send(
+            content="@everyone",
+            embed=_build_announcement_embed(latest),
+            allowed_mentions=discord.AllowedMentions(everyone=True),
+        )
+    except discord.Forbidden:
+        await interaction.followup.send(
+            f"No permission to post (or mention @everyone) in {channel.mention}.",
+            ephemeral=True,
+        )
+        return
     await interaction.followup.send(
-        f"Force-posted **{latest['title']}** to {posted} channel(s). Seen-set unchanged.",
+        f"Force-posted **{latest['title']}** to {channel.mention}. Seen-set unchanged.",
         ephemeral=True,
     )
 
 
-@tree.command(name="asktheology", description="Test the Didascalicon matcher (admin only)")
+@tree.command(name="asktheology", description="Test the Didascalicon matcher (bot owner only)")
 @app_commands.describe(question="Question to match against the Didascalicon")
 @app_commands.default_permissions(administrator=True)
+@guild_only_command
+@owner_only()
 async def asktheology_command(interaction: discord.Interaction, question: str):
     await interaction.response.defer(ephemeral=True)
     did = _load_didascalicon()
@@ -1708,6 +1874,7 @@ async def asktheology_command(interaction: discord.Interaction, question: str):
 
 @tree.command(name="clearleaderboard", description="Reset this server's quiz leaderboard (admin only)")
 @app_commands.default_permissions(administrator=True)
+@guild_only_command
 async def clearleaderboard_command(interaction: discord.Interaction):
     guild_id = str(interaction.guild_id)
     lb = _load_alltime_lb()
@@ -1859,6 +2026,8 @@ collection_group = app_commands.Group(
 )
 tree.add_command(collection_group)
 
+COLLECTION_NAME_MAX = 50
+
 
 @collection_group.command(name="create", description="Create a new collection")
 @app_commands.describe(name="Name for the collection")
@@ -1866,6 +2035,12 @@ async def collection_create(interaction: discord.Interaction, name: str):
     user_id = str(interaction.user.id)
     data = _load_user_data(user_id)
     collections = data.setdefault("collections", {})
+
+    if len(name) > COLLECTION_NAME_MAX:
+        await interaction.response.send_message(
+            f"Collection names can be up to {COLLECTION_NAME_MAX} characters.", ephemeral=True
+        )
+        return
 
     if name in collections:
         await interaction.response.send_message(
@@ -2007,8 +2182,8 @@ async def collection_view(interaction: discord.Interaction, name: str):
             lines.append(f"**{ref}**")
 
     embed = discord.Embed(
-        title=f"Collection: {name} ({len(verses)} verses)",
-        description="\n".join(lines),
+        title=f"Collection: {name} ({len(verses)} verses)"[:256],
+        description=_fit_lines(lines, 4096, note="\n*...and {n} more*"),
         color=EMBED_COLOR,
     )
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -2035,7 +2210,7 @@ async def collection_list(interaction: discord.Interaction):
 
     embed = discord.Embed(
         title=f"Your Collections ({len(collections)})",
-        description="\n".join(lines),
+        description=_fit_lines(lines, 4096, note="\n*...and {n} more*"),
         color=EMBED_COLOR,
     )
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -2131,7 +2306,7 @@ async def help_command(interaction: discord.Interaction):
     )
     embed.add_field(
         name="/verseoftheday",
-        value="See today's curated Verse of the Day with reflection",
+        value="See today's Verse of the Day",
         inline=False,
     )
     embed.add_field(
@@ -2143,10 +2318,10 @@ async def help_command(interaction: discord.Interaction):
         inline=False,
     )
     embed.add_field(
-        name="/quiz [book]",
+        name="/quiz [book] [chapter]",
         value=(
-            "Scripture quiz — guess which book a verse is from\n"
-            "`/quiz` `/quiz Evangelicon`"
+            "Scripture quiz — guess the book, chapter and verse\n"
+            "`/quiz` `/quiz Evangelicon` `/quiz Evangelicon 3`"
         ),
         inline=False,
     )
@@ -2182,8 +2357,8 @@ async def help_command(interaction: discord.Interaction):
     embed.add_field(
         name="Didascalicon (Catechism Q&A)",
         value=(
-            "Auto-answers theology questions in the configured channel using the "
-            "Marcionite Didascalicon. A random Q&A is also posted daily."
+            "A random Q&A from the Marcionite Didascalicon is posted daily. Theology "
+            "questions are auto-answered from it in channels the bot owner has enabled."
         ),
         inline=False,
     )
@@ -2201,8 +2376,8 @@ async def help_command(interaction: discord.Interaction):
             "`/setup quiz #channel` — daily quiz channel\n"
             "`/setup votd #channel` — Verse of the Day channel\n"
             "`/setup didascalicon #channel` — daily Didascalicon Q&A channel\n"
-            "`/setup theology #channel` — theology channel (questions auto-answered)\n"
-            "`/setup theology-all enabled:true` — theology auto-answer in every channel\n"
+            "`/setup theology #channel` — theology auto-answer channel (bot owner)\n"
+            "`/setup theology-all enabled:true` — theology auto-answer everywhere (bot owner)\n"
             "`/setup announcements #channel` — channel for new-article @everyone pings\n"
             "`/setup disable` — disable a feature\n"
             "`/setup status` — show current config"
@@ -2259,6 +2434,36 @@ def _votd_section(votd: dict) -> str | None:
     return candidate or None
 
 
+def _render_votd_png(votd: dict) -> bytes:
+    """Render the VOTD card. Returns raw PNG bytes so each send gets a fresh buffer."""
+    ref = f"{votd['book']} {votd['chapter']}:{votd['verse_start']}"
+    if votd["verse_start"] != votd["verse_end"]:
+        ref += f"-{votd['verse_end']}"
+    verse_tuples = [(int(v["verse"]), v["text"]) for v in votd["verses"]]
+    return render_verse(ref, verse_tuples, section=_votd_section(votd)).getvalue()
+
+
+def _build_votd_embed(votd: dict) -> discord.Embed:
+    embed = discord.Embed(
+        title=f"Verse of the Day — {votd.get('date', 'Today')}",
+        color=EMBED_COLOR,
+    )
+    embed.set_image(url="attachment://votd.png")
+    return embed
+
+
+def _votd_title_date(title: str) -> str | None:
+    """YYYY-MM-DD from a VOTD embed title: the bot's "Verse of the Day — 2026-10-09"
+    or the GitHub Action webhook's "Verse of the Day — Friday, October 09, 2026"."""
+    tail = title.split("—", 1)[-1].strip()
+    for fmt in ("%Y-%m-%d", "%A, %B %d, %Y"):
+        try:
+            return datetime.datetime.strptime(tail, fmt).date().isoformat()
+        except ValueError:
+            pass
+    return None
+
+
 def _fetch_votd() -> dict | None:
     """Fetch the latest VOTD from GitHub, falling back to local file."""
     try:
@@ -2266,8 +2471,7 @@ def _fetch_votd() -> dict | None:
         resp.raise_for_status()
         votd = resp.json()
         # Cache locally
-        with open(VOTD_PATH, "w", encoding="utf-8") as f:
-            json.dump(votd, f, indent=2, ensure_ascii=False)
+        _write_json(VOTD_PATH, votd)
         return votd
     except Exception as e:
         print(f"Failed to fetch VOTD from GitHub: {e}")
@@ -2286,8 +2490,7 @@ def _load_daily_quiz() -> dict | None:
 
 
 def _save_daily_quiz(quiz: dict):
-    with open(QUIZ_PATH, "w", encoding="utf-8") as f:
-        json.dump(quiz, f, indent=2, ensure_ascii=False)
+    _write_json(QUIZ_PATH, quiz)
 
 
 def _load_alltime_lb() -> dict:
@@ -2299,8 +2502,7 @@ def _load_alltime_lb() -> dict:
 
 
 def _save_alltime_lb(lb: dict):
-    with open(ALLTIME_LB_PATH, "w", encoding="utf-8") as f:
-        json.dump(lb, f, indent=2, ensure_ascii=False)
+    _write_json(ALLTIME_LB_PATH, lb)
 
 
 def _update_alltime_score(guild_id: str, user_id: str, user_name: str, score: int):
@@ -2317,13 +2519,18 @@ def _update_alltime_score(guild_id: str, user_id: str, user_name: str, score: in
     _save_alltime_lb(lb)
 
 
-def _build_today_leaderboard(quiz: dict) -> str:
-    """Build today's leaderboard string."""
+def _build_today_leaderboard(quiz: dict, guild_id: str | None = None) -> str:
+    """Build today's leaderboard string for one server.
+
+    Everyone plays the same verse, but each server only sees its own players.
+    Entries from before guild tracking (no guild_id) show everywhere.
+    """
     lb = quiz.get("leaderboard", {})
-    if not lb:
+    entries = [e for e in lb.values() if e.get("guild_id", guild_id) == guild_id]
+    if not entries:
         return "*No answers yet*"
 
-    entries = sorted(lb.values(), key=lambda e: -e["score"])
+    entries.sort(key=lambda e: -e["score"])
     lines = []
     for i, entry in enumerate(entries[:15]):
         medal = ["\U0001f947", "\U0001f948", "\U0001f949"][i] if i < 3 else f"**{i+1}.**"
@@ -2362,8 +2569,6 @@ def _build_alltime_leaderboard(guild_id: str | None = None, max_entries: int = 1
 
 async def _update_quiz_embed(quiz: dict):
     """Update quiz embeds in all servers with both leaderboards."""
-    today_lb = _build_today_leaderboard(quiz)
-
     # Get all message locations
     messages = quiz.get("messages", {})
     # Legacy fallback
@@ -2376,7 +2581,7 @@ async def _update_quiz_embed(quiz: dict):
             continue
         try:
             message = await channel.fetch_message(int(msg_id))
-        except discord.NotFound:
+        except discord.HTTPException:
             continue
 
         guild_id = str(channel.guild.id) if channel.guild else None
@@ -2384,17 +2589,25 @@ async def _update_quiz_embed(quiz: dict):
 
         embed = message.embeds[0]
         embed.clear_fields()
-        embed.add_field(name="Today's Scores", value=today_lb, inline=False)
+        embed.add_field(name="Today's Scores", value=_build_today_leaderboard(quiz, guild_id), inline=False)
         embed.add_field(name="All-Time Leaderboard", value=alltime_lb, inline=False)
 
         try:
             await message.edit(embed=embed)
-        except discord.Forbidden:
+        except discord.HTTPException:
             pass
 
 
-async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
-    """Handle all daily quiz button interactions (book, chapter, verse)."""
+QUIZ_CLOSED_MSG = "This quiz has closed — look for the newest **Daily Scripture Quiz** post."
+
+
+async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str, quiz_id: str | None = None):
+    """Handle all daily quiz button interactions (book, chapter, verse).
+
+    Book buttons live on the posted quiz message (custom_id dq_book_N, shared by
+    every day's post), so they're matched to today's quiz by message id.
+    Chapter/verse buttons are private follow-ups that carry their quiz's id.
+    """
     quiz = _load_daily_quiz()
     if not quiz:
         await interaction.response.send_message(
@@ -2402,18 +2615,27 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
         )
         return
 
-    user_id = str(interaction.user.id)
-    guild_id = str(interaction.guild_id) if interaction.guild_id else "dm"
-    user_name = interaction.user.display_name
-    lb = quiz.setdefault("leaderboard", {})
-
     # Parse: dq_book_0, dq_chapter_2, dq_verse_1
     parts = custom_id.split("_")
     stage = parts[1]
     choice_idx = int(parts[2])
 
+    if stage == "book":
+        live_ids = set(quiz.get("messages", {}).values()) or {quiz.get("message_id")}
+        if not interaction.message or str(interaction.message.id) not in live_ids:
+            await interaction.response.send_message(QUIZ_CLOSED_MSG, ephemeral=True)
+            return
+    elif quiz_id != quiz.get("id"):
+        await interaction.response.send_message(QUIZ_CLOSED_MSG, ephemeral=True)
+        return
+
+    user_id = str(interaction.user.id)
+    guild_id = str(interaction.guild_id) if interaction.guild_id else "dm"
+    user_name = interaction.user.display_name
+    lb = quiz.setdefault("leaderboard", {})
+
     if user_id not in lb:
-        lb[user_id] = {"name": user_name, "score": 0, "stage": "book", "done": False}
+        lb[user_id] = {"name": user_name, "score": 0, "stage": "book", "done": False, "guild_id": guild_id}
 
     user_entry = lb[user_id]
 
@@ -2434,7 +2656,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             view = ui.View(timeout=None)
             for j, ch in enumerate(quiz["chapter_choices"]):
                 btn = ui.Button(label=f"Chapter {ch}", style=discord.ButtonStyle.secondary)
-                btn.callback = _make_ephemeral_handler(f"dq_chapter_{j}")
+                btn.callback = _make_ephemeral_handler(f"dq_chapter_{j}", quiz.get("id"))
                 view.add_item(btn)
             await interaction.response.send_message(
                 f"You already got the book right (**{quiz['book']}**).\n\n*Now guess the chapter:*",
@@ -2444,7 +2666,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             view = ui.View(timeout=None)
             for j, v in enumerate(quiz["verse_choices"]):
                 btn = ui.Button(label=f"Verse {v}", style=discord.ButtonStyle.secondary)
-                btn.callback = _make_ephemeral_handler(f"dq_verse_{j}")
+                btn.callback = _make_ephemeral_handler(f"dq_verse_{j}", quiz.get("id"))
                 view.add_item(btn)
             await interaction.response.send_message(
                 f"You already got **{quiz['book']} Chapter {quiz['chapter']}** right.\n\n*Now guess the verse:*",
@@ -2470,7 +2692,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             ch_view = ui.View(timeout=None)
             for j, ch in enumerate(quiz["chapter_choices"]):
                 btn = ui.Button(label=f"Chapter {ch}", style=discord.ButtonStyle.secondary)
-                btn.callback = _make_ephemeral_handler(f"dq_chapter_{j}")
+                btn.callback = _make_ephemeral_handler(f"dq_chapter_{j}", quiz.get("id"))
                 ch_view.add_item(btn)
 
             await interaction.response.send_message(
@@ -2499,7 +2721,7 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
             v_view = ui.View(timeout=None)
             for j, v in enumerate(quiz["verse_choices"]):
                 btn = ui.Button(label=f"Verse {v}", style=discord.ButtonStyle.secondary)
-                btn.callback = _make_ephemeral_handler(f"dq_verse_{j}")
+                btn.callback = _make_ephemeral_handler(f"dq_verse_{j}", quiz.get("id"))
                 v_view.add_item(btn)
 
             await interaction.response.send_message(
@@ -2538,10 +2760,10 @@ async def _handle_daily_quiz(interaction: discord.Interaction, custom_id: str):
         client.loop.create_task(_update_quiz_embed(quiz))
 
 
-def _make_ephemeral_handler(custom_id: str):
+def _make_ephemeral_handler(custom_id: str, quiz_id: str | None):
     """Create a callback for ephemeral chapter/verse buttons."""
     async def callback(interaction: discord.Interaction):
-        await _handle_daily_quiz(interaction, custom_id)
+        await _handle_daily_quiz(interaction, custom_id, quiz_id)
     return callback
 
 
@@ -2566,17 +2788,48 @@ class DailyQuizPersistentView(ui.View):
         return True
 
 
-async def _auto_post_quiz():
-    """Auto-post a daily quiz to all configured quiz channels."""
+async def _close_quiz_messages(quiz: dict):
+    """Take the buttons off an old quiz's posts and reveal its answer."""
+    ref = f"{quiz['book']} {quiz['chapter']}:{quiz['verse']}"
+    messages = quiz.get("messages", {})
+    if not messages and quiz.get("channel_id") and quiz.get("message_id"):
+        messages = {quiz["channel_id"]: quiz["message_id"]}
+    for ch_id, msg_id in messages.items():
+        channel = client.get_channel(int(ch_id))
+        if not channel:
+            continue
+        try:
+            message = await channel.fetch_message(int(msg_id))
+            if not message.embeds:
+                continue
+            embed = message.embeds[0]
+            embed.description = f"*This quiz has closed.* The answer was **{ref}**."
+            embed.set_footer(text="Closed — a new quiz has been posted")
+            await message.edit(embed=embed, view=None)
+        except discord.HTTPException as e:
+            print(f"  Couldn't close old quiz message {msg_id} in {ch_id}: {e}")
+
+
+async def _auto_post_quiz() -> int:
+    """Auto-post a daily quiz to all configured quiz channels. Returns how many posted."""
     channels = _get_quiz_channels()
     if not channels:
         print("No quiz channels configured.")
-        return
+        return 0
 
+    previous = _load_daily_quiz()
     quiz_data = _generate_quiz_data()
 
-    # Track message IDs per channel for leaderboard updates
+    # Track message IDs per channel for leaderboard updates. Saved before the
+    # first send and again after each one: old posts stop accepting answers
+    # right away, and a click on a new post always finds it in the state.
     quiz_data["messages"] = {}
+    _save_daily_quiz(quiz_data)
+
+    # Render once; each send gets its own buffer.
+    png = await asyncio.to_thread(
+        lambda: render_verse("", [(1, quiz_data["text"])], hide_reference=True).getvalue()
+    )
 
     for ch_id in channels:
         channel = client.get_channel(ch_id)
@@ -2587,9 +2840,7 @@ async def _auto_post_quiz():
         guild_id = str(channel.guild.id) if channel.guild else None
         alltime_text = _build_alltime_leaderboard(guild_id, 5)
 
-        # Generate fresh image and file for each channel
-        img_buf = render_verse("", [(1, quiz_data["text"])], hide_reference=True)
-        file = discord.File(img_buf, filename="quiz.png")
+        file = discord.File(io.BytesIO(png), filename="quiz.png")
 
         embed = discord.Embed(
             title="Daily Scripture Quiz",
@@ -2611,19 +2862,23 @@ async def _auto_post_quiz():
 
         try:
             msg = await channel.send(embed=embed, view=view, file=file)
-            quiz_data["messages"][str(ch_id)] = str(msg.id)
-            print(f"  Posted quiz to #{channel.name} ({ch_id})")
         except discord.Forbidden:
             print(f"  No permission to post in {ch_id}, skipping.")
+            continue
+        except discord.HTTPException as e:
+            print(f"  Failed to post quiz in {ch_id}: {e}")
+            continue
+        quiz_data["messages"][str(ch_id)] = str(msg.id)
+        _save_daily_quiz(quiz_data)
+        print(f"  Posted quiz to #{channel.name} ({ch_id})")
 
-    # Legacy single-channel fields for backward compat
-    if quiz_data["messages"]:
-        first_ch = list(quiz_data["messages"].keys())[0]
-        quiz_data["channel_id"] = first_ch
-        quiz_data["message_id"] = quiz_data["messages"][first_ch]
-
-    _save_daily_quiz(quiz_data)
     print(f"Daily quiz posted: {quiz_data['book']} {quiz_data['chapter']}:{quiz_data['verse']}")
+    if previous:
+        try:
+            await _close_quiz_messages(previous)
+        except Exception as e:
+            print(f"  Couldn't close the previous quiz: {e!r}")
+    return len(quiz_data["messages"])
 
 
 # --- Didascalicon (catechism Q&A) ---
@@ -2652,8 +2907,7 @@ def _load_did_history() -> list[str]:
 
 
 def _save_did_history(history: list[str]):
-    with open(DIDASCALICON_HISTORY_PATH, "w", encoding="utf-8") as f:
-        json.dump(history, f, indent=2, ensure_ascii=False)
+    _write_json(DIDASCALICON_HISTORY_PATH, history)
 
 
 def _pick_random_qa(did: dict, history: list[str]) -> dict | None:
@@ -2813,21 +3067,22 @@ async def _send_qa(
     return msg
 
 
-async def _auto_post_didascalicon():
-    """Post the daily Didascalicon Q&A to all configured channels."""
+async def _auto_post_didascalicon() -> int:
+    """Post the daily Didascalicon Q&A to all configured channels. Returns how many posted."""
     channels = _get_didascalicon_channels()
     if not channels:
         print("No Didascalicon channels configured.")
-        return
+        return 0
 
     did = _load_didascalicon()
     history = _load_did_history()
     qa = _pick_random_qa(did, history)
     if not qa:
         print("No Didascalicon data available.")
-        return
+        return 0
 
     title_prefix = "Daily Didascalicon — "
+    posted = 0
     for ch_id in channels:
         channel = client.get_channel(ch_id)
         if not channel:
@@ -2835,17 +3090,25 @@ async def _auto_post_didascalicon():
             continue
         try:
             await _send_qa(channel, qa, title_prefix=title_prefix)
+            posted += 1
             print(f"  Posted Didascalicon {qa['number']} to #{channel.name} ({ch_id})")
         except discord.Forbidden:
             print(f"  No permission to post Didascalicon in {ch_id}.")
+        except discord.HTTPException as e:
+            print(f"  Failed to post Didascalicon in {ch_id}: {e}")
 
     history.append(qa["number"])
     _save_did_history(history)
+    return posted
 
 
-@tasks.loop(time=datetime.time(hour=10, minute=10))  # 10:10 UTC = 6:10 AM EST
+@tasks.loop(time=datetime.time(hour=6, minute=10, tzinfo=EASTERN))
 async def daily_didascalicon_task():
-    await _auto_post_didascalicon()
+    try:
+        await _auto_post_didascalicon()
+    except Exception:
+        # An uncaught error would stop this loop for good.
+        traceback.print_exc()
 
 
 # --- Announcements: poll RSS feed for new news articles and post to configured channels ---
@@ -2872,8 +3135,7 @@ def _load_announcements_seen() -> dict:
 
 
 def _save_announcements_seen(data: dict):
-    with open(ANNOUNCEMENTS_SEEN_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    _write_json(ANNOUNCEMENTS_SEEN_PATH, data)
 
 
 def _build_announcement_embed(article: dict) -> discord.Embed:
@@ -2928,14 +3190,25 @@ def _enrich_with_image(article: dict) -> dict:
     return article
 
 
+_announcements_lock = asyncio.Lock()
+
+
 async def _check_announcements():
-    """Poll the news RSS feed. Post any new articles to configured channels."""
+    """Poll the news RSS feed. Post any new articles to configured channels.
+
+    Serialized so /checknews can't race the 20-minute loop into double-posting.
+    The feed is polled (and the seen-set kept current) even when no server has
+    an announcement channel, so enabling one later doesn't post the backlog.
+    """
+    async with _announcements_lock:
+        await _check_announcements_locked()
+
+
+async def _check_announcements_locked():
     channels = _get_announcements_channels()
-    if not channels:
-        return
 
     try:
-        articles = announcements.fetch_feed()
+        articles = await asyncio.to_thread(announcements.fetch_feed)
     except Exception as e:
         print(f"[announcements] Feed fetch failed: {e}")
         return
@@ -2967,8 +3240,9 @@ async def _check_announcements():
 
     print(f"[announcements] {len(new_articles)} new article(s) found")
     # Fetch the hero image once per new article (not once per channel).
-    for art in new_articles:
-        _enrich_with_image(art)
+    if channels:
+        for art in new_articles:
+            await asyncio.to_thread(_enrich_with_image, art)
     for ch_id in channels:
         channel = client.get_channel(ch_id)
         if not channel:
@@ -3032,8 +3306,7 @@ def _load_theology_cache() -> dict:
 
 
 def _save_theology_cache(cache: dict):
-    with open(THEOLOGY_CACHE_PATH, "w", encoding="utf-8") as f:
-        json.dump(cache, f, indent=2, ensure_ascii=False)
+    _write_json(THEOLOGY_CACHE_PATH, cache)
 
 
 async def _llm_match_question(user_question: str, questions: list[dict]) -> int | None:
@@ -3085,7 +3358,8 @@ async def _llm_match_question(user_question: str, questions: list[dict]) -> int 
 
     idx: int | None = None
     try:
-        resp = http_requests.post(
+        resp = await asyncio.to_thread(
+            http_requests.post,
             "https://openrouter.ai/api/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -3115,7 +3389,9 @@ async def _llm_match_question(user_question: str, questions: list[dict]) -> int 
         print(f"  Theology match LLM call failed: {e}")
         return None
 
-    # Cache the result (matched number or "" for no match)
+    # Cache the result (matched number or "" for no match). Re-read first: other
+    # questions may have been cached while this call was waiting on the LLM.
+    cache = _load_theology_cache()
     cache[key] = questions[idx]["number"] if idx is not None else ""
     try:
         _save_theology_cache(cache)
@@ -3197,8 +3473,7 @@ def _save_theology_replies(data: dict):
     data["users"] = prune(data.get("users", {}))
     data["channels"] = prune(data.get("channels", {}))
 
-    with open(THEOLOGY_REPLIES_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    _write_json(THEOLOGY_REPLIES_PATH, data)
 
 
 def _theology_cooldown_reason(user_id: str, channel_id: str, qa_number: str) -> str | None:
@@ -3270,64 +3545,90 @@ async def _handle_theology_question(message: discord.Message, *, strict: bool = 
         print(f"[theology] Throttled: {cooldown}")
         return
 
+    # Record before sending: two quick questions matching the same Q&A would
+    # otherwise both pass the cooldown check while the first reply is in flight.
+    _record_theology_reply(user_id, channel_id, qa["number"])
     try:
         await _send_qa(message, qa, title_prefix="", reply=True)
-        _record_theology_reply(user_id, channel_id, qa["number"])
     except discord.Forbidden:
         print(f"  No permission to reply in theology channel {message.channel.id}.")
     except Exception as e:
         print(f"  Error posting theology reply: {e}")
 
 
-@tasks.loop(time=datetime.time(hour=10, minute=5))  # 10:05 UTC = 6:05 AM EST
+@tasks.loop(time=datetime.time(hour=6, minute=5, tzinfo=EASTERN))
 async def daily_quiz_task():
-    await _auto_post_quiz()
+    try:
+        await _auto_post_quiz()
+    except Exception:
+        # An uncaught error would stop this loop for good.
+        traceback.print_exc()
 
 
-@tasks.loop(time=datetime.time(hour=10, minute=0))  # 10:00 UTC = 6:00 AM EST
+async def _channel_has_votd_today(channel: discord.abc.Messageable, today: datetime.date) -> bool:
+    """True if `channel` already has a Verse of the Day post from today (UTC) — ours,
+    or the GitHub Action's webhook post. Lives in Discord, so it survives restarts."""
+    since = datetime.datetime.combine(today, datetime.time.min, tzinfo=datetime.timezone.utc)
+    try:
+        async for msg in channel.history(limit=100):  # newest first
+            if msg.created_at < since:
+                break
+            if msg.author.id != client.user.id and msg.webhook_id is None:
+                continue
+            if msg.embeds and (msg.embeds[0].title or "").startswith("Verse of the Day"):
+                return True
+    except discord.HTTPException:
+        pass  # can't read history; fall back to the in-memory guard
+    return False
+
+
+_votd_reposted_on: str | None = None
+
+
+@tasks.loop(minutes=15)
 async def votd_repost_task():
-    """Post the VOTD to all configured VOTD channels."""
-    channels = _get_votd_channels()
-    if not channels:
-        return
+    """Post today's VOTD to every configured VOTD channel once it exists.
 
-    votd = _fetch_votd()
-    if not votd:
-        print("No VOTD available.")
-        return
+    The GitHub Action that picks the verse runs on a cron GitHub routinely
+    delays by hours, so poll for it instead of firing at a fixed time.
+    """
+    global _votd_reposted_on
+    try:
+        today = datetime.datetime.now(datetime.timezone.utc).date()
+        if _votd_reposted_on == today.isoformat():
+            return
+        channels = _get_votd_channels()
+        if not channels:
+            return
 
-    # Only post if it's today's VOTD
-    today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
-    if votd.get("date") != today:
-        print(f"VOTD is from {votd.get('date')}, not today ({today}). Skipping repost.")
-        return
+        votd = await asyncio.to_thread(_fetch_votd)
+        if not votd or votd.get("date") != today.isoformat():
+            return  # today's pick hasn't landed yet
 
-    ref = f"{votd['book']} {votd['chapter']}:{votd['verse_start']}"
-    if votd["verse_start"] != votd["verse_end"]:
-        ref += f"-{votd['verse_end']}"
+        png = None
+        all_done = True
+        for ch_id in channels:
+            channel = client.get_channel(ch_id)
+            if not channel or await _channel_has_votd_today(channel, today):
+                continue
+            if png is None:
+                png = await asyncio.to_thread(_render_votd_png, votd)
+            try:
+                file = discord.File(io.BytesIO(png), filename="votd.png")
+                await channel.send(embed=_build_votd_embed(votd), file=file)
+                print(f"  Posted VOTD to #{channel.name} ({ch_id})")
+            except discord.Forbidden:
+                print(f"  No permission to post VOTD in {ch_id}")
+            except discord.HTTPException as e:
+                all_done = False  # retry on the next poll
+                print(f"  Failed to post VOTD in {ch_id}: {e}")
+        if all_done:
+            _votd_reposted_on = today.isoformat()
+    except Exception:
+        traceback.print_exc()
 
-    verse_tuples = [(int(v["verse"]), v["text"]) for v in votd["verses"]]
-    section = _votd_section(votd)
-    buf = render_verse(ref, verse_tuples, section=section)
 
-    for ch_id in channels:
-        channel = client.get_channel(ch_id)
-        if not channel:
-            continue
-        try:
-            file = discord.File(buf, filename="votd.png")
-            buf.seek(0)  # reset for next channel
-            embed = discord.Embed(
-                title=f"Verse of the Day — {votd.get('date', 'Today')}",
-                color=EMBED_COLOR,
-            )
-            if votd.get("blurb"):
-                embed.description = f"*{votd['blurb']}*"
-            embed.set_image(url="attachment://votd.png")
-            await channel.send(embed=embed, file=file)
-            print(f"  Posted VOTD to #{channel.name} ({ch_id})")
-        except discord.Forbidden:
-            print(f"  No permission to post VOTD in {ch_id}")
+_commands_synced = False
 
 
 @client.event
@@ -3346,8 +3647,13 @@ async def on_ready():
     if not announcements_task.is_running():
         announcements_task.start()
         print("News announcements task scheduled (every 20 min).")
-    await tree.sync()
+    # on_ready fires again after a dropped session; one sync per process is enough.
+    global _commands_synced
+    if not _commands_synced:
+        await tree.sync()
+        _commands_synced = True
     print(f"Bot is ready! Logged in as {client.user}")
+    print(f"Storage: {_storage_status()}")
     print(f"Loaded {len(DB['books'])} books, {verse_count()} verses")
     did = _load_didascalicon()
     print(f"Loaded {len(did.get('questions', []))} Didascalicon Q&As")
@@ -3365,12 +3671,14 @@ async def on_message(message: discord.Message):
     #   - Server-wide mode: /setup theology-all on → respond in any channel,
     #     using the strict heuristic so we don't burn tokens on casual chatter.
     # Both modes hit the cached LLM matcher, so repeated questions never
-    # re-call OpenRouter.
-    theology_channels = _get_theology_channels()
+    # re-call OpenRouter. Only the bot owner can turn either mode on (it's the
+    # one feature that spends OpenRouter credit per message).
+    config = _load_server_config()
+    theology_channels = _get_theology_channels(config)
     if message.channel.id in theology_channels:
         print(f"[theology] Got message in configured channel {message.channel.id} from {message.author}")
         client.loop.create_task(_handle_theology_question(message, strict=False))
-    elif message.guild and _is_theology_everywhere(message.guild.id):
+    elif message.guild and _is_theology_everywhere(message.guild.id, config):
         client.loop.create_task(_handle_theology_question(message, strict=True))
 
     # Find all verse references in the message
@@ -3391,23 +3699,28 @@ async def on_message(message: discord.Message):
         if not results:
             continue
 
-        ref_str = f"{book} {ch}:{v_start}"
-        if v_end:
-            ref_str += f"-{v_end}"
+        # Title from what was found, not what was typed ("1:1-99999" -> "1:1-51").
+        ref_str = f"{book} {ch}:{results[0][0]}"
+        if len(results) > 1:
+            ref_str += f"-{results[-1][0]}"
 
         desc_lines = []
         for vnum, text, section in results:
             desc_lines.append(f"**{vnum}** {text}")
 
+        # Up to 3 embeds share Discord's 6000-character message total.
         embed = discord.Embed(
             title=ref_str,
-            description="\n".join(desc_lines),
+            description=_fit_lines(desc_lines, 1900, note=f"\n*…truncated — use `/verse {ref_str}` for the full passage.*"),
             color=EMBED_COLOR,
         )
         embeds.append(embed)
 
     if embeds:
-        await message.reply(embeds=embeds, mention_author=False)
+        try:
+            await message.reply(embeds=embeds, mention_author=False)
+        except discord.HTTPException as e:
+            print(f"Inline expansion failed in {message.channel.id}: {e}")
 
 
 @client.event
@@ -3442,10 +3755,11 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
     # Try to parse verse reference from embed title
     parsed = parse_embed_title(embed.title)
 
-    # If it's a VOTD embed, load the reference from votd.json
-    if not parsed and "Verse of the Day" in embed.title:
-        votd = _fetch_votd()
-        if votd:
+    # If it's a VOTD embed, load the reference from votd.json — but only when the
+    # post is for the current VOTD, or an old post would act on today's passage.
+    if not parsed and embed.title.startswith("Verse of the Day"):
+        votd = await asyncio.to_thread(_fetch_votd)
+        if votd and _votd_title_date(embed.title) == votd.get("date"):
             parsed = (
                 votd["book"],
                 int(votd["chapter"]),
@@ -3453,16 +3767,21 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
                 int(votd["verse_end"]),
             )
 
-    # If it's a quiz embed, load the reference from daily_quiz.json
-    if not parsed and "Quiz" in (embed.title or ""):
+    # The live daily quiz post: its embed hides the answer, so only 🔖 (a private
+    # DM) works, and only for someone who has already finished today's quiz.
+    # ➡️/💬 would reveal the answer in the channel.
+    if not parsed and is_bot and embed.title == "Daily Scripture Quiz":
         quiz = _load_daily_quiz()
-        if quiz:
-            parsed = (
-                quiz["book"],
-                int(quiz["chapter"]),
-                int(quiz["verse"]),
-                None,
-            )
+        if not quiz or str(message.id) not in quiz.get("messages", {}).values():
+            return
+        if emoji != "\U0001f516" or not quiz.get("leaderboard", {}).get(str(payload.user_id), {}).get("done"):
+            return
+        parsed = (
+            quiz["book"],
+            int(quiz["chapter"]),
+            int(quiz["verse"]),
+            None,
+        )
 
     if not parsed:
         return
@@ -3496,7 +3815,7 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
         dm_embed = discord.Embed(
             title=f"\U0001f516 {ref_str}",
-            description="\n".join(desc_lines),
+            description=_fit_lines(desc_lines, 4096),
             color=EMBED_COLOR,
         )
         dm_embed.set_footer(text=f"Bookmarked! You have {len(user_data['bookmarks'])} bookmarks. Use /bookmarks to view.")
@@ -3535,12 +3854,15 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
 
         expand_embed = discord.Embed(
             title=ref_str,
-            description="\n".join(desc_lines),
+            description=_fit_lines(desc_lines, 4096),
             color=EMBED_COLOR,
         )
         expand_embed.set_footer(text="Continued reading")
         view = RelatedView(book, chapter, results[0][0])
-        await channel.send(embed=expand_embed, view=view)
+        try:
+            await channel.send(embed=expand_embed, view=view)
+        except discord.HTTPException as e:
+            print(f"Expand reaction failed in {channel.id}: {e}")
 
     # 💬 Thread — create discussion thread
     elif emoji == "\U0001f4ac":
@@ -3554,23 +3876,28 @@ async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
                 auto_archive_duration=1440,  # 24 hours
             )
             results = get_verses(book, chapter, v_start, v_end)
+            header = f"**{ref_str}**\n\n"
+            footer = f"\n\n*Thread started by {user.display_name} — discuss this passage below!*"
             verse_text = ""
             if results:
-                verse_text = "\n".join(f"**{vn}** {t}" for vn, t, _ in results)
-            await thread.send(
-                f"**{ref_str}**\n\n{verse_text}\n\n"
-                f"*Thread started by {user.display_name} — discuss this passage below!*"
-            )
+                # Plain messages cap at 2000 characters.
+                verse_text = _fit_lines(
+                    [f"**{vn}** {t}" for vn, t, _ in results],
+                    2000 - len(header) - len(footer),
+                )
+            await thread.send(header + verse_text + footer)
         except discord.Forbidden:
             pass  # missing permissions
+        except discord.HTTPException as e:
+            print(f"Thread reaction failed in {channel.id}: {e}")  # e.g. already in a thread
 
 
 def main():
     import time
     token = os.getenv("DISCORD_TOKEN")
     if not token:
-        print("ERROR: DISCORD_TOKEN not set. Create a .env file with your token.")
-        return
+        # Non-zero exit so Railway's ON_FAILURE restart policy notices.
+        raise SystemExit("ERROR: DISCORD_TOKEN not set. Create a .env file with your token.")
     try:
         client.run(token)
     except (discord.HTTPException, discord.LoginFailure, discord.DiscordServerError) as e:

@@ -60,8 +60,9 @@ A Discord bot for the Marcionite Testamentum — 24 books, 4,300+ verses. Look u
 
 ### Bot Replies
 Turned on per server by the bot owner (`/setup bot-replies enabled:true`):
-- **Mention the bot** with what you're looking for and it replies once with a pointer to the right command, church website page, or Didascalicon Q&A (posted in full under the reply). It never quotes scripture from memory and doesn't hold conversations. One OpenRouter call, within the spend caps (5 per user per hour, 100 per day).
-- **"good bot"** and similar → "Doing my part 😇". **"bot is broken" / "clanker needs fixing"** → an apology pointing to the bot owner. These are free phrase matches. They fire when the message is aimed at the bot: a mention, a reply to its post, or a short message right after it posted in the channel.
+In a server with this on, any message that @mentions the bot or says "bot" / "clanker" is treated as being about this bot.
+- **"good bot"** and similar → "Doing my part 😇". **"bot is broken" / "clanker needs fixing"** → an apology pointing to the bot owner. Short messages are free phrase matches.
+- **Anything else about the bot** → one OpenRouter call (within the spend caps: 5 per user per hour, 100 per day) that recognises longer praise/complaints, points people who are looking for something to the right command, church website page, or Didascalicon Q&A (posted in full under the reply), and stays silent when someone is just talking about the bot. A direct @mention always gets an answer. It never quotes scripture from memory and doesn't hold conversations.
 
 ### Multi-Server Support
 Server admins configure channels with `/setup` (server-only; not available in DMs or user installs):

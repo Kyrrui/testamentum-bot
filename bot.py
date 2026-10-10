@@ -3817,7 +3817,10 @@ async def _handle_theology_question(message: discord.Message, *, strict: bool = 
 # Didascalicon Q&A. Not a chatbot. Only a bare passing reference ("lol the bot")
 # gets nothing.
 
+# "good bot" gets the "I'm doing my part!" GIF (Starship Troopers). The text is the fallback
+# where the bot can't attach files.
 BOT_PRAISE_REPLY = "Doing my part 😇"
+BOT_PRAISE_GIF = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "doing_my_part.gif")
 BOT_COMPLAINT_REPLY = "I'm sorry 😢 I'm doing the best I can, reach out to {owner} for clanker brain surgery"
 BOT_INTRO_REPLY = (
     "I'm a reference bot for the Marcionite Testamentum — mention me with what you're looking for "
@@ -3969,8 +3972,21 @@ async def _send_bot_reaction(message: discord.Message, kind: str, *, ping: bool 
             # Claim the slot before awaiting so two reports can't both ping.
             previous_ping, _owner_last_ping = _owner_last_ping, now
     try:
-        await message.reply(text, mention_author=False, allowed_mentions=allowed)
-        print(f"[bot-replies] {kind} reply in {message.channel.id}{' (pinged owner)' if previous_ping is not None else ''}")
+        sent = None
+        # Without Attach Files here (or the asset), say it instead of uploading into a 403.
+        if (kind == "praise" and os.path.isfile(BOT_PRAISE_GIF)
+                and message.channel.permissions_for(message.guild.me).attach_files):
+            try:
+                gif = discord.File(BOT_PRAISE_GIF, description="I'm doing my part!")
+                await message.reply(file=gif, mention_author=False, allowed_mentions=allowed)
+                sent = "GIF"
+            except discord.HTTPException as e:
+                print(f"[bot-replies] Couldn't send the praise GIF in {message.channel.id}: {e}")
+        if not sent:
+            await message.reply(text, mention_author=False, allowed_mentions=allowed)
+            sent = "text"
+        print(f"[bot-replies] {kind} reply ({sent}) in {message.channel.id}"
+              f"{' (pinged owner)' if previous_ping is not None else ''}")
     except discord.HTTPException as e:
         if previous_ping is not None:
             _owner_last_ping = previous_ping  # the ping never went out
@@ -4140,8 +4156,8 @@ def _bot_guide_system_prompt(questions: list[dict]) -> str:
         ("- You were built by, and are maintained by, @kyrrui." if BOT_MAINTAINER.lower() == "kyrrui"
          else f"- You were built by Kyrrui and are maintained by @{BOT_MAINTAINER}."),
         "- Saying the bot is broken (e.g. \"the bot is broken\", \"clanker needs fixing\") gets an apology "
-        f"and pings your maintainer, @{BOT_MAINTAINER}, so that is how to report a problem. \"good bot\" gets a "
-        f"thank-you. Write the maintainer as @{BOT_MAINTAINER} (the bot turns it into a mention).",
+        f"and pings your maintainer, @{BOT_MAINTAINER}, so that is how to report a problem. \"good bot\" gets an "
+        f"\"I'm doing my part!\" GIF. Write the maintainer as @{BOT_MAINTAINER} (the bot turns it into a mention).",
         "",
         "BOT COMMANDS:",
         *commands,
@@ -4605,6 +4621,8 @@ async def on_ready():
         _commands_synced = True
     print(f"Bot is ready! Logged in as {client.user}")
     print(f"Storage: {_storage_status()}")
+    if not os.path.isfile(BOT_PRAISE_GIF):
+        print(f"⚠️ {BOT_PRAISE_GIF} is missing: \"good bot\" gets text instead of the GIF.")
     print("OpenRouter: " + ("configured" if OPENROUTER_API_KEY else
                             "OPENROUTER_API_KEY NOT SET — theology auto-answer and the bot-replies guide are off"))
     app = client.application

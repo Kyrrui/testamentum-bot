@@ -143,7 +143,7 @@ Anyone with Manage Messages can see `/setup`, but only members with Manage Serve
 - [ ] Typing `Evang 1:1` in a message gets an automatic reply. If not, the bot can't post in that channel. It needs View Channels, Send Messages, Embed Links and Read Message History there.
 - [ ] `/setup status` lists your channels and says storage is persistent.
 - [ ] New bot only: `/postquiz` (owner) posts a quiz in your quiz channel. On a bot you took over, skip this. It re-rolls today's quiz for **every** server and closes the one people are playing.
-- [ ] With bot replies on, `good bot` gets "Doing my part 😇", and `@YourBot any verses about forgiveness?` gets verses. The bot offers verses when a message asks for a verse, scripture, a passage, a psalm or the bible, or asks what scripture says or teaches about something.
+- [ ] With bot replies on, `good bot` gets the "I'm doing my part!" GIF (in a channel where the bot can't attach files, it says "Doing my part 😇" instead), and `@YourBot any verses about forgiveness?` gets verses. The bot offers verses when a message asks for a verse, scripture, a passage, a psalm or the bible, or asks what scripture says or teaches about something.
 - [ ] The next day, the quiz and Didascalicon post in the morning and the Verse of the Day around midday US Eastern.
 
 ## Day to day
@@ -173,6 +173,7 @@ Anyone with Manage Messages can see `/setup`, but only members with Manage Serve
 |---|---|
 | Bot is offline | Check the Railway logs. `DISCORD_TOKEN not set`: add the variable. `Message Content Intent is off`: turn it on (Step 2). A login error: reset the token in the Developer Portal and update the variable. Railway stops restarting after 3 crashes, so after fixing the cause use Deployments → **⋮** → **Redeploy**. |
 | Slash commands work, typed references don't | Either the bot isn't in this server, or it lacks permissions in that channel. Commands added with **Add to My Apps** work anywhere, but typed references only work where the bot itself was added. The channel needs View Channels, Send Messages, Embed Links and Read Message History for the bot; the log says `Inline expansion failed in ...`. |
+| `good bot` gets "Doing my part 😇" instead of the GIF | The bot lacks Attach Files in that channel (check its permission overrides), or `assets/doing_my_part.gif` is missing (the startup log warns about this). |
 | `/setup` missing | You need Manage Messages to see it. Also try reloading Discord. |
 | Settings forgotten after a deploy | No volume at `DATA_DIR`. `/setup status` and the startup log show this. |
 | No Verse of the Day | One of: the Verse of the Day job isn't running (check the Actions tab); `VOTD_REPO` points somewhere else; the repo isn't public or its branch isn't `main` (log: `Failed to fetch VOTD from GitHub`); or `/setup votd` isn't set. |

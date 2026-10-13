@@ -1,26 +1,26 @@
 {
-  "book": "Romans",
-  "chapter": "14",
-  "verse_start": "17",
-  "verse_end": "20",
+  "book": "Philippians",
+  "chapter": "2",
+  "verse_start": "5",
+  "verse_end": "8",
   "verses": [
     {
-      "verse": "17",
-      "text": "For the kingdom of God is not meat and drink; but righteousness, and peace, and joy in the Holy Ghost."
+      "verse": "5",
+      "text": "Let this mind be in you, which was also in Christ Jesus:"
     },
     {
-      "verse": "18",
-      "text": "For he that in these things serveth Christ is acceptable to God, and approved of men."
+      "verse": "6",
+      "text": "Who, being in the form of God, thought it not robbery to be equal with God:"
     },
     {
-      "verse": "19",
-      "text": "Let us therefore follow after the things which make for peace, and things wherewith one may edify another."
+      "verse": "7",
+      "text": "But made himself of no reputation, and took upon him the form of a servant, and was made in the likeness of man:"
     },
     {
-      "verse": "20",
-      "text": "For meat destroy not the work of God. All things indeed are pure; but it is evil for that man who eateth with offence."
+      "verse": "8",
+      "text": "And being found in fashion as a man, he humbled himself, and became obedient unto death, even the death of the cross."
     }
   ],
-  "section": "Concerning the Kingdom of God, Because It Is Not Meat and Drink",
-  "date": "2026-10-12"
+  "section": "Concerning the Humility of Christ, Who Took upon Him the Form of a Servant",
+  "date": "2026-10-13"
 }

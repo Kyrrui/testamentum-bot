@@ -1,26 +1,30 @@
 {
-  "book": "Philippians",
-  "chapter": "2",
-  "verse_start": "5",
-  "verse_end": "8",
+  "book": "Evangelicon",
+  "chapter": "4",
+  "verse_start": "30",
+  "verse_end": "34",
   "verses": [
     {
-      "verse": "5",
-      "text": "Let this mind be in you, which was also in Christ Jesus:"
+      "verse": "30",
+      "text": "But I say unto you, That whosoever is angry with his brother without a cause shall be in danger of the judgment: and whosoever shall say to his brother, Raca, shall be in danger of the council: but whosoever shall say, Thou fool, shall be in danger of hell fire."
     },
     {
-      "verse": "6",
-      "text": "Who, being in the form of God, thought it not robbery to be equal with God:"
+      "verse": "31",
+      "text": "Ye have heard that it was said by them of old time, Thou shalt not commit adultery:"
     },
     {
-      "verse": "7",
-      "text": "But made himself of no reputation, and took upon him the form of a servant, and was made in the likeness of man:"
+      "verse": "32",
+      "text": "But I say unto you, That whosoever looketh on a woman to lust after her hath committed adultery with her already in his heart."
     },
     {
-      "verse": "8",
-      "text": "And being found in fashion as a man, he humbled himself, and became obedient unto death, even the death of the cross."
+      "verse": "33",
+      "text": "And if thy right eye offend thee, pluck it out, and cast it from thee: for it is profitable for thee that one of thy members should perish, and not that thy whole body should be cast into hell."
+    },
+    {
+      "verse": "34",
+      "text": "Again, ye have heard that it hath been said by them of old time, Thou shalt not forswear thyself, but shalt perform unto the Lord thine oaths:"
     }
   ],
-  "section": "Concerning the Humility of Christ, Who Took upon Him the Form of a Servant",
-  "date": "2026-10-13"
+  "section": "Concerning the Beatitudes",
+  "date": "2026-10-14"
 }

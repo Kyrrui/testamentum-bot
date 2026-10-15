@@ -1,30 +1,30 @@
 {
-  "book": "Evangelicon",
-  "chapter": "4",
-  "verse_start": "30",
-  "verse_end": "34",
+  "book": "Romans",
+  "chapter": "8",
+  "verse_start": "31",
+  "verse_end": "35",
   "verses": [
     {
-      "verse": "30",
-      "text": "But I say unto you, That whosoever is angry with his brother without a cause shall be in danger of the judgment: and whosoever shall say to his brother, Raca, shall be in danger of the council: but whosoever shall say, Thou fool, shall be in danger of hell fire."
-    },
-    {
       "verse": "31",
-      "text": "Ye have heard that it was said by them of old time, Thou shalt not commit adultery:"
+      "text": "What shall we then say to these things? If God be for us, who can be against us?"
     },
     {
       "verse": "32",
-      "text": "But I say unto you, That whosoever looketh on a woman to lust after her hath committed adultery with her already in his heart."
+      "text": "He that spared not his own Son, but delivered him up for us all, how shall he not with him also freely give us all things?"
     },
     {
       "verse": "33",
-      "text": "And if thy right eye offend thee, pluck it out, and cast it from thee: for it is profitable for thee that one of thy members should perish, and not that thy whole body should be cast into hell."
+      "text": "Who shall lay any thing to the charge of God’s elect? It is God that justifieth."
     },
     {
       "verse": "34",
-      "text": "Again, ye have heard that it hath been said by them of old time, Thou shalt not forswear thyself, but shalt perform unto the Lord thine oaths:"
+      "text": "Who is he that condemneth? It is Christ that died, yea rather, that is risen again, who is even at the right hand of God, who also maketh intercession for us."
+    },
+    {
+      "verse": "35",
+      "text": "Who shall separate us from the love of Christ? shall tribulation, or distress, or persecution, or famine, or nakedness, or peril, or sword?"
     }
   ],
-  "section": "Concerning the Beatitudes",
-  "date": "2026-10-14"
+  "section": "Concerning the Elect, Who Cannot Be Accused before God, Neither Can They Be Separated from the Love of Christ",
+  "date": "2026-10-15"
 }

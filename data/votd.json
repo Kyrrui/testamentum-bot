@@ -1,30 +1,26 @@
 {
-  "book": "Romans",
-  "chapter": "8",
-  "verse_start": "31",
-  "verse_end": "35",
+  "book": "Trallians",
+  "chapter": "3",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "31",
-      "text": "What shall we then say to these things? If God be for us, who can be against us?"
+      "verse": "1",
+      "text": "For when ye are obedient to the bishop as to Jesus Christ, it is evident to me that ye are living not after men but after Jesus Christ, who died for us, that believing on His death ye might escape death."
     },
     {
-      "verse": "32",
-      "text": "He that spared not his own Son, but delivered him up for us all, how shall he not with him also freely give us all things?"
+      "verse": "2",
+      "text": "It is therefore necessary, even as your wont is, that ye should do nothing without the bishop;"
     },
     {
-      "verse": "33",
-      "text": "Who shall lay any thing to the charge of God’s elect? It is God that justifieth."
+      "verse": "3",
+      "text": "But be ye obedient also to the presbytery, as to the Apostle of Jesus Christ our hope;"
     },
     {
-      "verse": "34",
-      "text": "Who is he that condemneth? It is Christ that died, yea rather, that is risen again, who is even at the right hand of God, who also maketh intercession for us."
-    },
-    {
-      "verse": "35",
-      "text": "Who shall separate us from the love of Christ? shall tribulation, or distress, or persecution, or famine, or nakedness, or peril, or sword?"
+      "verse": "4",
+      "text": "For if we live in Him, we shall also be found in Him."
     }
   ],
-  "section": "Concerning the Elect, Who Cannot Be Accused before God, Neither Can They Be Separated from the Love of Christ",
-  "date": "2026-10-15"
+  "section": "",
+  "date": "2026-10-16"
 }

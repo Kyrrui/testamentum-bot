@@ -1,26 +1,30 @@
 {
-  "book": "Trallians",
-  "chapter": "3",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "4",
+  "verse_start": "35",
+  "verse_end": "39",
   "verses": [
     {
-      "verse": "1",
-      "text": "For when ye are obedient to the bishop as to Jesus Christ, it is evident to me that ye are living not after men but after Jesus Christ, who died for us, that believing on His death ye might escape death."
+      "verse": "35",
+      "text": "But I say unto you, Swear not at all; neither by heaven; for it is God’s throne:"
     },
     {
-      "verse": "2",
-      "text": "It is therefore necessary, even as your wont is, that ye should do nothing without the bishop;"
+      "verse": "36",
+      "text": "Nor by the earth; for it is his footstool: neither by Jerusalem; for it is the city of the great King."
     },
     {
-      "verse": "3",
-      "text": "But be ye obedient also to the presbytery, as to the Apostle of Jesus Christ our hope;"
+      "verse": "37",
+      "text": "Neither shalt thou swear by thy head, because thou canst not make one hair white or black."
     },
     {
-      "verse": "4",
-      "text": "For if we live in Him, we shall also be found in Him."
+      "verse": "38",
+      "text": "But let your communication be, Yea, yea; Nay, nay: for whatsoever is more than these cometh of evil."
+    },
+    {
+      "verse": "39",
+      "text": "Ye have heard that it hath been said, An eye for an eye, and a tooth for a tooth:"
     }
   ],
-  "section": "",
-  "date": "2026-10-16"
+  "section": "Concerning the Beatitudes",
+  "date": "2026-10-17"
 }

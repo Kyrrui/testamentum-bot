@@ -1,30 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "4",
-  "verse_start": "35",
-  "verse_end": "39",
+  "book": "Ephesians",
+  "chapter": "20",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "35",
-      "text": "But I say unto you, Swear not at all; neither by heaven; for it is God’s throne:"
+      "verse": "1",
+      "text": "And hidden from the prince of this world was the death of the Lord."
     },
     {
-      "verse": "36",
-      "text": "Nor by the earth; for it is his footstool: neither by Jerusalem; for it is the city of the great King."
+      "verse": "2",
+      "text": "A mystery to be cried aloud—which was wrought in the silence of God."
     },
     {
-      "verse": "37",
-      "text": "Neither shalt thou swear by thy head, because thou canst not make one hair white or black."
+      "verse": "3",
+      "text": "How then was it made manifest to the ages?"
     },
     {
-      "verse": "38",
-      "text": "But let your communication be, Yea, yea; Nay, nay: for whatsoever is more than these cometh of evil."
-    },
-    {
-      "verse": "39",
-      "text": "Ye have heard that it hath been said, An eye for an eye, and a tooth for a tooth:"
+      "verse": "4",
+      "text": "A star shone forth in the heaven above all the stars;"
     }
   ],
-  "section": "Concerning the Beatitudes",
-  "date": "2026-10-17"
+  "section": "",
+  "date": "2026-10-18"
 }

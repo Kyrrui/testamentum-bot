@@ -1,26 +1,30 @@
 {
-  "book": "Ephesians",
-  "chapter": "20",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "mRomans",
+  "chapter": "6",
+  "verse_start": "5",
+  "verse_end": "9",
   "verses": [
     {
-      "verse": "1",
-      "text": "And hidden from the prince of this world was the death of the Lord."
+      "verse": "5",
+      "text": "and I pray that I may find them prompt;"
     },
     {
-      "verse": "2",
-      "text": "A mystery to be cried aloud—which was wrought in the silence of God."
+      "verse": "6",
+      "text": "Nay I will entice them that they may devour me promptly, not as they have done to some, refusing to touch them through fear."
     },
     {
-      "verse": "3",
-      "text": "How then was it made manifest to the ages?"
+      "verse": "7",
+      "text": "Yea though of themselves they should not be willing while I am ready, I myself will force them to it."
     },
     {
-      "verse": "4",
-      "text": "A star shone forth in the heaven above all the stars;"
+      "verse": "8",
+      "text": "Bear with me."
+    },
+    {
+      "verse": "9",
+      "text": "I know what is expedient for me."
     }
   ],
   "section": "",
-  "date": "2026-10-18"
+  "date": "2026-10-19"
 }

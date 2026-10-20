@@ -1,30 +1,26 @@
 {
-  "book": "mRomans",
-  "chapter": "6",
-  "verse_start": "5",
-  "verse_end": "9",
+  "book": "Evangelicon",
+  "chapter": "7",
+  "verse_start": "41",
+  "verse_end": "44",
   "verses": [
     {
-      "verse": "5",
-      "text": "and I pray that I may find them prompt;"
+      "verse": "41",
+      "text": "And straightway he constrained his disciples to get into the ship, and to go to the other side before unto Bethsaida, while he sent away the people."
     },
     {
-      "verse": "6",
-      "text": "Nay I will entice them that they may devour me promptly, not as they have done to some, refusing to touch them through fear."
+      "verse": "42",
+      "text": "And when he had sent them away, he departed into a mountain to pray."
     },
     {
-      "verse": "7",
-      "text": "Yea though of themselves they should not be willing while I am ready, I myself will force them to it."
+      "verse": "43",
+      "text": "And when even was come, the ship was in the midst of the sea, and he alone on the land."
     },
     {
-      "verse": "8",
-      "text": "Bear with me."
-    },
-    {
-      "verse": "9",
-      "text": "I know what is expedient for me."
+      "verse": "44",
+      "text": "And he saw them toiling in rowing; for the wind was contrary unto them: and about the fourth watch of the night he cometh unto them, walking upon the sea, and would have passed by them."
     }
   ],
-  "section": "",
-  "date": "2026-10-19"
+  "section": "Concerning the Walking upon the Sea",
+  "date": "2026-10-20"
 }

@@ -1,26 +1,26 @@
 {
-  "book": "Philadelphians",
-  "chapter": "8",
-  "verse_start": "2",
-  "verse_end": "5",
+  "book": "Philippians",
+  "chapter": "1",
+  "verse_start": "21",
+  "verse_end": "24",
   "verses": [
     {
-      "verse": "2",
-      "text": "But where there is division and anger, there God abideth not."
+      "verse": "21",
+      "text": "For to me to live is Christ, and to die is gain."
     },
     {
-      "verse": "3",
-      "text": "Now the Lord forgiveth all men when they repent, if repenting they return to the unity of God and to the council of the bishop."
+      "verse": "22",
+      "text": "But if I live in the flesh, this is the fruit of my labour: yet what I shall choose I wot not."
     },
     {
-      "verse": "4",
-      "text": "I have faith in the grace of Jesus Christ, who shall strike off every fetter from you;"
+      "verse": "23",
+      "text": "For I am in a strait betwixt two, having a desire to depart, and to be with Christ; which is far better:"
     },
     {
-      "verse": "5",
-      "text": "And I entreat you, Do ye nothing in a spirit of factiousness but after the teaching of Christ."
+      "verse": "24",
+      "text": "Nevertheless to abide in the flesh is more needful for you."
     }
   ],
-  "section": "",
-  "date": "2026-10-23"
+  "section": "Concerning Life in Christ, and Death Which Is Gain",
+  "date": "2026-10-24"
 }

@@ -1,26 +1,26 @@
 {
-  "book": "2 Corinthians",
-  "chapter": "12",
-  "verse_start": "9",
-  "verse_end": "12",
+  "book": "Colossians",
+  "chapter": "3",
+  "verse_start": "12",
+  "verse_end": "15",
   "verses": [
     {
-      "verse": "9",
-      "text": "And he said unto me, My grace is sufficient for thee: for my strength is made perfect in weakness. Most gladly therefore will I rather glory in my infirmities, that the power of Christ may rest upon me."
-    },
-    {
-      "verse": "10",
-      "text": "Therefore I take pleasure in infirmities, in reproaches, in necessities, in persecutions, in distresses for Christ’s sake: for when I am weak, then am I strong."
-    },
-    {
-      "verse": "11",
-      "text": "I am become a fool in glorying; ye have compelled me: for I ought to have been commended of you: for in nothing am I behind the very chiefest apostles, though I be nothing."
-    },
-    {
       "verse": "12",
-      "text": "Truly the signs of an apostle were wrought among you in all patience, in signs, and wonders, and mighty deeds."
+      "text": "Put on therefore, as the elect of God, holy and beloved, bowels of mercies, kindness, humbleness of mind, meekness, longsuffering;"
+    },
+    {
+      "verse": "13",
+      "text": "Forbearing one another, and forgiving one another, if any man have a quarrel against any: even as Christ forgave you, so also do ye."
+    },
+    {
+      "verse": "14",
+      "text": "And above all these things put on charity, which is the bond of perfectness."
+    },
+    {
+      "verse": "15",
+      "text": "And let the peace of God rule in your hearts, to the which also ye are called in one body; and be ye thankful."
     }
   ],
-  "section": "Concerning the Power of the Saints, Which Is Made Perfect in Infirmities",
-  "date": "2026-10-25"
+  "section": "Concerning the Elect of God, Who Ought to Put On Bowels of Mercies",
+  "date": "2026-10-26"
 }

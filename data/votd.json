@@ -1,26 +1,18 @@
 {
-  "book": "Magnesians",
-  "chapter": "11",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Romans",
+  "chapter": "10",
+  "verse_start": "12",
+  "verse_end": "15",
   "verses": [
     {
-      "verse": "1",
-      "text": "Do your diligence therefore that ye be confirmed in the ordinances of the Lord and of the Apostle, that ye may prosper in all things whatsoever ye do in flesh and spirit, by faith and by love, in the Son and Father and in the Spirit, in the beginning and in the end, with your revered bishop, and with the fitly wreathed spiritual circlet of your presbytery, and with the deacons who walk after God."
+      "verse": "12",
+      "text": "How then shall they call on him in whom they have not believed? and how shall they believe in him of whom they have not heard? and how shall they hear without a preacher?"
     },
     {
-      "verse": "2",
-      "text": "Be obedient to the bishop and to one another, as Jesus Christ was to the Father according to the flesh, and as the Apostle wasto Christ and to the Father, that there may be union both of flesh and of spirit."
-    },
-    {
-      "verse": "3",
-      "text": "Knowing that ye are full of God, I have exhorted you briefly."
-    },
-    {
-      "verse": "4",
-      "text": "Remember me in your prayers, that I may attain unto God;"
+      "verse": "13",
+      "text": "And how shall they preach, except they be sent? as it is written, How beautiful are the feet of them which preach the gospel of peace, and bring glad tidings of good things!"
     }
   ],
-  "section": "",
-  "date": "2026-10-27"
+  "section": "Concerning Them That Believe Not, Who Neither Call upon Him nor Hear without One Sent to Preach",
+  "date": "2026-10-28"
 }

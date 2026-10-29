@@ -1,18 +1,30 @@
 {
-  "book": "Romans",
-  "chapter": "10",
-  "verse_start": "12",
-  "verse_end": "15",
+  "book": "Psalmicon",
+  "chapter": "8",
+  "verse_start": "10",
+  "verse_end": "14",
   "verses": [
     {
+      "verse": "10",
+      "text": "Your flesh hath not known what I say unto you, neither hath your raiment known what I shew unto you."
+    },
+    {
+      "verse": "11",
+      "text": "Keep my secret, ye who are kept by it."
+    },
+    {
       "verse": "12",
-      "text": "How then shall they call on him in whom they have not believed? and how shall they believe in him of whom they have not heard? and how shall they hear without a preacher?"
+      "text": "Keep my faith, ye who are kept by it."
     },
     {
       "verse": "13",
-      "text": "And how shall they preach, except they be sent? as it is written, How beautiful are the feet of them which preach the gospel of peace, and bring glad tidings of good things!"
+      "text": "And understand my knowledge, ye who know me in truth."
+    },
+    {
+      "verse": "14",
+      "text": "Love me with affection, ye who love!"
     }
   ],
-  "section": "Concerning Them That Believe Not, Who Neither Call upon Him nor Hear without One Sent to Preach",
-  "date": "2026-10-28"
+  "section": "",
+  "date": "2026-10-29"
 }

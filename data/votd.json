@@ -1,30 +1,26 @@
 {
-  "book": "Psalmicon",
-  "chapter": "8",
-  "verse_start": "10",
-  "verse_end": "14",
+  "book": "Ephesians",
+  "chapter": "7",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "10",
-      "text": "Your flesh hath not known what I say unto you, neither hath your raiment known what I shew unto you."
+      "verse": "1",
+      "text": "And in proportion as a man seeth that his bishop is silent, let him fear him the more."
     },
     {
-      "verse": "11",
-      "text": "Keep my secret, ye who are kept by it."
+      "verse": "2",
+      "text": "For every one whom the Master of the household sendeth to be steward over His own house, we ought so to receive as Him that sent him."
     },
     {
-      "verse": "12",
-      "text": "Keep my faith, ye who are kept by it."
+      "verse": "3",
+      "text": "Plainly therefore we ought to regard the bishop as the Lord Himself."
     },
     {
-      "verse": "13",
-      "text": "And understand my knowledge, ye who know me in truth."
-    },
-    {
-      "verse": "14",
-      "text": "Love me with affection, ye who love!"
+      "verse": "4",
+      "text": "Now Onesimus of his own accord highly praiseth your orderly conduct in God, for that ye all live according to truth, and that no heresy hath a home among you:"
     }
   ],
   "section": "",
-  "date": "2026-10-29"
+  "date": "2026-10-30"
 }

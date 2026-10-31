@@ -7788,21 +7788,25 @@
           "sections": {},
           "verses": {
             "1": "For it is no earthly discovery, as I said, which was committed unto them; neither do they care to guard so carefully any mortal invention, nor have they been entrusted with the dispensation of human mysteries.",
-            "2": "But truly the Almighty and Maker of all, even the invisible God Himself, hath established among men from heaven the truth and the holy and incomprehensible Word, and hath fixed Him firmly in their hearts; not, as any man might suppose, by sending unto men some servant, or angel, or ruler, or one of those that administer earthly things, or one of those that are entrusted with the orderings in heaven, but the very Artificer and Demiurge of all, through whom He made the heavens, through whom He enclosed the sea within its proper bounds, whose mysteries all the elements faithfully observe, from whom the sun hath received the measure of the courses of the day to keep them, whom the moon obeyeth when He commandeth her to shine by night, whom the stars obey as they follow the course of the moon; through whom all things are ordered, bounded, and subjected: the heavens and the things that are in the heavens, the earth and the things that are in the earth, the sea and the things that are in the sea, fire, air, the abyss, the things that are in the heights, the things that are in the depths, and the things that are between.",
-            "3": "Him He sent unto them.",
-            "4": "Was He sent, thinkest thou, as any man might suppose, to establish a dominion, and to inspire fear and terror?",
-            "5": "Not so; but in gentleness and meekness hath He sent Him, as a king might send his son who is a king.",
-            "6": "He sent Him as sending God;",
-            "7": "He sent Him as a man unto men;",
-            "8": "He sent Him as Saviour, using persuasion and not force; for force is no attribute of God.",
-            "9": "He sent Him as calling, not as persecuting;",
-            "10": "He sent Him as loving, not as judging.",
-            "11": "For He will send Him in judgment; and who shall endure His presence?",
-            "12": "Dost thou not see them cast unto wild beasts, that they may deny the Lord, and yet not overcome?",
-            "13": "Dost thou not see that the more of them are punished, so many the more abound?",
-            "14": "These seem not to be the works of man;",
-            "15": "They are the power of God;",
-            "16": "They are proofs of His presence."
+            "2": "But truly the Almighty and Maker of all, even the invisible God Himself, hath established among men from heaven the truth and the holy and incomprehensible Word, and hath fixed Him firmly in their hearts;",
+            "3": "Not, as any man might suppose, by sending unto men some servant, or angel, or ruler, or one of those that administer earthly things, or one of those that are entrusted with the orderings in heaven,",
+            "4": "But the very Artificer and Demiurge of all, through whom He made the heavens, through whom He enclosed the sea within its proper bounds, whose mysteries all the elements faithfully observe,",
+            "5": "From whom the sun hath received the measure of the courses of the day to keep them, whom the moon obeyeth when He commandeth her to shine by night, whom the stars obey as they follow the course of the moon;",
+            "6": "Through whom all things are ordered, bounded, and subjected: the heavens and the things that are in the heavens, the earth and the things that are in the earth, the sea and the things that are in the sea, fire, air, the abyss, the things that are in the heights, the things that are in the depths, and the things that are between.",
+            "7": "Him He sent unto them.",
+            "8": "Was He sent, thinkest thou, as any man might suppose, to establish a dominion, and to inspire fear and terror?",
+            "9": "Not so; but in gentleness and meekness hath He sent Him, as a king might send his son who is a king.",
+            "10": "He sent Him as sending God;",
+            "11": "He sent Him as a man unto men;",
+            "12": "He sent Him as Saviour, using persuasion and not force; for force is no attribute of God.",
+            "13": "He sent Him as calling, not as persecuting;",
+            "14": "He sent Him as loving, not as judging.",
+            "15": "For He will send Him in judgment; and who shall endure His presence?",
+            "16": "Dost thou not see them cast unto wild beasts, that they may deny the Lord, and yet not overcome?",
+            "17": "Dost thou not see that the more of them are punished, so many the more abound?",
+            "18": "These seem not to be the works of man;",
+            "19": "They are the power of God;",
+            "20": "They are proofs of His presence."
           }
         },
         "8": {
@@ -7824,13 +7828,22 @@
         "9": {
           "sections": {},
           "verses": {
-            "1": "Having therefore ordered all things beforehand in His own mind together with His Son, He permitted us during the former time to be borne along by disorderly impulses as we desired, being led astray by pleasures and lusts; not because He delighted in our sins, but because He bore with us; not because He approved the former season of iniquity, but because He was preparing the present season of righteousness; that, being convicted in the former time by our own deeds as unworthy of life, we might now be accounted worthy by the goodness of God; and having made manifest our inability to enter into the kingdom of God of ourselves, we might be enabled by the power of God.",
-            "2": "And when our iniquity had been fully accomplished, and it had been made perfectly manifest that the wages thereof, even punishment and death, were expected, and the season came which God had ordained, when henceforth He should manifest His goodness and power – O the exceeding great kindness and love of God! – He hated us not, neither rejected us, nor remembered evil against us, but was long-suffering and patient; and in pity for us He Himself took upon Him our sins, and Himself gave His own Son as a ransom for us: the Holy for the lawless, the guileless for the evil, the just for the unjust, the incorruptible for the corruptible, the immortal for the mortal.",
-            "3": "For what else but His righteousness could have covered our sins?",
-            "4": "In whom was it possible for us, lawless and ungodly, to be justified, save only in the Son of God?",
-            "5": "O the sweet exchange! O the unsearchable operation! O benefits beyond all expectation!",
-            "6": "That the iniquity of many should be hidden in One Righteous, and the righteousness of One should justify many that are iniquitous!",
-            "7": "Having therefore in the former time shown the inability of our nature to obtain life, and having now revealed the Saviour, who is able to save even them whom it was impossible to save, He willed that for both causes we should believe in His goodness, and should regard Him as Nourisher, Father, Teacher, Counsellor, Physician, Wisdom, Light, Honour, Glory, Strength, and Life; and that we should take no thought for raiment and food."
+            "1": "Having therefore ordered all things beforehand in His own mind together with His Son, He permitted us during the former time to be borne along by disorderly impulses as we desired, being led astray by pleasures and lusts;",
+            "2": "Not because He delighted in our sins, but because He bore with us; not because He approved the former season of iniquity, but because He was preparing the present season of righteousness;",
+            "3": "That, being convicted in the former time by our own deeds as unworthy of life, we might now be accounted worthy by the goodness of God;",
+            "4": "And having made manifest our inability to enter into the kingdom of God of ourselves, we might be enabled by the power of God.",
+            "5": "And when our iniquity had been fully accomplished, and it had been made perfectly manifest that the wages thereof, even punishment and death, were expected,",
+            "6": "And the season came which God had ordained, when henceforth He should manifest His goodness and power – O the exceeding great kindness and love of God! –",
+            "7": "He hated us not, neither rejected us, nor remembered evil against us, but was long-suffering and patient;",
+            "8": "And in pity for us He Himself took upon Him our sins, and Himself gave His own Son as a ransom for us:",
+            "9": "The Holy for the lawless, the guileless for the evil, the just for the unjust, the incorruptible for the corruptible, the immortal for the mortal.",
+            "10": "For what else but His righteousness could have covered our sins?",
+            "11": "In whom was it possible for us, lawless and ungodly, to be justified, save only in the Son of God?",
+            "12": "O the sweet exchange! O the unsearchable operation! O benefits beyond all expectation!",
+            "13": "That the iniquity of many should be hidden in One Righteous, and the righteousness of One should justify many that are iniquitous!",
+            "14": "Having therefore in the former time shown the inability of our nature to obtain life, and having now revealed the Saviour, who is able to save even them whom it was impossible to save,",
+            "15": "He willed that for both causes we should believe in His goodness, and should regard Him as Nourisher, Father, Teacher, Counsellor, Physician, Wisdom, Light, Honour, Glory, Strength, and Life;",
+            "16": "And that we should take no thought for raiment and food."
           }
         },
         "10": {
@@ -8906,26 +8919,32 @@
         "7": {
           "sections": {},
           "verses": {
-            "1": "Seeing that the church which is in Antioch of Syria hath peace, it hath been reported to me, through your prayers, I myself also have been the more comforted since God hath banished my care;",
-            "2": "If so be may through suffering attain unto God, that I may be found a disciple through your intercession.",
-            "3": "It becometh thee, most blessed Metrodorus, to call together a godly council and to elect some one among you who is very dear to you and zealous also, who shall be fit to bear the name of God’s courier—to appoint him, I say, that he may go to Syria and glorify your zealous love unto the glory of God.",
-            "4": "A Christian hath no authority over himself, but giveth his time to God.",
-            "5": "This is God’s work, and yours also, when ye shall complete it:",
-            "6": "For I trust in the Divine grace, that ye are ready for an act of well-doing which is meet for God.",
-            "7": "Knowing the fervour of your sincerity, I have exhorted you in a short letter."
+            "1": "1 Seeing that the church which is in Antioch of Syria hath peace, it hath been reported to me, through your prayers,",
+            "2": "I myself also have been the more comforted since God hath banished my care;",
+            "3": "If so be may through suffering attain unto God, that I may be found a disciple through your intercession.",
+            "4": "It becometh thee, most blessed Metrodorus, to call together a godly council",
+            "5": "And to elect some one among you who is very dear to you and zealous also, who shall be fit to bear the name of God’s courier—",
+            "6": "To appoint him, I say, that he may go to Syria and glorify your zealous love unto the glory of God.",
+            "7": "A Christian hath no authority over himself, but giveth his time to God.",
+            "8": "This is God’s work, and yours also, when ye shall complete it:",
+            "9": "For I trust in the Divine grace, that ye are ready for an act of well-doing which is meet for God.",
+            "10": "Knowing the fervour of your sincerity, I have exhorted you in a short letter."
           }
         },
         "8": {
           "sections": {},
           "verses": {
-            "1": "Since I have not been able to write to all the churches, by reason of my sailing suddenly from Troas to Neapolis, as the Divine will enjoineth, thou shalt write to the churches in front, as one possessing the mind of God, to the intent that they also may do this same thing—let those who are able send messengers, and the rest letters by the persons who are sent by thee, that ye may be glorified by an ever memorable deed—for this is worthy of thee.",
-            "2": "I salute all by name, and especially the wife of Epitropus with her whole household and her children’s.",
-            "3": "I salute Attalus my beloved.",
-            "4": "I salute him that shall be appointed to go to Syria.",
-            "5": "Grace shall be with him always, and with Metrodorus who sendeth him.",
-            "6": "I bid you farewell always in our God Jesus Christ, in whom abide ye in the unity and supervision of God.",
-            "7": "I salute Alce, a name very dear to me.",
-            "8": "Fare ye well in the Lord. Amen."
+            "1": "Since I have not been able to write to all the churches, by reason of my sailing suddenly from Troas to Neapolis, as the Divine will enjoineth,",
+            "2": "Thou shalt write to the churches in front, as one possessing the mind of God, to the intent that they also may do this same thing—",
+            "3": "Let those who are able send messengers, and the rest letters by the persons who are sent by thee,",
+            "4": "That ye may be glorified by an ever memorable deed—for this is worthy of thee.",
+            "5": "I salute all by name, and especially the wife of Epitropus with her whole household and her children’s.",
+            "6": "I salute Attalus my beloved.",
+            "7": "I salute him that shall be appointed to go to Syria.",
+            "8": "Grace shall be with him always, and with Metrodorus who sendeth him.",
+            "9": "I bid you farewell always in our God Jesus Christ, in whom abide ye in the unity and supervision of God.",
+            "10": "I salute Alce, a name very dear to me.",
+            "11": "Fare ye well in the Lord. Amen."
           }
         }
       }

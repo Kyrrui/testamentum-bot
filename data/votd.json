@@ -1,26 +1,26 @@
 {
-  "book": "Ephesians",
-  "chapter": "7",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Colossians",
+  "chapter": "2",
+  "verse_start": "16",
+  "verse_end": "19",
   "verses": [
     {
-      "verse": "1",
-      "text": "And in proportion as a man seeth that his bishop is silent, let him fear him the more."
+      "verse": "16",
+      "text": "Let no man therefore judge you in meat, or in drink, or in respect of an holyday, or of the new moon, or of the sabbath days:"
     },
     {
-      "verse": "2",
-      "text": "For every one whom the Master of the household sendeth to be steward over His own house, we ought so to receive as Him that sent him."
+      "verse": "17",
+      "text": "Which are a shadow of things to come; but the body is of Christ."
     },
     {
-      "verse": "3",
-      "text": "Plainly therefore we ought to regard the bishop as the Lord Himself."
+      "verse": "18",
+      "text": "Let no man beguile you of your reward in a voluntary humility and worshipping of angels, intruding into those things which he hath not seen, vainly puffed up by his fleshly mind,"
     },
     {
-      "verse": "4",
-      "text": "Now Onesimus of his own accord highly praiseth your orderly conduct in God, for that ye all live according to truth, and that no heresy hath a home among you:"
+      "verse": "19",
+      "text": "And not holding the Head, from which all the body by joints and bands having nourishment ministered, and knit together, increaseth with the increase of God."
     }
   ],
-  "section": "",
-  "date": "2026-10-30"
+  "section": "Concerning Meat and Drink, and Holy Days, and New Moons, and Sabbaths",
+  "date": "2026-10-31"
 }

@@ -1,26 +1,30 @@
 {
-  "book": "Colossians",
-  "chapter": "2",
-  "verse_start": "16",
-  "verse_end": "19",
+  "book": "Evangelicon",
+  "chapter": "21",
+  "verse_start": "33",
+  "verse_end": "37",
   "verses": [
     {
-      "verse": "16",
-      "text": "Let no man therefore judge you in meat, or in drink, or in respect of an holyday, or of the new moon, or of the sabbath days:"
+      "verse": "33",
+      "text": "Then Judas, which had betrayed him, when he saw that he was condemned, repented himself, and brought again the thirty pieces of silver to the chief priests and elders,"
     },
     {
-      "verse": "17",
-      "text": "Which are a shadow of things to come; but the body is of Christ."
+      "verse": "34",
+      "text": "Saying, I have sinned in that I have betrayed the innocent blood. And they said, What is that to us? see thou to that."
     },
     {
-      "verse": "18",
-      "text": "Let no man beguile you of your reward in a voluntary humility and worshipping of angels, intruding into those things which he hath not seen, vainly puffed up by his fleshly mind,"
+      "verse": "35",
+      "text": "And he cast down the pieces of silver in the temple, and departed, and went and hanged himself."
     },
     {
-      "verse": "19",
-      "text": "And not holding the Head, from which all the body by joints and bands having nourishment ministered, and knit together, increaseth with the increase of God."
+      "verse": "36",
+      "text": "And the chief priests took the silver pieces, and said, It is not lawful for to put them into the treasury, because it is the price of blood."
+    },
+    {
+      "verse": "37",
+      "text": "And they took counsel, and bought with them the potter’s field, to bury strangers in."
     }
   ],
-  "section": "Concerning Meat and Drink, and Holy Days, and New Moons, and Sabbaths",
-  "date": "2026-10-31"
+  "section": "Concerning the Remorse of Judas",
+  "date": "2026-11-01"
 }

@@ -1,30 +1,30 @@
 {
-  "book": "Metrodorus",
-  "chapter": "6",
-  "verse_start": "5",
-  "verse_end": "9",
+  "book": "Ephesians",
+  "chapter": "13",
+  "verse_start": "1",
+  "verse_end": "5",
   "verses": [
     {
+      "verse": "1",
+      "text": "I know who I am and to whom I write."
+    },
+    {
+      "verse": "2",
+      "text": "I am a convict, ye have received mercy:"
+    },
+    {
+      "verse": "3",
+      "text": "I am in peril, ye are established."
+    },
+    {
+      "verse": "4",
+      "text": "Ye are the high-road of those that are on their way to die unto God."
+    },
+    {
       "verse": "5",
-      "text": "Please the Captain in whose army ye serve, from whom also ye will receive your pay."
-    },
-    {
-      "verse": "6",
-      "text": "Let none of you be found a deserter."
-    },
-    {
-      "verse": "7",
-      "text": "Let your baptism abide with you as your shield;"
-    },
-    {
-      "verse": "8",
-      "text": "Your faith as your helmet;"
-    },
-    {
-      "verse": "9",
-      "text": "Your love as your spear;"
+      "text": "Ye are associates in the mysteries with Paul, who was sanctified, who obtained a good report, who is worthy of all felicitation;"
     }
   ],
   "section": "",
-  "date": "2026-11-03"
+  "date": "2026-11-04"
 }

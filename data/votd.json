@@ -1,26 +1,26 @@
 {
-  "book": "1 Timothy",
-  "chapter": "6",
-  "verse_start": "9",
-  "verse_end": "12",
+  "book": "Colossians",
+  "chapter": "3",
+  "verse_start": "18",
+  "verse_end": "21",
   "verses": [
     {
-      "verse": "9",
-      "text": "But they that will be rich fall into temptation and a snare, and into many foolish and hurtful lusts, which drown men in destruction and perdition."
+      "verse": "18",
+      "text": "Wives, submit yourselves unto your own husbands, as it is fit in the Lord."
     },
     {
-      "verse": "10",
-      "text": "For the love of money is the root of all evil: which while some coveted after, they have erred from the faith, and pierced themselves through with many sorrows."
+      "verse": "19",
+      "text": "Husbands, love your wives, and be not bitter against them."
     },
     {
-      "verse": "11",
-      "text": "But thou, O man of God, flee these things; and follow after righteousness, godliness, faith, love, patience, meekness."
+      "verse": "20",
+      "text": "Children, obey your parents in all things: for this is well pleasing unto the Lord."
     },
     {
-      "verse": "12",
-      "text": "I give thee charge in the sight of God, who quickeneth all things, and before Christ Jesus, who before Pontius Pilate witnessed a good confession;"
+      "verse": "21",
+      "text": "Fathers, provoke not your children to anger, lest they be discouraged."
     }
   ],
-  "section": "Concerning Them That Desire to Be Rich",
-  "date": "2026-11-06"
+  "section": "Concerning Wives and Husbands, Children and Fathers, Servants and Masters",
+  "date": "2026-11-07"
 }

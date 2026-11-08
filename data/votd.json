@@ -1,26 +1,30 @@
 {
-  "book": "Colossians",
-  "chapter": "3",
-  "verse_start": "18",
-  "verse_end": "21",
+  "book": "Evangelicon",
+  "chapter": "5",
+  "verse_start": "41",
+  "verse_end": "45",
   "verses": [
     {
-      "verse": "18",
-      "text": "Wives, submit yourselves unto your own husbands, as it is fit in the Lord."
+      "verse": "41",
+      "text": "And, behold, a woman in the city, which was a sinner, when she knew that Jesus sat at meat in the Pharisee’s house, brought an alabaster box of ointment,"
     },
     {
-      "verse": "19",
-      "text": "Husbands, love your wives, and be not bitter against them."
+      "verse": "42",
+      "text": "And stood at his feet behind him weeping, and began to wash his feet with tears, and did wipe them with the hairs of her head, and kissed his feet, and anointed them with the ointment."
     },
     {
-      "verse": "20",
-      "text": "Children, obey your parents in all things: for this is well pleasing unto the Lord."
+      "verse": "43",
+      "text": "Now when the Pharisee which had bidden him saw it, he spake within himself, saying, This man, if he were a prophet, would have known who and what manner of woman this is that toucheth him: for she is a sinner."
     },
     {
-      "verse": "21",
-      "text": "Fathers, provoke not your children to anger, lest they be discouraged."
+      "verse": "44",
+      "text": "And Jesus answering said unto him, Simon, I have somewhat to say unto thee. And he saith, Master, say on."
+    },
+    {
+      "verse": "45",
+      "text": "There was a certain creditor which had two debtors: the one owed five hundred denarii, and the other fifty."
     }
   ],
-  "section": "Concerning Wives and Husbands, Children and Fathers, Servants and Masters",
-  "date": "2026-11-07"
+  "section": "Concerning the Woman Which Anointed the Lord with Ointment",
+  "date": "2026-11-08"
 }

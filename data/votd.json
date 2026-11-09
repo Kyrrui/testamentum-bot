@@ -1,30 +1,26 @@
 {
-  "book": "Evangelicon",
+  "book": "2 Corinthians",
   "chapter": "5",
-  "verse_start": "41",
-  "verse_end": "45",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "41",
-      "text": "And, behold, a woman in the city, which was a sinner, when she knew that Jesus sat at meat in the Pharisee’s house, brought an alabaster box of ointment,"
+      "verse": "1",
+      "text": "For we know that if our earthly house of this tabernacle were dissolved, we have a building of God, an house not made with hands, eternal in the heavens."
     },
     {
-      "verse": "42",
-      "text": "And stood at his feet behind him weeping, and began to wash his feet with tears, and did wipe them with the hairs of her head, and kissed his feet, and anointed them with the ointment."
+      "verse": "2",
+      "text": "For in this we groan, earnestly desiring to be clothed upon with our house which is from heaven:"
     },
     {
-      "verse": "43",
-      "text": "Now when the Pharisee which had bidden him saw it, he spake within himself, saying, This man, if he were a prophet, would have known who and what manner of woman this is that toucheth him: for she is a sinner."
+      "verse": "3",
+      "text": "If so be that being unclothed we shall not be found naked."
     },
     {
-      "verse": "44",
-      "text": "And Jesus answering said unto him, Simon, I have somewhat to say unto thee. And he saith, Master, say on."
-    },
-    {
-      "verse": "45",
-      "text": "There was a certain creditor which had two debtors: the one owed five hundred denarii, and the other fifty."
+      "verse": "4",
+      "text": "For we that are in this tabernacle do groan, being burdened: not for that we would be unclothed, but clothed upon, that mortality might be swallowed up of life."
     }
   ],
-  "section": "Concerning the Woman Which Anointed the Lord with Ointment",
-  "date": "2026-11-08"
+  "section": "Concerning the Earthly House and the Heavenly Habitation",
+  "date": "2026-11-09"
 }

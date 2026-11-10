@@ -1,26 +1,26 @@
 {
-  "book": "2 Corinthians",
-  "chapter": "5",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Evangelicon",
+  "chapter": "4",
+  "verse_start": "56",
+  "verse_end": "59",
   "verses": [
     {
-      "verse": "1",
-      "text": "For we know that if our earthly house of this tabernacle were dissolved, we have a building of God, an house not made with hands, eternal in the heavens."
+      "verse": "56",
+      "text": "The disciple is not above his master: but every one that is perfect shall be as his master."
     },
     {
-      "verse": "2",
-      "text": "For in this we groan, earnestly desiring to be clothed upon with our house which is from heaven:"
+      "verse": "57",
+      "text": "And why beholdest thou the mote that is in thy brother’s eye, but perceivest not the beam that is in thine own eye?"
     },
     {
-      "verse": "3",
-      "text": "If so be that being unclothed we shall not be found naked."
+      "verse": "58",
+      "text": "Either how canst thou say to thy brother, Brother, let me pull out the mote that is in thine eye, when thou thyself beholdest not the beam that is in thine own eye? Thou hypocrite, cast out first the beam out of thine own eye, and then shalt thou see clearly to pull out the mote that is in thy brother’s eye."
     },
     {
-      "verse": "4",
-      "text": "For we that are in this tabernacle do groan, being burdened: not for that we would be unclothed, but clothed upon, that mortality might be swallowed up of life."
+      "verse": "59",
+      "text": "Beware of false prophets, which come to you in sheep’s clothing, but inwardly they are ravening wolves."
     }
   ],
-  "section": "Concerning the Earthly House and the Heavenly Habitation",
-  "date": "2026-11-09"
+  "section": "Concerning the Beatitudes",
+  "date": "2026-11-10"
 }

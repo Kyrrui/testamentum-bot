@@ -1,26 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "4",
-  "verse_start": "56",
-  "verse_end": "59",
+  "book": "Ephesians",
+  "chapter": "22",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "56",
-      "text": "The disciple is not above his master: but every one that is perfect shall be as his master."
+      "verse": "1",
+      "text": "I am devoted to you and to those whom for the honour of God ye sent to Smyrna;"
     },
     {
-      "verse": "57",
-      "text": "And why beholdest thou the mote that is in thy brother’s eye, but perceivest not the beam that is in thine own eye?"
+      "verse": "2",
+      "text": "Whence also I write unto you with thanks giving to the Lord, having love for Metrodorus as I have for you also."
     },
     {
-      "verse": "58",
-      "text": "Either how canst thou say to thy brother, Brother, let me pull out the mote that is in thine eye, when thou thyself beholdest not the beam that is in thine own eye? Thou hypocrite, cast out first the beam out of thine own eye, and then shalt thou see clearly to pull out the mote that is in thy brother’s eye."
+      "verse": "3",
+      "text": "Remember me, even as I would that Jesus Christ may also remember you."
     },
     {
-      "verse": "59",
-      "text": "Beware of false prophets, which come to you in sheep’s clothing, but inwardly they are ravening wolves."
+      "verse": "4",
+      "text": "Pray for the church which is in Syria, whence I am led a prisoner to Rome—I who am the very last of the faithful there;"
     }
   ],
-  "section": "Concerning the Beatitudes",
-  "date": "2026-11-10"
+  "section": "",
+  "date": "2026-11-11"
 }

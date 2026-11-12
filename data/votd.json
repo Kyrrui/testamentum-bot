@@ -1,26 +1,30 @@
 {
-  "book": "Ephesians",
-  "chapter": "22",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Laodiceans",
+  "chapter": "6",
+  "verse_start": "13",
+  "verse_end": "17",
   "verses": [
     {
-      "verse": "1",
-      "text": "I am devoted to you and to those whom for the honour of God ye sent to Smyrna;"
+      "verse": "13",
+      "text": "Wherefore take unto you the whole armour of God, that ye may be able to withstand in the evil day, and having done all, to stand."
     },
     {
-      "verse": "2",
-      "text": "Whence also I write unto you with thanks giving to the Lord, having love for Metrodorus as I have for you also."
+      "verse": "14",
+      "text": "Stand therefore, having your loins girt about with truth, and having on the breastplate of righteousness;"
     },
     {
-      "verse": "3",
-      "text": "Remember me, even as I would that Jesus Christ may also remember you."
+      "verse": "15",
+      "text": "And your feet shod with the preparation of the gospel of peace;"
     },
     {
-      "verse": "4",
-      "text": "Pray for the church which is in Syria, whence I am led a prisoner to Rome—I who am the very last of the faithful there;"
+      "verse": "16",
+      "text": "Above all, taking the shield of faith, wherewith ye shall be able to quench all the fiery darts of the wicked."
+    },
+    {
+      "verse": "17",
+      "text": "And take the helmet of salvation, and the sword of the Spirit, which is the word of God:"
     }
   ],
-  "section": "",
-  "date": "2026-11-11"
+  "section": "Concerning the Armour Wherewith We Must Stand against the Powers",
+  "date": "2026-11-12"
 }

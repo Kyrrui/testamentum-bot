@@ -1,30 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "6",
-  "verse_start": "44",
-  "verse_end": "48",
+  "book": "Trallians",
+  "chapter": "5",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "44",
-      "text": "And a woman having an issue of blood twelve years, which had spent all her living upon physicians, neither could be healed of any,"
+      "verse": "1",
+      "text": "I have many deep thoughts in God:"
     },
     {
-      "verse": "45",
-      "text": "Came behind him, and touched the border of his garment: and immediately her issue of blood stanched."
+      "verse": "2",
+      "text": "But I take the measure of myself, lest I perish in my boasting."
     },
     {
-      "verse": "46",
-      "text": "And Jesus said, Who touched me? When all denied, Peter and they that were with him said, Master, the multitude throng thee and press thee, and sayest thou, Who touched me?"
+      "verse": "3",
+      "text": "For now I ought to be the more afraid and not to give heed to those that would puff me up:"
     },
     {
-      "verse": "47",
-      "text": "And Jesus said, Somebody hath touched me: for I perceive that virtue is gone out of me."
-    },
-    {
-      "verse": "48",
-      "text": "And when the woman saw that she was not hid, she came trembling, and falling down before him, she declared unto him before all the people for what cause she had touched him, and how she was healed immediately."
+      "verse": "4",
+      "text": "For they that say these things to me are a scourge to me."
     }
   ],
-  "section": "Concerning the Woman Which Had an Issue of Blood",
-  "date": "2026-11-13"
+  "section": "",
+  "date": "2026-11-14"
 }

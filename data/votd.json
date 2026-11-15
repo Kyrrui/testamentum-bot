@@ -1,26 +1,30 @@
 {
-  "book": "Trallians",
-  "chapter": "5",
-  "verse_start": "1",
-  "verse_end": "4",
+  "book": "Titus",
+  "chapter": "1",
+  "verse_start": "5",
+  "verse_end": "9",
   "verses": [
     {
-      "verse": "1",
-      "text": "I have many deep thoughts in God:"
+      "verse": "5",
+      "text": "For this cause left I thee in Crete, that thou shouldest set in order the things that are wanting, and ordain elders in every city, as I had appointed thee:"
     },
     {
-      "verse": "2",
-      "text": "But I take the measure of myself, lest I perish in my boasting."
+      "verse": "6",
+      "text": "If any be blameless, the husband of one wife, having faithful children not accused of riot or unruly."
     },
     {
-      "verse": "3",
-      "text": "For now I ought to be the more afraid and not to give heed to those that would puff me up:"
+      "verse": "7",
+      "text": "For a bishop must be blameless, as the steward of God; not selfwilled, not soon angry, not given to wine, no striker, not given to filthy lucre;"
     },
     {
-      "verse": "4",
-      "text": "For they that say these things to me are a scourge to me."
+      "verse": "8",
+      "text": "Holding fast the faithful word as he hath been taught, that he may be able by sound doctrine both to exhort and to convince the gainsayers."
+    },
+    {
+      "verse": "9",
+      "text": "For there are many unruly and vain talkers and deceivers, specially they of the circumcision:"
     }
   ],
-  "section": "",
-  "date": "2026-11-14"
+  "section": "Concerning the Ordination of Presbyters",
+  "date": "2026-11-15"
 }

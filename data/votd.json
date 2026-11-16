@@ -1,30 +1,30 @@
 {
-  "book": "Titus",
-  "chapter": "1",
-  "verse_start": "5",
-  "verse_end": "9",
+  "book": "Evangelicon",
+  "chapter": "10",
+  "verse_start": "35",
+  "verse_end": "39",
   "verses": [
     {
-      "verse": "5",
-      "text": "For this cause left I thee in Crete, that thou shouldest set in order the things that are wanting, and ordain elders in every city, as I had appointed thee:"
+      "verse": "35",
+      "text": "And as he spake, a certain Pharisee besought him to dine with him: and he went in, and sat down to meat."
     },
     {
-      "verse": "6",
-      "text": "If any be blameless, the husband of one wife, having faithful children not accused of riot or unruly."
+      "verse": "36",
+      "text": "And when the Pharisee saw it, he began to reason within himself, saying, Why washed he not first before dinner?"
     },
     {
-      "verse": "7",
-      "text": "For a bishop must be blameless, as the steward of God; not selfwilled, not soon angry, not given to wine, no striker, not given to filthy lucre;"
+      "verse": "37",
+      "text": "And the Lord said unto him, Now do ye Pharisees, hypocrites, make clean the outside of the cup and the platter; but your inward part is full of ravening and wickedness."
     },
     {
-      "verse": "8",
-      "text": "Holding fast the faithful word as he hath been taught, that he may be able by sound doctrine both to exhort and to convince the gainsayers."
+      "verse": "38",
+      "text": "Foolish ones, did not he that made the outside make the inside also?"
     },
     {
-      "verse": "9",
-      "text": "For there are many unruly and vain talkers and deceivers, specially they of the circumcision:"
+      "verse": "39",
+      "text": "But give as alms the things in your power; and, behold, all things are clean unto you."
     }
   ],
-  "section": "Concerning the Ordination of Presbyters",
-  "date": "2026-11-15"
+  "section": "Concerning the Pharisee Which Bade Him to Meat",
+  "date": "2026-11-16"
 }

@@ -1,30 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "10",
-  "verse_start": "35",
-  "verse_end": "39",
+  "book": "Philippians",
+  "chapter": "3",
+  "verse_start": "17",
+  "verse_end": "20",
   "verses": [
     {
-      "verse": "35",
-      "text": "And as he spake, a certain Pharisee besought him to dine with him: and he went in, and sat down to meat."
+      "verse": "17",
+      "text": "Brethren, be followers together of me, and mark them which walk so as ye have us for an ensample."
     },
     {
-      "verse": "36",
-      "text": "And when the Pharisee saw it, he began to reason within himself, saying, Why washed he not first before dinner?"
+      "verse": "18",
+      "text": "For many walk, of whom I have told you often, and now tell you even weeping, that they are the enemies of the cross of Christ:"
     },
     {
-      "verse": "37",
-      "text": "And the Lord said unto him, Now do ye Pharisees, hypocrites, make clean the outside of the cup and the platter; but your inward part is full of ravening and wickedness."
+      "verse": "19",
+      "text": "Whose end is destruction, whose God is their belly, and whose glory is in their shame, who mind earthly things."
     },
     {
-      "verse": "38",
-      "text": "Foolish ones, did not he that made the outside make the inside also?"
-    },
-    {
-      "verse": "39",
-      "text": "But give as alms the things in your power; and, behold, all things are clean unto you."
+      "verse": "20",
+      "text": "For our conversation is in heaven; from whence also we look for the Saviour, the Lord Jesus Christ:"
     }
   ],
-  "section": "Concerning the Pharisee Which Bade Him to Meat",
-  "date": "2026-11-16"
+  "section": "Concerning Them That Are to Be Followed, and the Enemies of the Cross of Christ",
+  "date": "2026-11-17"
 }

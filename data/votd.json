@@ -1,26 +1,30 @@
 {
-  "book": "Colossians",
-  "chapter": "1",
-  "verse_start": "9",
-  "verse_end": "12",
+  "book": "Evangelicon",
+  "chapter": "6",
+  "verse_start": "26",
+  "verse_end": "30",
   "verses": [
     {
-      "verse": "9",
-      "text": "For this cause we also, since the day we heard it, do not cease to pray for you, and to desire that ye might be filled with the knowledge of his will in all wisdom and spiritual understanding;"
+      "verse": "26",
+      "text": "And they sailed down to the country of the Gadarenes, which is over against Galilee."
     },
     {
-      "verse": "10",
-      "text": "That ye might walk worthy of the Lord unto all pleasing, being fruitful in every good work, and increasing in the knowledge of God;"
+      "verse": "27",
+      "text": "And when he went forth to land, there met him out of the city a certain man, which had devils a long time, and wore no cloke, neither abode in a house, but among the tombs."
     },
     {
-      "verse": "11",
-      "text": "Strengthened with all might, according to his glorious power, unto all patience and longsuffering with joyfulness;"
+      "verse": "28",
+      "text": "When he saw Jesus, he cried out, and fell down before him, and with a loud voice said, What have I to do with thee, Jesus, thou Son of God? I beseech thee, torment me not."
     },
     {
-      "verse": "12",
-      "text": "Giving thanks unto the Father, which hath made us meet to be partakers of the inheritance of the saints in light:"
+      "verse": "29",
+      "text": "For he had commanded the unclean spirit to come out of the man. For oftentimes it had caught him: and he was kept guarded and bound with chains and in fetters; and he brake the bands asunder, and was driven of the devil into the deserts."
+    },
+    {
+      "verse": "30",
+      "text": "And Jesus asked him, saying, What is thy name? And he said, Legion: because many devils were entered into him."
     }
   ],
-  "section": "Concerning the Knowledge of the Will of God in All Wisdom and Spiritual Understanding",
-  "date": "2026-11-18"
+  "section": "Concerning Him Which Had the Legion",
+  "date": "2026-11-19"
 }

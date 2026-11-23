@@ -1,30 +1,30 @@
 {
-  "book": "Evangelicon",
-  "chapter": "21",
-  "verse_start": "14",
-  "verse_end": "18",
+  "book": "Laodiceans",
+  "chapter": "1",
+  "verse_start": "15",
+  "verse_end": "19",
   "verses": [
     {
-      "verse": "14",
-      "text": "Then they seized him, and led him, and brought him into the high priest’s house. But Peter was following afar off."
-    },
-    {
       "verse": "15",
-      "text": "And when they had kindled a fire in the midst of the court, and had sat down together, Peter sat in the midst of them."
+      "text": "Wherefore I also, after I heard of your faith in the Lord Jesus, and love unto all the saints,"
     },
     {
       "verse": "16",
-      "text": "And a certain maid seeing him as he sat towards the light, looked steadfastly upon him, and said, This man also was with him."
+      "text": "Cease not to give thanks for you, making mention of you in my prayers;"
     },
     {
       "verse": "17",
-      "text": "And he denied him, saying, Woman, I know him not."
+      "text": "That the God of our Lord Jesus Christ, the Father of glory, may give unto you the spirit of wisdom and revelation in the knowledge of him:"
     },
     {
       "verse": "18",
-      "text": "And after a little while another saw him, and said, Thou art also of them. And Peter said, Man, I am not."
+      "text": "The eyes of your understanding being enlightened; that ye may know what is the hope of his calling, and what the riches of the glory of his inheritance in the saints,"
+    },
+    {
+      "verse": "19",
+      "text": "And what is the exceeding greatness of his power to us-ward who believe, according to the working of his mighty power,"
     }
   ],
-  "section": "Concerning Peter’s Denial",
-  "date": "2026-11-22"
+  "section": "Concerning the Love of the People Which Is Shown toward the Saints",
+  "date": "2026-11-23"
 }

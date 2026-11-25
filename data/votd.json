@@ -1,30 +1,26 @@
 {
-  "book": "Evangelicon",
-  "chapter": "11",
-  "verse_start": "15",
-  "verse_end": "19",
+  "book": "Philippians",
+  "chapter": "2",
+  "verse_start": "25",
+  "verse_end": "28",
   "verses": [
     {
-      "verse": "15",
-      "text": "And he spake a parable unto them, saying, The ground of a certain rich man brought forth plentifully:"
+      "verse": "25",
+      "text": "Yet I supposed it necessary to send to you Epaphroditus, my brother, and companion in labour, and fellowsoldier, but your messenger, and he that ministered to my wants."
     },
     {
-      "verse": "16",
-      "text": "And he reasoned within himself, saying, What shall I do, because I have not where to collect my fruits?"
+      "verse": "26",
+      "text": "For he longed after you all, and was full of heaviness, because that ye had heard that he had been sick."
     },
     {
-      "verse": "17",
-      "text": "And he said, This will I do: I will pull down my barns, and build greater; and there will I collect all my fruits and my goods."
+      "verse": "27",
+      "text": "For indeed he was sick nigh unto death: but God had mercy on him; and not on him only, but on me also, lest I should have sorrow upon sorrow."
     },
     {
-      "verse": "18",
-      "text": "And I will say to my soul, Soul, thou hast much goods laid up for many years; take thine ease, eat, drink, and be merry."
-    },
-    {
-      "verse": "19",
-      "text": "But God said unto him, Foolish one, this night they require thy soul from thee: and the things which thou hast prepared, whose shall they be?"
+      "verse": "28",
+      "text": "I sent him therefore the more carefully, that, when ye see him again, ye may rejoice, and that I may be the less sorrowful."
     }
   ],
-  "section": "Concerning the Land of the Rich Man Which Brought Forth Plentifully",
-  "date": "2026-11-24"
+  "section": "Concerning Epaphroditus, Whom He Sent unto Them",
+  "date": "2026-11-25"
 }

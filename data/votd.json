@@ -1,26 +1,34 @@
 {
-  "book": "Philippians",
-  "chapter": "2",
-  "verse_start": "25",
-  "verse_end": "28",
+  "book": "Magnesians",
+  "chapter": "8",
+  "verse_start": "3",
+  "verse_end": "8",
   "verses": [
     {
-      "verse": "25",
-      "text": "Yet I supposed it necessary to send to you Epaphroditus, my brother, and companion in labour, and fellowsoldier, but your messenger, and he that ministered to my wants."
+      "verse": "3",
+      "text": "For this cause, seeing that we are become His disciples, let us learn to live as beseemeth Christianity."
     },
     {
-      "verse": "26",
-      "text": "For he longed after you all, and was full of heaviness, because that ye had heard that he had been sick."
+      "verse": "4",
+      "text": "For whoso is called by another name besides this, is not of God."
     },
     {
-      "verse": "27",
-      "text": "For indeed he was sick nigh unto death: but God had mercy on him; and not on him only, but on me also, lest I should have sorrow upon sorrow."
+      "verse": "5",
+      "text": "Therefore put away the vile leaven which hath waxed stale and sour, and betake yourselves to the new leaven, which is Jesus Christ."
     },
     {
-      "verse": "28",
-      "text": "I sent him therefore the more carefully, that, when ye see him again, ye may rejoice, and that I may be the less sorrowful."
+      "verse": "6",
+      "text": "Be ye salted in Him, that none among you grow putrid, seeing that by your savour ye shall be proved."
+    },
+    {
+      "verse": "7",
+      "text": "It is monstrous to talk of Jesus Christ and to practise Judaism."
+    },
+    {
+      "verse": "8",
+      "text": "For Christianity did not believe in Judaism, but Judaism in Christianity, wherein every tongue believed and was gathered together unto God."
     }
   ],
-  "section": "Concerning Epaphroditus, Whom He Sent unto Them",
-  "date": "2026-11-25"
+  "section": "",
+  "date": "2026-11-26"
 }

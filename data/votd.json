@@ -1,34 +1,26 @@
 {
-  "book": "Magnesians",
-  "chapter": "8",
-  "verse_start": "3",
-  "verse_end": "8",
+  "book": "Laodiceans",
+  "chapter": "5",
+  "verse_start": "15",
+  "verse_end": "18",
   "verses": [
     {
-      "verse": "3",
-      "text": "For this cause, seeing that we are become His disciples, let us learn to live as beseemeth Christianity."
+      "verse": "15",
+      "text": "See then that ye walk circumspectly, not as fools, but as wise,"
     },
     {
-      "verse": "4",
-      "text": "For whoso is called by another name besides this, is not of God."
+      "verse": "16",
+      "text": "Redeeming the time, because the days are evil."
     },
     {
-      "verse": "5",
-      "text": "Therefore put away the vile leaven which hath waxed stale and sour, and betake yourselves to the new leaven, which is Jesus Christ."
+      "verse": "17",
+      "text": "Wherefore be ye not unwise, but understanding what the will of the Lord is."
     },
     {
-      "verse": "6",
-      "text": "Be ye salted in Him, that none among you grow putrid, seeing that by your savour ye shall be proved."
-    },
-    {
-      "verse": "7",
-      "text": "It is monstrous to talk of Jesus Christ and to practise Judaism."
-    },
-    {
-      "verse": "8",
-      "text": "For Christianity did not believe in Judaism, but Judaism in Christianity, wherein every tongue believed and was gathered together unto God."
+      "verse": "18",
+      "text": "And be not drunk with wine, wherein is excess; but be filled with the Spirit;"
     }
   ],
-  "section": "",
-  "date": "2026-11-26"
+  "section": "Concerning Redeeming the Time, and the Evil Days",
+  "date": "2026-11-27"
 }

@@ -1,26 +1,26 @@
 {
-  "book": "Laodiceans",
-  "chapter": "5",
-  "verse_start": "15",
-  "verse_end": "18",
+  "book": "Romans",
+  "chapter": "14",
+  "verse_start": "1",
+  "verse_end": "4",
   "verses": [
     {
-      "verse": "15",
-      "text": "See then that ye walk circumspectly, not as fools, but as wise,"
+      "verse": "1",
+      "text": "Him that is weak in the faith receive ye, but not to doubtful disputations."
     },
     {
-      "verse": "16",
-      "text": "Redeeming the time, because the days are evil."
+      "verse": "2",
+      "text": "For one believeth that he may eat all things: another, who is weak, eateth herbs."
     },
     {
-      "verse": "17",
-      "text": "Wherefore be ye not unwise, but understanding what the will of the Lord is."
+      "verse": "3",
+      "text": "Let not him that eateth despise him that eateth not; and let not him which eateth not judge him that eateth: for God hath received him."
     },
     {
-      "verse": "18",
-      "text": "And be not drunk with wine, wherein is excess; but be filled with the Spirit;"
+      "verse": "4",
+      "text": "Who art thou that judgest another man’s servant? to his own master he standeth or falleth. Yea, he shall be holden up: for God is able to make him stand."
     }
   ],
-  "section": "Concerning Redeeming the Time, and the Evil Days",
-  "date": "2026-11-27"
+  "section": "Concerning Them That Eat Not and Them That Eat",
+  "date": "2026-11-28"
 }
